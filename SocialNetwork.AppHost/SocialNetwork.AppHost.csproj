@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>05528e94-39a1-4f11-a9f5-bb09fb1a1e15</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="8.2.1" />
+    <PackageReference Include="Aspire.Hosting.Dapr" Version="8.2.1" />
+    <PackageReference Include="Aspire.Hosting.NodeJs" Version="8.2.1" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="8.2.1" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" Version="8.2.1" />
+    <PackageReference Include="Aspire.Hosting.Valkey" Version="8.2.1" />
+    <PackageReference Include="Nall.Aspire.Hosting.DependsOn" Version="1.0.1" />
+    <PackageReference Include="Nall.Aspire.Hosting.DependsOn.RabbitMq" Version="1.0.1" />
+    <PackageReference Include="Nall.Aspire.Hosting.DependsOn.SqlServer" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Migration.Identity\Migration.Identity.csproj" />
+    <ProjectReference Include="..\Migration.Messaging\Migration.Messaging.csproj" />
+    <ProjectReference Include="..\Migration.Notification\Migration.Notification.csproj" />
+    <ProjectReference Include="..\Migration.Post\Migration.Post.csproj" />
+    <ProjectReference Include="..\Migration.Profile\Migration.Profile.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Identity\SocialNetwork.Identity.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Messaging\SocialNetwork.Messaging.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Notifications\SocialNetwork.Notifications.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Post\SocialNetwork.Post.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Profile\SocialNetwork.Profile.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Proxy\SocialNetwork.Proxy.csproj" />
+  </ItemGroup>
+
+
+  <Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">
+    <ItemGroup>
+      <PackageJsons Include="..\*\package.json" />
+    </ItemGroup>
+
+    <!-- Install npm packages if node_modules is missing -->
+    <Message Importance="Normal" Text="Installing npm packages for %(PackageJsons.RelativeDir)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
+    <Exec Command="npm install" WorkingDirectory="%(PackageJsons.RootDir)%(PackageJsons.Directory)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
+  </Target>
+  
+</Project>
