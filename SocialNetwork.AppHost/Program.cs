@@ -8,6 +8,7 @@ var password = builder.AddParameter("Password", secret: true);
 
 //DB
 var sql = builder.AddSqlServer("SocialNetwork-Db", password, 1433);
+
 sql.WithVolume("SocialNetwork.sqldata", "/var/opt/mssql")
     .WithHealthCheck();
 var sqldbIdentity = sql.AddDatabase("Identity").WaitFor(sql);
