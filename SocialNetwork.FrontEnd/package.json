@@ -5,16 +5,20 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next dev",
+    "start": "next start",
     "production": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@microsoft/signalr": "^8.0.7",
-    "next": "14.2.11",
+    "formik": "^2.4.6",
+    "next": "14.2.15",
     "react": "^18",
     "react-dom": "^18",
-    "simple-peer": "^9.11.1"
+    "react-responsive": "^10.0.0",
+    "simple-peer": "^9.11.1",
+    "sass": "^1.79.5",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",
