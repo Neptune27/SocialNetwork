@@ -8,6 +8,7 @@ using SocialNetwork.Messaging.APIs.WeatherForecasts;
 using SocialNetwork.Messaging.Integrations;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Messaging.Data;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,6 @@ builder.Services.AddDbContext<AppDBContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("Messaging"));
 });
 
-
 builder.AddDefaultMassTransit(option => {
 option.AddConsumers(typeof(Program).Assembly);
 });
@@ -28,8 +28,11 @@ builder.Services.AddMediator();
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+}); ;
 
 
 builder.AddDefaultJWTConfig(options =>
@@ -79,6 +82,7 @@ builder.Services.AddSignalR();
 
 
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -98,6 +102,6 @@ app.MapControllers();
 
 //Map SignalR message hub
 app.MapHub<MessageHub>("/hub");
-app.MapHub<MessageHub>("/videohub");
+app.MapHub<VideoHub>("/videohub");
 
 app.Run();

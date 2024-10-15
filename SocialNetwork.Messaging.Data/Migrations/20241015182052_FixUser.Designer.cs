@@ -12,8 +12,8 @@ using SocialNetwork.Messaging.Data;
 namespace SocialNetwork.Messaging.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20241014205649_AddUser")]
-    partial class AddUser
+    [Migration("20241015182052_FixUser")]
+    partial class FixUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,10 +25,30 @@ namespace SocialNetwork.Messaging.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("MessageUserRoom", b =>
+                {
+                    b.Property<int>("RoomsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("RoomsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("MessageUserRoom");
+                });
+
             modelBuilder.Entity("SocialNetwork.Core.Models.BasicUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -38,14 +58,13 @@ namespace SocialNetwork.Messaging.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RoomId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("RoomId");
+                    b.ToTable("BasicUser");
 
-                    b.ToTable("Users");
+                    b.HasDiscriminator().HasValue("BasicUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.Message", b =>
@@ -119,11 +138,26 @@ namespace SocialNetwork.Messaging.Data.Migrations
                     b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Core.Models.BasicUser", b =>
+            modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.MessageUser", b =>
+                {
+                    b.HasBaseType("SocialNetwork.Core.Models.BasicUser");
+
+                    b.HasDiscriminator().HasValue("MessageUser");
+                });
+
+            modelBuilder.Entity("MessageUserRoom", b =>
                 {
                     b.HasOne("SocialNetwork.Messaging.Data.Models.Room", null)
-                        .WithMany("Users")
-                        .HasForeignKey("RoomId");
+                        .WithMany()
+                        .HasForeignKey("RoomsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Messaging.Data.Models.MessageUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.Message", b =>
@@ -163,8 +197,6 @@ namespace SocialNetwork.Messaging.Data.Migrations
             modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.Room", b =>
                 {
                     b.Navigation("Messages");
-
-                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

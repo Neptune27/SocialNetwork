@@ -27,7 +27,7 @@ public class AppDBContext : DbContext
 
     }
 
-    public DbSet<BasicUser> Users { get; set; }
+    public DbSet<MessageUser> Users { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Room> Rooms { get; set; }
 

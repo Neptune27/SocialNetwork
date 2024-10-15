@@ -17,7 +17,7 @@ public class Room
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    public List<BasicUser> Users { get; set; }
+    public List<MessageUser> Users { get; set; }
 
     public List<Message> Messages { get; set; }
 
@@ -27,7 +27,7 @@ public class Room
 
     public string Profile { get; set; }
 
-    public int Total => Users.Count;
+    public int Total() => Users.Count;
 
     public DateTime LastUpdated { get; set; }
 

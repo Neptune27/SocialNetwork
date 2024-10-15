@@ -13,7 +13,7 @@ public class AddMessageUserConsumer(AppDBContext dBContext) : IConsumer<BasicUse
 
     public async Task Consume(ConsumeContext<BasicUser> context)
     {
-        var user = context.Message;
+        var user = new MessageUser(context.Message);
         await dBContext.Users.AddAsync(user);
         await dBContext.SaveChangesAsync();
     }

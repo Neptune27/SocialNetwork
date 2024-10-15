@@ -56,7 +56,7 @@ public class AccountController(
         }
 
 
-        var dto = mediator.Send(new CreateTokenRequest(user, Request.Host));
+        var dto = await mediator.Send(new CreateTokenRequest(user, Request.Host));
         
         //var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(dto));
 
