@@ -9,7 +9,7 @@ namespace SocialNetwork.Messaging.Hubs;
 public record RTCData(string id, dynamic signal) { }
 
 [Authorize]
-public class MessageHub : Hub
+public class VideoHub : Hub
 {
     private static readonly List<UserMessage> MessageHistory = [];
 

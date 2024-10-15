@@ -2,6 +2,7 @@ using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.Identity.APIs.WeatherForecasts;
+using System.Security.Claims;
 
 namespace SocialNetwork.Identity.Controllers;
 
@@ -27,7 +28,8 @@ public class WeatherForecastController : ControllerBase
     [HttpGet("[action]")]
     public async Task<IActionResult> Weather()
     {
-
+        var user = HttpContext.User;
+        var id = user.Claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier).Value;
         var weather = await _mediator.Send(WeatherForecastRequest.Instance);
         return Ok(weather
         );

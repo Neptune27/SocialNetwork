@@ -49,7 +49,7 @@ const LoginForm = ({ setVisible }: LoginFormProps) => {
         }
         const resultJson = await result.json();
         console.log(resultJson)
-        localStorage.setItem("token", resultJson["result"]["token"]);
+        localStorage.setItem("token", resultJson["token"]);
         window.location.href = "/Home"
     }
 
