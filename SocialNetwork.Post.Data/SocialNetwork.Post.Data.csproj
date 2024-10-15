@@ -15,4 +15,8 @@
     <Folder Include="JsonContext\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SocialNetwork.Core\SocialNetwork.Core.csproj" />
+  </ItemGroup>
+
 </Project>

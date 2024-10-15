@@ -39,18 +39,14 @@ builder.AddDefaultJWTConfig(options =>
         }
     };
 });
-builder.Services.AddMassTransit(option =>
+
+builder.AddDefaultMassTransit(option =>
 {
     //option.AddConsumer<GetWeatherResultsConsumer>();
-    option.AddConsumer<BroadcastNotificationConsumer>();
+    option.AddConsumers(typeof(Program).Assembly);
     option.AddSignalRHub<NotificationHub>();
-
-    option.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host(builder.GetAspireConnectionString("RabbitMQ:Client", "broker"));
-        cfg.ConfigureEndpoints(context);
-    });
 });
+
 builder.Services.AddMediator();
 
 

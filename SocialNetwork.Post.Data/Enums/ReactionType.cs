@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialNetwork.Post.Data.Models;
+namespace SocialNetwork.Post.Data.Enums;
 
 public enum ReactionType
 {

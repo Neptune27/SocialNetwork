@@ -38,34 +38,41 @@ var postMigration = builder.AddProject<Projects.Migration_Post>("migration-post"
 var profileMigration = builder.AddProject<Projects.Migration_Profile>("migration-profile")
     .WithReference(sqldbProfile).WaitFor(sqldbProfile);
 
+var messageMigration = builder.AddProject<Projects.Migration_Messaging>("migration-messaging")
+    .WithReference(sqldbMessaging).WaitFor(sqldbMessaging);
 
 
 var identityService = builder.AddProject<Projects.SocialNetwork_Identity>("socialnetwork-identity")
     .WithReference(sqldbIdentity)
-    .WithReference(broker);
-    //.WaitForCompletion(identityMigration);
+    .WithReference(broker)
+    .WaitForCompletion(identityMigration);
 
 var messagingService = builder
     .AddProject<Projects.SocialNetwork_Messaging>("socialnetwork-messaging")
     .WithReference(sqldbMessaging)
     .WithReference(broker)
+    .WaitForCompletion(messageMigration)
     ;
 
 var notificationService = builder
     .AddProject<Projects.SocialNetwork_Notifications>("socialnetwork-notifications")
     .WithReference(sqldbNotification)
     .WithReference(broker)
+    .WaitForCompletion(notificationMigration)
     ;
 
 
 var postService = builder.AddProject<Projects.SocialNetwork_Post>("socialnetwork-post")
     .WithReference(sqldbPost)
     .WithReference(broker)
+    .WaitForCompletion(postMigration)
+
     ;
 
 var profileService = builder.AddProject<Projects.SocialNetwork_Profile>("socialnetwork-profile")
     .WithReference(sqldbProfile)
     .WithReference(broker)
+    .WaitForCompletion(profileMigration)
     ;
 
 var frontend = builder.AddNpmApp("frontend", "../SocialNetwork.FrontEnd", "dev")
@@ -83,16 +90,6 @@ var apiGateway = builder.AddProject<Projects.SocialNetwork_Proxy>("socialnetwork
     .WithReference(frontend)
     .WithReference(broker)
     ;
-
-
-
-
-
-
-
-builder.AddProject<Projects.Migration_Messaging>("migration-messaging");
-
-
 
 
 
