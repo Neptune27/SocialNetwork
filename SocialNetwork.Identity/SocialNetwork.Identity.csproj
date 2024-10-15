@@ -40,6 +40,7 @@
     <ProjectReference Include="..\SocialNetwork.Identity.Data\SocialNetwork.Identity.Data.csproj" />
     <ProjectReference Include="..\SocialNetwork.Messaging.Data\SocialNetwork.Messaging.Data.csproj" />
     <ProjectReference Include="..\SocialNetwork.Notifications.Data\SocialNetwork.Notifications.Data.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Profile.Data\SocialNetwork.Profile.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

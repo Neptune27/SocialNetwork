@@ -1,5 +1,8 @@
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Core.Extensions;
 using SocialNetwork.Post.Data;
+using SocialNetwork.Post.Integrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,11 @@ builder.AddServiceDefaults();
 builder.Services.AddDbContext<AppDBContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("Post"));
+});
+
+builder.AddDefaultMassTransit(option =>
+{
+    option.AddConsumer<AddPostUserConsumer>();
 });
 
 

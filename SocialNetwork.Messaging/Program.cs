@@ -6,25 +6,24 @@ using MassTransit;
 using SocialNetwork.Core.Extensions;
 using SocialNetwork.Messaging.APIs.WeatherForecasts;
 using SocialNetwork.Messaging.Integrations;
+using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Messaging.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Dependencies Injections
 builder.AddServiceDefaults();
 
-//builder.Services.AddSingleton<IRabbitMQProducer, RabbitMQProducer>();
-//builder.AddRabbitMQClient("broker");
-
-
-builder.Services.AddMassTransit(option =>
+builder.Services.AddDbContext<AppDBContext>(option =>
 {
-    option.AddConsumer<GetWeatherResultsConsumer>();
-    option.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host(builder.GetAspireConnectionString("RabbitMQ:Client", "broker"));
-        cfg.ConfigureEndpoints(context);
-    });
+    option.UseSqlServer(builder.Configuration.GetConnectionString("Messaging"));
 });
+
+
+builder.AddDefaultMassTransit(option => {
+option.AddConsumers(typeof(Program).Assembly);
+});
+
 builder.Services.AddMediator();
 
 // Add services to the container.

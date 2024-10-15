@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using SocialNetwork.Identity.Data.Context;
 using SocialNetwork.Identity.Interfaces.Services;
 using SocialNetwork.Identity.Data.Models;
+using IdentityDbContext = SocialNetwork.Identity.Data.Context;
 using SocialNetwork.Identity.Services;
 using MassTransit;
 using SocialNetwork.Core.Extensions;
@@ -20,7 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.AddSqlServerDbContext<AppDBContext>("sqldb");
 
 
-builder.Services.AddDbContext<AppDBContext>(option =>
+builder.Services.AddDbContext<IdentityDbContext.AppDBContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("Identity"));
 });
@@ -49,7 +50,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(option =>
     option.Password.RequireNonAlphanumeric = true;
     option.Password.RequiredLength = 12;
 })
-    .AddEntityFrameworkStores<AppDBContext>();
+    .AddEntityFrameworkStores<IdentityDbContext.AppDBContext>();
 
 builder.AddDefaultJWTConfig();
 

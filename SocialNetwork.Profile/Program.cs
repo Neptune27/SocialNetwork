@@ -1,5 +1,8 @@
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Core.Extensions;
 using SocialNetwork.Profile.Data;
+using SocialNetwork.Profile.Integrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,12 @@ builder.Services.AddDbContext<AppDBContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("Profile"));
 });
+
+builder.AddDefaultMassTransit(option =>
+{
+    option.AddConsumer<AddUserConsumer>();
+});
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

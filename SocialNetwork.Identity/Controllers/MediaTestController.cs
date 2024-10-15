@@ -14,24 +14,24 @@ namespace SocialNetwork.Identity.Controllers;
 [ApiController]
 public class MediaTestController : Controller
 {
-    [HttpPost("[action]")]
-    public async Task<IActionResult> Upload([FromForm] IFormFile file)
-    {
-        if (file.Length <= 0)
-        {
-            return BadRequest();
-        }
+    //[HttpPost("[action]")]
+    //public async Task<IActionResult> Upload([FromForm] IFormFile file)
+    //{
+    //    if (file.Length <= 0)
+    //    {
+    //        return BadRequest();
+    //    }
 
-        var filePath = Path.GetTempFileName();
+    //    var filePath = Path.GetTempFileName();
 
-        var path = Path.Combine("./Media", filePath);
-        using var stream = System.IO.File.Create(path);
-        await file.CopyToAsync(stream);
+    //    var path = Path.Combine("./Media", filePath);
+    //    using var stream = System.IO.File.Create(path);
+    //    await file.CopyToAsync(stream);
 
-        VideoConverter.Convert(path, "./Media/a.mp4");
+    //    VideoConverter.Convert(path, "./Media/a.mp4");
 
-        return Ok();
-    }
+    //    return Ok();
+    //}
 
     [HttpPost("[action]")]
     [RequestSizeLimit(10L * 1024L * 1024L * 1024L)]

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Core.Models;
 using SocialNetwork.Post.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -44,9 +45,10 @@ public class AppDBContext : DbContext
         //    .HasForeignKey(e => new { e.CommentId, e.UserId });
     }
 
-    DbSet<Comment> Comments { get; set; }
-    DbSet<CommentReaction> CommentReactions { get; set; }
-    DbSet<Models.Post> Posts { get; set; }
-    DbSet<Reaction> Reactions { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<CommentReaction> CommentReactions { get; set; }
+    public DbSet<Models.Post> Posts { get; set; }
+    public DbSet<Reaction> Reactions { get; set; }
+    public DbSet<BasicUser> Users { get; set; }
 
 }

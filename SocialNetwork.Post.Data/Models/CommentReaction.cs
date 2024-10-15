@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +15,8 @@ namespace SocialNetwork.Post.Data.Models;
 public class CommentReaction
 {
     public string UserId { get; set; }
+
+    public BasicUser User { get; set; }
 
     public int CommentId { get; set; }
 

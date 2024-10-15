@@ -45,15 +45,6 @@ public class Worker : BackgroundService
         }
 
         hostApplicationLifetime.StopApplication();
-
-        //while (!cancellationToken.IsCancellationRequested)
-        //{
-        //    if (_logger.IsEnabled(LogLevel.Information))
-        //    {
-        //        _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-        //    }
-        //    await Task.Delay(1000, cancellationToken);
-        //}
     }
 
     private static async Task EnsureDatabaseAsync(AppDBContext dbContext, CancellationToken cancellationToken)
