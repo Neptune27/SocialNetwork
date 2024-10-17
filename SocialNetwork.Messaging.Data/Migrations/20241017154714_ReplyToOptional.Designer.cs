@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialNetwork.Messaging.Data;
 
@@ -11,9 +12,11 @@ using SocialNetwork.Messaging.Data;
 namespace SocialNetwork.Messaging.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241017154714_ReplyToOptional")]
+    partial class ReplyToOptional
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,24 +139,6 @@ namespace SocialNetwork.Messaging.Data.Migrations
                     b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.RoomLastSeen", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("RoomId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("LastSeen")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("UserId", "RoomId");
-
-                    b.HasIndex("RoomId");
-
-                    b.ToTable("RoomsLastSeen");
-                });
-
             modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.MessageUser", b =>
                 {
                     b.HasBaseType("SocialNetwork.Core.Models.BasicUser");
@@ -207,25 +192,6 @@ namespace SocialNetwork.Messaging.Data.Migrations
                         .HasForeignKey("CreatedById");
 
                     b.Navigation("CreatedBy");
-                });
-
-            modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.RoomLastSeen", b =>
-                {
-                    b.HasOne("SocialNetwork.Messaging.Data.Models.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SocialNetwork.Messaging.Data.Models.MessageUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Room");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.Room", b =>

@@ -1,6 +1,7 @@
 ﻿using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SocialNetwork.Core.Extensions;
 using SocialNetwork.Identity.APIs.Notifications;
 using System.Security.Claims;
 
@@ -21,7 +22,7 @@ public class NotificationController(
     public IActionResult Index()
     {
         var user = HttpContext.User;
-        var id = user.Claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier);
+        var id = user.Claims.GetUserId();
         var res = mediator.Send(new HelloRequest(id.Value));
         return Ok(res);
     }

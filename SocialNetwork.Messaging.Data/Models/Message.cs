@@ -27,7 +27,7 @@ public class Message
 
     public MessageType MessageType { get; set; }
 
-    public Message ReplyTo { get; set; }
+    public Message? ReplyTo { get; set; }
 
 }
 

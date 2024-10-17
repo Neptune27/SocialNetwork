@@ -14,6 +14,8 @@ using System.Text;
 using Mediator;
 using SocialNetwork.Identity.APIs.Accounts;
 using MassTransit;
+using SocialNetwork.Identity.Data.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SocialNetwork.Identity.Controllers;
 
@@ -76,6 +78,7 @@ public class AccountController(
                 return BadRequest(ModelState);
             }
 
+
             var appUser = new AppUser { UserName = register.UserName, Email = register.Email };
 
             var createdUser = await mediator.Send(new AddAccountRequest(appUser, register.Password));
@@ -104,4 +107,19 @@ public class AccountController(
             return StatusCode(500, e);
         }
     }
+
+
+    [Authorize]
+    [HttpPut("[action]")]
+    public async Task<IActionResult> Update([FromBody] UpdateUserDTO dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        return Ok(dto);
+
+    }
+
 }
