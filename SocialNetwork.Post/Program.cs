@@ -14,6 +14,8 @@ builder.Services.AddDbContext<AppDBContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("Post"));
 });
 
+builder.Services.AddMediator();
+
 builder.AddDefaultMassTransit(option =>
 {
     option.AddConsumer<AddPostUserConsumer>();

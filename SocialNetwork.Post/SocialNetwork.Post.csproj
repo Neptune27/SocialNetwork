@@ -23,4 +23,8 @@
     <ProjectReference Include="..\SocialNetwork.Post.Data\SocialNetwork.Post.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>
