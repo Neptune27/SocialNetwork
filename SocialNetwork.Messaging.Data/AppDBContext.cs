@@ -25,10 +25,18 @@ public class AppDBContext : DbContext
             .WithOne()
             .OnDelete(DeleteBehavior.NoAction);
 
+        modelBuilder.Entity<RoomLastSeen>()
+            .HasKey(c => new
+            {
+                c.UserId,
+                c.RoomId
+            });
+
     }
 
     public DbSet<MessageUser> Users { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Room> Rooms { get; set; }
+    public DbSet<RoomLastSeen> RoomsLastSeen { get; set; }
 
 }

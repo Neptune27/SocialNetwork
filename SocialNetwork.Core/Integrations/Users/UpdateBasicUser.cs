@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Core.Integrations.Users;
 
-public class AddMessageUser : BasicUser
+public class UpdateBasicUser : BasicUser
 {
-
 }

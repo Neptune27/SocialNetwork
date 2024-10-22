@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using SocialNetwork.Messaging.Data;
+using SocialNetwork.Messaging.Interfaces.Hubs;
 using System.Security.Claims;
 
 namespace SocialNetwork.Messaging.Hubs;
 
 [Authorize]
-public class MessageHub (AppDBContext dbContext) : Hub
+public class MessageHub (AppDBContext dbContext) : Hub<IMessageHubClient>
 {
     private readonly AppDBContext dbContext = dbContext;
 

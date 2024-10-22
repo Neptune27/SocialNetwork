@@ -13,7 +13,7 @@ namespace SocialNetwork.Post.Data.Models;
 
 
 [PrimaryKey(nameof(PostId), nameof(UserId))]
-public class Reaction
+public class Reaction : BaseModel
 {
     public int PostId { get; set; }
 

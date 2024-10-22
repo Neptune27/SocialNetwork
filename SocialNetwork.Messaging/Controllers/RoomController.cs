@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using SocialNetwork.Core.Extensions;
+using SocialNetwork.Messaging.APIs.Messages;
 using SocialNetwork.Messaging.APIs.Rooms;
 using SocialNetwork.Messaging.Data.DTOs;
 using System.Security.Claims;
@@ -21,9 +23,16 @@ public class RoomController(
 
     // GET: api/<ValuesController>
     [HttpGet]
-    public IEnumerable<string> Get()
+    public async Task<IActionResult> Get()
     {
-        return new string[] { "value1", "value2" };
+        var user = HttpContext.User.Claims.GetClaimByUserId();
+        if (user == null)
+        {
+            return BadRequest();
+        }
+
+        var result = await mediator.Send(new GetRoomsRequest(user.Value, (0, 10)));
+        return Ok(result);
     }
 
     // GET api/<ValuesController>/5

@@ -12,7 +12,7 @@ namespace SocialNetwork.Post.Data.Models;
 
 
 [PrimaryKey(nameof(CommentId), nameof(UserId))]
-public class CommentReaction
+public class CommentReaction : BaseModel
 {
     public string UserId { get; set; }
 
@@ -22,7 +22,5 @@ public class CommentReaction
 
     [ForeignKey(nameof(CommentId))]
     public Comment Comment { get; set; }
-
-    public DateTime CreatedAt { get; set; }
 
 }
