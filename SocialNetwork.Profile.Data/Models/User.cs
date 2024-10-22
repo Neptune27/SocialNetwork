@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Profile.Data.Models;
 
-public class User : BaseModel
+public class User : BaseModel, ICloneable
 {
     [Key]
     public string Id { get; set; }
@@ -37,4 +37,8 @@ public class User : BaseModel
 
     public string Github { get; set; }
 
+	public object Clone()
+	{
+        return this.MemberwiseClone();
+	}
 }
