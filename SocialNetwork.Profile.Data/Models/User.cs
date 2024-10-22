@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SocialNetwork.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Profile.Data.Models;
 
-public class User
+public class User : BaseModel
 {
     [Key]
     public string Id { get; set; }
@@ -23,10 +24,6 @@ public class User
     public string LastName { get; set; }
 
     public string Background { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-
-    public DateTime LastUpdated { get; set; }
 
     public List<User> Friends { get; set; } = [];
 

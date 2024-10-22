@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Post.Data.Models;
 
-public class Comment
+public class Comment : BaseModel
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -26,10 +26,6 @@ public class Comment
     public List<Comment> Replys { get; set; }
 
     public string Message { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-
-    public DateTime UpdatedAt { get; set; }
 
     public List<string> Medias { get; set; }
 

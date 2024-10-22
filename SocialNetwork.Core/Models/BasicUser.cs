@@ -17,4 +17,6 @@ public class BasicUser
 
     public string Picture { get; set; }
 
+    public List<BasicUser> Friends { get; set; } = [];
+
 }

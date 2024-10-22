@@ -9,7 +9,7 @@ namespace SocialNetwork.Core.Extensions;
 
 public static class ClaimExtensions
 {
-    public static Claim? GetUserId(this IEnumerable<Claim> claims)
+    public static Claim? GetClaimByUserId(this IEnumerable<Claim> claims)
     {
         return claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier);
     }
