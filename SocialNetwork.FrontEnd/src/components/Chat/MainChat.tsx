@@ -1,17 +1,19 @@
 "use client"
-
-import { IRoom } from "../../interfaces/IRoom"
+import { useEffect, useState } from "react"
 
 const MainChat = (props: {
-    rooms: IRoom[] | undefined
+    roomId: string
 }) => {
-
-    const { rooms } = props 
+    const {roomId} = props
+    const [chat, setChat] = useState()
+    useEffect(() => {
+        console.log(roomId)
+    }, [roomId])
 
     return (
         <div>
-            <button onClick={() => { console.log(rooms) }}>Click</button>
-        </div>
+            
+        </div> 
     )
 }
 

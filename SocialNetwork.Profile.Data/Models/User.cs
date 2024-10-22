@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SocialNetwork.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Profile.Data.Models;
 
-public class User
+public class User : BaseModel, ICloneable
 {
     [Key]
     public string Id { get; set; }
@@ -24,10 +25,6 @@ public class User
 
     public string Background { get; set; }
 
-    public DateTime CreatedAt { get; set; }
-
-    public DateTime LastUpdated { get; set; }
-
     public List<User> Friends { get; set; } = [];
 
     public string FullName => $"{FirstName} {LastName}";
@@ -40,4 +37,8 @@ public class User
 
     public string Github { get; set; }
 
+	public object Clone()
+	{
+        return this.MemberwiseClone();
+	}
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Messaging.Data.Models;
 
-public class Room
+public class Room : BaseModel
 {
 
     [Key]
@@ -28,8 +28,6 @@ public class Room
     public string Profile { get; set; }
 
     public int Total() => Users.Count;
-
-    public DateTime LastUpdated { get; set; }
 
     public RoomType RoomType { get; set; }
 }

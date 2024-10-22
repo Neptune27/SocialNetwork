@@ -54,7 +54,8 @@ public class PublishAccountInternalHandler(
             Github = "",
             Location = "",
             Instagram = "",
-            Twitter = ""
+            Twitter = "",
+            Visibility = Core.Enums.EVisibility.PUBLIC,
         };
 
 

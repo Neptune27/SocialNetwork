@@ -22,7 +22,7 @@ public class NotificationController(
     public IActionResult Index()
     {
         var user = HttpContext.User;
-        var id = user.Claims.GetUserId();
+        var id = user.Claims.GetClaimByUserId();
         var res = mediator.Send(new HelloRequest(id.Value));
         return Ok(res);
     }

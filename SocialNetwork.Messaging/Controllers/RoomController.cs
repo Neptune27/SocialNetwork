@@ -25,13 +25,13 @@ public class RoomController(
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var user = HttpContext.User.Claims.GetUserId();
+        var user = HttpContext.User.Claims.GetClaimByUserId();
         if (user == null)
         {
             return BadRequest();
         }
 
-        var result = await mediator.Send(new GetRoomsRequest(user.Value));
+        var result = await mediator.Send(new GetRoomsRequest(user.Value, (0, 10)));
         return Ok(result);
     }
 

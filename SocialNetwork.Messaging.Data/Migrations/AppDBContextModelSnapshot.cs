@@ -42,6 +42,9 @@ namespace SocialNetwork.Messaging.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("BasicUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasMaxLength(13)
@@ -56,6 +59,8 @@ namespace SocialNetwork.Messaging.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BasicUserId");
 
                     b.ToTable("BasicUser");
 
@@ -79,6 +84,9 @@ namespace SocialNetwork.Messaging.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("MessageType")
                         .HasColumnType("int");
 
@@ -90,6 +98,9 @@ namespace SocialNetwork.Messaging.Data.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -176,6 +187,13 @@ namespace SocialNetwork.Messaging.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SocialNetwork.Core.Models.BasicUser", b =>
+                {
+                    b.HasOne("SocialNetwork.Core.Models.BasicUser", null)
+                        .WithMany("Friends")
+                        .HasForeignKey("BasicUserId");
+                });
+
             modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.Message", b =>
                 {
                     b.HasOne("SocialNetwork.Messaging.Data.Models.Message", "ReplyTo")
@@ -226,6 +244,11 @@ namespace SocialNetwork.Messaging.Data.Migrations
                     b.Navigation("Room");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Core.Models.BasicUser", b =>
+                {
+                    b.Navigation("Friends");
                 });
 
             modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.Room", b =>

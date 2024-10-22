@@ -15,13 +15,19 @@ public class GetRoomsHandler(
     public async ValueTask<List<Room>> Handle(GetRoomsRequest request, CancellationToken cancellationToken)
     {
         var user = dBContext.Users.FirstOrDefault(u => u.Id == request.UserId);
+        (int From, int To) = request.Pagination;
+        var total = To - From;
 
         return await dBContext.Rooms
-            .Include(r => r.Messages.OrderByDescending(m => m.CreatedAt).Take(20))
+            .Include(r => r.Messages
+                            .OrderByDescending(m => m.CreatedAt)
+                            .Take(20))
             .Include(r => r.Users)
             .Include(r => r.CreatedBy)
             .Where(r => r.Users.Contains(user))
-            .Take(10)
-            .ToListAsync();
+            .OrderBy(r => r.LastUpdated)
+            .Skip(From)
+            .Take(total)
+            .ToListAsync(cancellationToken: cancellationToken);
     }
 }

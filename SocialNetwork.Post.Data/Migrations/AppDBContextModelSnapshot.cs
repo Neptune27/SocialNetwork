@@ -27,6 +27,9 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("BasicUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -36,6 +39,8 @@ namespace SocialNetwork.Post.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BasicUserId");
 
                     b.ToTable("Users");
                 });
@@ -54,6 +59,9 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Medias")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -68,11 +76,11 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.Property<int>("ReplyToId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -117,6 +125,9 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Medias")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -127,6 +138,9 @@ namespace SocialNetwork.Post.Data.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -143,7 +157,16 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("ReactionType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Visibility")
                         .HasColumnType("int");
 
                     b.HasKey("PostId", "UserId");
@@ -151,6 +174,13 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Reactions");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Core.Models.BasicUser", b =>
+                {
+                    b.HasOne("SocialNetwork.Core.Models.BasicUser", null)
+                        .WithMany("Friends")
+                        .HasForeignKey("BasicUserId");
                 });
 
             modelBuilder.Entity("SocialNetwork.Post.Data.Models.Comment", b =>
@@ -227,6 +257,11 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Core.Models.BasicUser", b =>
+                {
+                    b.Navigation("Friends");
                 });
 
             modelBuilder.Entity("SocialNetwork.Post.Data.Models.Comment", b =>

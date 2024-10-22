@@ -38,7 +38,7 @@ public class MessageController(
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] MessageDTO dto)
     {
-        var user = HttpContext.User.Claims.GetUserId();
+        var user = HttpContext.User.Claims.GetClaimByUserId();
         Message replyTo = null;
 
         if (dto.ReplyToId != 0)
@@ -56,6 +56,7 @@ public class MessageController(
             MessageType = dto.MessageType,
             Content = dto.Content,
             CreatedAt = DateTime.UtcNow,
+            LastUpdated = DateTime.UtcNow,
             ReplyTo = replyTo,
             Room = room,
             User = mUser
@@ -68,13 +69,28 @@ public class MessageController(
 
     // PUT api/<MessageController>/5
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
+    public async Task<IActionResult> Put(int id, [FromBody] string value)
     {
+        var user = HttpContext.User.Claims.GetClaimByUserId();
+        var result = await mediator.Send(new UpdateMessageRequest(user.Value, id, value));
+
+        if (result)
+        {
+            return Ok();
+        }
+
+        return BadRequest();
+
+
     }
 
     // DELETE api/<MessageController>/5
     [HttpDelete("{id}")]
-    public void Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
+        var user = HttpContext.User.Claims.GetClaimByUserId();
+        var result = await mediator.Send(new DeleteMessageRequest(id, user.Value));
+        return Ok(result);
+
     }
 }
