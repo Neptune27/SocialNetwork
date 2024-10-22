@@ -6,6 +6,8 @@ using Mediator;
 using SocialNetwork.Post.Data;
 using SocialNetwork.Post.APIs;
 using SocialNetwork.Post.Data.DTOs;
+using SocialNetwork.Post.APIs.Posts;
+using PostModel = SocialNetwork.Post.Data.Models.Post;
 
 namespace SocialNetwork.Post.Controllers;
 
@@ -19,15 +21,22 @@ public class PostController(
     private AppDBContext context = DbContext;
     private IMediator mediator = Mediator;
 
-    //[HttpGet]
-    //public async Task<IActionResult> Get()
-    //{
-    //    var user = HttpContext.User;
-    //    var id = user.Claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier).Value;
-    //    if (id == null) return Unauthorized("Id not found");
-        
-    //    //var request = mediator.
-    //}
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        var postList = await mediator.Send(new GetListPostRequest());
+        return Ok(postList);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(int id)
+    {
+        var result = await mediator.Send(new GetPostRequest(id));
+        if (result != null)
+            return Ok(result);
+
+        return NotFound("Post with id " + id + " not found.");
+    }
 
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] PostDTO postDTO)
@@ -40,7 +49,8 @@ public class PostController(
         //var id = user.Claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier).Value;
         //if (id == null) return Unauthorized("Id not found");
 
-        Data.Models.Post newPost = new Data.Models.Post()
+        // Chuyển từ DTO sang Model
+        PostModel newPost = new PostModel()
         { 
             Message = postDTO.Message,
             CreatedAt = postDTO.CreatedAt,

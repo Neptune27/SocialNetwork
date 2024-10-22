@@ -2,7 +2,7 @@
 using SocialNetwork.Post.Data;
 using SocialNetwork.Post.Data.Models;
 
-namespace SocialNetwork.Post.APIs;
+namespace SocialNetwork.Post.APIs.Posts;
 public class AddPostHandler(
     AppDBContext DBContext
     ) : IRequestHandler<AddPostRequest, bool>
@@ -13,8 +13,8 @@ public class AddPostHandler(
     {
         var newPost = await context.Posts.AddAsync(request.Post, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
-        
+
         return true;
     }
-    
+
 }
