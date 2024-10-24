@@ -7,11 +7,13 @@ namespace SocialNetwork.Profile.APIs.Profiles
 	{
 		public string ProfileId { get; set; }
 		public string UserId { get; set; }
+		public int TotalFriends { get; }
 
-		public GetProfileRequest(string profileId, string userId)
+		public GetProfileRequest(string profileId, string userId, int totalFriends = 9)
 		{
 			ProfileId = profileId;
 			UserId = userId;
+			TotalFriends = totalFriends;
 		}
 	}
 }
