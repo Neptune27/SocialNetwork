@@ -2,6 +2,7 @@
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Core.Integrations.Users;
+using SocialNetwork.Core.Models;
 using SocialNetwork.Messaging.Data;
 
 namespace SocialNetwork.Messaging.Integrations;
@@ -35,8 +36,26 @@ public class AddMessageFriendConsumer(
             throw new NullReferenceException($"User {data.FromUserId} not found, maybe database is desync?");
         }
 
-        user.Friends.Add(user2);
-        user2.Friends.Add(user);
+        var friend = new BasicFriend()
+        {
+            CreatedAt = DateTime.Now,
+            LastUpdated = DateTime.Now,
+            UserFrom = user,
+            UserTo = user2,
+            Visibility = Core.Enums.EVisibility.PUBLIC
+        };
+
+        var friend2 = new BasicFriend()
+        {
+            CreatedAt = DateTime.Now,
+            LastUpdated = DateTime.Now,
+            UserFrom = user2,
+            UserTo = user,
+            Visibility = Core.Enums.EVisibility.PUBLIC
+        };
+
+        user.Friends.Add(friend);
+        user2.Friends.Add(friend2);
 
         await dBContext.SaveChangesAsync();
 

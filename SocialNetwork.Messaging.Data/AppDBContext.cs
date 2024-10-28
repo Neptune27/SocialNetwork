@@ -38,5 +38,6 @@ public class AppDBContext : DbContext
     public DbSet<Message> Messages { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<RoomLastSeen> RoomsLastSeen { get; set; }
+    public DbSet<BasicFriend> Friends { get; set; }
 
 }

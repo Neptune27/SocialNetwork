@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Core.Models;
 
-public class BasicUser
+public class BasicUser : BaseModel
 {
     [Key]
     public string Id { get; set; }
@@ -17,6 +17,6 @@ public class BasicUser
 
     public string Picture { get; set; }
 
-    public List<BasicUser> Friends { get; set; } = [];
+    public List<BasicFriend> Friends { get; set; } = [];
 
 }

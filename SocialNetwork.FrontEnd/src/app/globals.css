@@ -27,10 +27,6 @@
 /*}*/
 
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -54,7 +50,7 @@ body {
     text-wrap: balance;
   }
 } */
-* {
+/* * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
@@ -71,7 +67,13 @@ html {
 a {
     text-decoration: none;
     color: inherit;
-}
+} */
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
 :root {
     --bg-primary: #fff;
@@ -149,10 +151,10 @@ a {
     cursor: pointer;
 }
 
-    .blue_btn,
-    .gray_btn span {
-        transform: translateY(-1px);
-    }
+.blue_btn,
+.gray_btn span {
+    transform: translateY(-1px);
+}
 /*----Buttons----*/
 .blur {
     position: fixed;
@@ -218,3 +220,8 @@ a {
     filter: invert(39%) sepia(57%) saturate(200%) saturate(200%) saturate(200%) saturate(200%) saturate(200%) saturate(147.75%) hue-rotate(202deg) brightness(97%) contrast(96%);
 }
 /*----filters---*/
+html,
+body,
+:root {
+    height: 100%;
+}
