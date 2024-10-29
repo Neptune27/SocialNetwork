@@ -6,6 +6,7 @@ import style from "@/styles/Profile.module.scss";
 import icons from "@/public/icons.module.scss";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../../helper/getCroppedImg";
+import OldCovers from "./OldCover";
 
 interface CoverProps {
   cover: string;
@@ -20,6 +21,7 @@ const Cover = ({ cover, visitor }: CoverProps) => {
     const [coverPicture, setCoverPicture] = useState("");
     const refInput = useRef(null);
 
+    const [show, setShow] = useState(false);
 
     useClickOutside(menuRef, () => setShowCoverMenu(false));
 
@@ -58,6 +60,7 @@ const Cover = ({ cover, visitor }: CoverProps) => {
         console.log("Cropped Area Pixels: ", croppedAreaPixels);
     }, []);
 
+    const photos = ["/stories/1.jpg", "/stories/2.png"]
     
 
     const getCroppedImage = useCallback(
@@ -165,7 +168,7 @@ const Cover = ({ cover, visitor }: CoverProps) => {
           </div>
           {showCoverMneu && (
             <div className={style.open_cover_menu} ref={menuRef}>
-              <div className={`${style.open_cover_menu_item} hover1`}>
+                <div className={`${style.open_cover_menu_item} hover1`} onClick={() => setShow(true)}>
                 <i className={icons.photo_icon}></i>
                 Select Photo
               </div>
@@ -176,7 +179,14 @@ const Cover = ({ cover, visitor }: CoverProps) => {
             </div>
           )}
         </div>
-      )}
+          )}
+          {show && (
+              <OldCovers
+                  photos={photos}
+                  setCoverPicture={setCoverPicture}
+                  setShow={setShow}
+              />
+          )}
     </div>
   );
 };

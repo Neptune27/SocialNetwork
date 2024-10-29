@@ -14,6 +14,7 @@ import Post from "@/components/post";
 import Photos from "./Photos";
 import Link from "next/link";
 import Friends from "./Friends";
+import Intro from "../../components/intro";
 
 const visitor = false; //Visitor or not
 
@@ -98,6 +99,18 @@ const postVar1: PostData = {
   ],
   createdAt: new Date().toISOString(),
 };
+const details = {
+    bio: "A passionate software developer",
+    othername: "Huy",
+    job: "Software Engineer",
+    workplace: "Tech Corp",
+    highSchool: "Nguyen Huu Canh High",
+    college: "Sai Gon University",
+    currentCity: "Ho Chi Minh",
+    hometown: "Quang Nam",
+    relationship: "Single",
+    instagram: "NguyenHuy",
+};
 
 const ProfilePage = () => {
   const [visible, setVisible] = useState(false);
@@ -125,7 +138,8 @@ const ProfilePage = () => {
             <div className={style.bottom_container}>
               <PplYouMayKnow />
               <div className={style.profile_grid}>
-                <div className={style.profile_left}>
+                              <div className={style.profile_left}>
+                                  <Intro details={details} visitor />
                   <Photos />
                   <Friends />
                   <div className={style.relative_fb_copyright}>
