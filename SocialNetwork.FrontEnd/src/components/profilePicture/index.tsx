@@ -4,6 +4,7 @@ import style from "@/components/profilePicture/style.module.scss";
 import icons from "@/public/icons.module.scss";
 import UpdateProfilePicture from "./UpdateProfilePicture";
 import useOnClickOutside from "../../helper/useClickOutside";
+import Image from "next/image";
 
 interface ProfilePictureProps {
     setShow: (value: boolean) => void;  // Thêm type cho setShow
@@ -82,8 +83,19 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ setShow, pRef }) => {  
                         </button>
                     </div>
                 )}
-                <div className={style.old_pictures_wrap}>
-                    
+                {/*old picture*/}
+                <div className={`${style.old_pictures_wrap} scrollbar`}>
+                    <h4>your profile pictures</h4>
+                    <div className={style.old_pictures}>
+                        <Image src={"/stories/1.jpg"} alt="" width={100} height={105} />
+                        <Image src={"/stories/2.png"} alt="" width={100} height={105} />
+                        <Image src={"/stories/3.jpg"} alt="" width={20} height={105} />
+                    </div>
+                    <h4>other pictures</h4>
+                    <div className={style.old_pictures }>
+                        <Image src={"/stories/4.jpg"} alt="" width={20} height={105} />
+                        <Image src={"/stories/5.jfif"} alt="" width={20} height={105} />
+                    </div>
                 </div>
             </div>
             {image && <UpdateProfilePicture setImage={setImage} image={image} setShow={setShow} pRef={pRef} />}
