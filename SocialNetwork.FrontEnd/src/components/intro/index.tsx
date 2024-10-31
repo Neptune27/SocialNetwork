@@ -1,8 +1,9 @@
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import style from "@/components/intro/style.module.scss";
 import icons from "@/public/icons.module.scss";
 import Bio from "./Bio";
+import EditDetails from "./EditDetail";
 
 interface IntroProps {
     details: {
@@ -21,28 +22,45 @@ interface IntroProps {
 }
 
 const Intro = ({ details, visitor }: IntroProps) => {
+    const [currentDetails, setCurrentDetails] = useState(details);
+    const [visible, setVisible] = useState(false);
+    const [showBio, setShowBio] = useState(false);
+
     const initial = {
-        bio: details?.bio || "",
-        othername: details?.othername || "",
-        job: details?.job || "",
-        workplace: details?.workplace || "Google",
-        highSchool: details?.highSchool || "some high school",
-        college: details?.college || "some college",
-        currentCity: details?.currentCity || "Tanger",
-        hometown: details?.hometown || "Morocco",
-        relationship: details?.relationship || "Single",
-        instagram: details?.instagram || "med_hajji7",
+        bio: details.bio || "",
+        othername: details.othername || "NguyenHuy",
+        job: details.job || "",
+        workplace: details.workplace || "Google",
+        highSchool: details.highSchool || "some high school",
+        college: details.college || "some college",
+        currentCity: details.currentCity || "Tanger",
+        hometown: details.hometown || "Morocco",
+        relationship: details.relationship || "Single",
+        instagram: details.instagram || "med_hajji7",
     };
 
     const [infos, setInfos] = useState(initial);
-    const [showBio, setShowBio] = useState(false);
-    const [max, setMax] = useState(100 - (infos.bio?.length || 0));
+    const [max, setMax] = useState(100 - (infos.bio.length || 0));
 
-    const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    useEffect(() => {
+        setCurrentDetails(details);
+        setInfos(initial);
+    }, [details]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newBio = e.target.value;
-        setInfos({ ...infos, bio: newBio });
+        setInfos(prevInfos => ({ ...prevInfos, bio: newBio }));
         setMax(100 - newBio.length);
     };
+
+    const updateDetails = () => {
+        setCurrentDetails(infos);
+        setShowBio(false);
+    };
+
+    const renderEditButton = (text: string, onClick: () => void) => (
+        <button className="gray_btn hover1 w100" onClick={onClick}>{text}</button>
+    );
 
     return (
         <div className={style.profile_card}>
@@ -51,42 +69,26 @@ const Intro = ({ details, visitor }: IntroProps) => {
             {infos.bio && !showBio && (
                 <div className={style.info_col}>
                     <span className={style.info_text}>{infos.bio}</span>
-                    {visitor && (
-                        <button
-                            className="gray_btn hover1"
-                            onClick={() => setShowBio(true)}
-                        >
-                            Edit Bio
-                        </button>
-                    )}
+                    {visitor && renderEditButton("Edit Bio", () => setShowBio(true))}
                 </div>
             )}
+
             {showBio && (
                 <Bio
                     infos={infos}
                     max={max}
-                    handleBioChange={handleBioChange}
+                    handleChange={handleChange}
                     setShowBio={setShowBio}
+                    placeholder="Add Bio"
+                    name="bio"
                 />
             )}
 
-            {infos.job && infos.workplace ? (
+            {infos.job && infos.workplace && (
                 <div className={style.info_profile}>
                     <Image src="/icons/job.png" alt="Job icon" width={24} height={24} />
                     works as {infos.job} at <b>{infos.workplace}</b>
                 </div>
-            ) : infos.job && !infos.workplace ? (
-                <div className={style.info_profile}>
-                    <Image src="/icons/job.png" alt="Job icon" width={24} height={24} />
-                    works as {infos.job}
-                </div>
-            ) : (
-                infos.workplace && (
-                    <div className={style.info_profile}>
-                        <Image src="/icons/job.png" alt="Workplace icon" width={24} height={24} />
-                        works at {infos.workplace}
-                    </div>
-                )
             )}
             {infos.relationship && (
                 <div className={style.info_profile}>
@@ -130,15 +132,20 @@ const Intro = ({ details, visitor }: IntroProps) => {
                     </a>
                 </div>
             )}
-            {visitor && (
-                <button className="gray_btn hover1 w100">Edit Details</button>
+
+            {visitor && renderEditButton("Edit Details", () => setVisible(true))}
+            {visitor && visible && (
+                <EditDetails
+                    details={currentDetails}
+                    handleChange={handleChange}
+                    updateDetails={updateDetails}
+                    infos={infos}
+                    setVisible={setVisible}
+                />
             )}
-            {visitor && (
-                <button className="gray_btn hover1 w100">Add Hobbies</button>
-            )}
-            {visitor && (
-                <button className="gray_btn hover1 w100">Add Featured</button>
-            )}
+
+            {visitor && renderEditButton("Add Hobbies", () => { })}
+            {visitor && renderEditButton("Add Featured", () => { })}
         </div>
     );
 };

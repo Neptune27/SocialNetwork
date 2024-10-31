@@ -1,32 +1,147 @@
 import Image from "next/image";
-import React from "react";
+import React, { useRef } from "react";
+import Detail from "./Detail";
+import style from "@/components/intro/style.module.scss";
+import icons from "@/public/icons.module.scss";
+import useClickOutside from "../../helper/useClickOutside";
 
-interface EditDetailProps { details }
+interface EditDetailProps {
+    details: {
+        othername?: string;
+        job?: string;
+        workplace?: string;
+        highSchool?: string;
+        college?: string;
+        currentCity?: string;
+        hometown?: string;
+        relationship?: string;
+        instagram?: string;
+    };
+    handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+    updateDetails: (name: string, value: string) => void;
+    infos?: any;
+    setVisible: (visible: boolean) => void;
+}
 
-const EditDetail = ({details }:EditDetailProps) => {
-    return <div className="blur">
-        <div className="postBox infosBox">
-            <div className="box_header">
-                <div className="small_circle">
-                    <i className="exit_icon"></i>
+const EditDetail: React.FC<EditDetailProps> = ({ details, handleChange, updateDetails, infos, setVisible }) => {
+    const modal = useRef<HTMLDivElement>(null);
+    useClickOutside(modal, () => setVisible(false));
+
+    return (
+        <div className={style.blur_background}>
+            <div ref={modal} className={`${style.postBox} ${style.infosBox}`}>
+                <div className={style.box_header}>
+                    <div className="small_circle" onClick={() => setVisible(false)}>
+                        <i className={icons.exit_icon}></i>
+                    </div>
+                    <span>Edit Details</span>
                 </div>
-                <span>Edit Details</span>
-            </div>
-            <div className="details_wrapper scrollbar">
-                <div className="details_col">
-                    <span>Customize Your Intro</span>
-                    <span>Details you select will be public</span>
+                <div className={`${style.details_wrapper} scrollbar`}>
+                    <div className={style.details_col}>
+                        <span>Customize Your Intro</span>
+                        <span>Details you select will be public</span>
+                    </div>
+                    <Detail
+                        header="Other Name"
+                        value={details.othername}
+                        img="studies"
+                        placeholder="Add other name"
+                        name="othername"
+                        handleChange={handleChange}
+                        updateDetails={updateDetails}
+                        infos={infos}
+                    />
+                    <div className={style.details_header }>Work</div>
+                    <Detail
+                        value={details.job}
+                        img="job"
+                        placeholder="Add job title"
+                        name="job"
+                        text="a job"
+                        handleChange={handleChange}
+                        updateDetails={updateDetails}
+                        infos={infos}
+                    />
+                    <Detail
+                        value={details.workplace}
+                        img="job"
+                        placeholder="Add a workplace"
+                        name="workplace"
+                        text="workplace"
+                        handleChange={handleChange}
+                        updateDetails={updateDetails}
+                        infos={infos}
+                    />
+                    <div className={style.details_header}>Education</div>
+                    <Detail
+                        value={details.highSchool}
+                        img="studies"
+                        placeholder="Add a high school"
+                        name="highSchool"
+                        text="a high school"
+                        handleChange={handleChange}
+                        updateDetails={updateDetails}
+                        infos={infos}
+                    />
+                    <Detail
+                        value={details.college}
+                        img="studies"
+                        placeholder="Add a college"
+                        name="college"
+                        text="college"
+                        handleChange={handleChange}
+                        updateDetails={updateDetails}
+                        infos={infos}
+                    />
+                    <div className={style.details_header }>Current City</div>
+                    <Detail
+                        value={details.currentCity}
+                        img="home"
+                        placeholder="Add a current city"
+                        name="currentCity"
+                        text="a current city"
+                        handleChange={handleChange}
+                        updateDetails={updateDetails}
+                        infos={infos}
+                    />
+                    <div className={style.details_header }>Hometown</div>
+                    <Detail
+                        value={details.hometown}
+                        img="home"
+                        placeholder="Add hometown"
+                        name="hometown"
+                        text="hometown"
+                        handleChange={handleChange}
+                        updateDetails={updateDetails}
+                        infos={infos}
+                    />
+                    <div className={style.details_header }>Relationship</div>
+                    <Detail
+                        value={details.relationship}
+                        img="relationship"
+                        placeholder="Add relationship status"
+                        name="relationship"
+                        text="relationship"
+                        handleChange={handleChange}
+                        updateDetails={updateDetails}
+                        infos={infos}
+                        rel
+                    />
+                    <div className={style.details_header }>Instagram</div>
+                    <Detail
+                        value={details.instagram}
+                        img="home"
+                        placeholder="Add Instagram"
+                        name="instagram"
+                        text="instagram"
+                        handleChange={handleChange}
+                        updateDetails={updateDetails}
+                        infos={infos}
+                    />
                 </div>
-                <Detail
-                    header="Other Name"
-                    value={details?.othername}
-                    img="studies"
-                    placeholder="add other name"
-                    name="othername"
-                />
             </div>
         </div>
-    </div>;
+    );
 };
 
 export default EditDetail;

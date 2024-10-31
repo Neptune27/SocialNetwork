@@ -101,7 +101,7 @@ const postVar1: PostData = {
 };
 const details = {
     bio: "A passionate software developer",
-    othername: "Huy",
+    othername: "Nguyen Huy",
     job: "Software Engineer",
     workplace: "Tech Corp",
     highSchool: "Nguyen Huu Canh High",
