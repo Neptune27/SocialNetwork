@@ -131,14 +131,14 @@
 }
 
 .slider input[type="range"] {
-    appearance: none;
+    -webkit-appearance: none;
     width: 55%;
     height: 4px;
     background: #ced0d4;
 }
 
-.slider input[type="range"]::thumb {
-    appearance: none;
+.slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
     width: 20px;
     height: 20px;
     outline: none;
@@ -228,27 +228,26 @@
     border-bottom: 1px solid var(--bg-third);
 }
 
-/* Mobile Responsiveness */
 @media (max-width: 720px) {
-    .pictureBox {
+    .postBox.pictureBox {
         width: 98% !important;
     }
 }
 
 @media (max-width: 589px) {
-    .old_pictures {
+    .postBox .old_pictures {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
     }
 
-    .old_pictures img {
+    .postBox .old_pictures img {
         width: 100%;
         height: 110px;
     }
 }
 
 @media (max-width: 430px) {
-    .old_pictures {
+    .postBox .old_pictures {
         grid-template-columns: repeat(3, 1fr);
     }
 

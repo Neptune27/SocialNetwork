@@ -31,7 +31,7 @@ const Detail = ({
 
     return (
         <div>
-            <div className={style.add_details_flex}>
+            <div className={style.add_details_flex} onClick={() => setShow(true)}>
                 {value ? (
                     <div className={style.info_profile}>
                         <Image src={`/icons/${img}.png`} alt="" width={24} height={24} />
@@ -41,7 +41,7 @@ const Detail = ({
                 ) : (
                     <div onClick={() => setShow(!show)} className={style.add_detail_text}>
                         <i className={icons.rounded_plus_icon}></i>
-                        Add {text}
+                        <span className="underline">Add {text}</span>
                     </div>
                 )}
             </div>

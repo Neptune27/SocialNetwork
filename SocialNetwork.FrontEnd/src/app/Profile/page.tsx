@@ -138,8 +138,8 @@ const ProfilePage = () => {
             <div className={style.bottom_container}>
               <PplYouMayKnow />
               <div className={style.profile_grid}>
-                              <div className={style.profile_left}>
-                                  <Intro details={details} visitor />
+                <div className={style.profile_left}>
+                  <Intro details={details} visitor />
                   <Photos />
                   <Friends />
                   <div className={style.relative_fb_copyright}>
