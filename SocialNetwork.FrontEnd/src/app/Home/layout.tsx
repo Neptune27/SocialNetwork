@@ -71,9 +71,50 @@ const Home = () => {
         ],
         createdAt: new Date().toISOString(),
     };
+    const post2: PostData = {
+        user: {
+            username: "johndoe",
+            picture: "/images/default_profile.png",
+            first_name: "John",
+            last_name: "Doe",
+            gender: "male",
+        },
+        type: "profilePicture",
+        text: "This is a mock post description with multiple images.",
+        images: ["/stories/1.jpg"],
+        
+        comments: [
+            {
+                comment: "Great post!",
+                commentBy: "user1",
+                commentAt: new Date(),
+            },
+        ],
+        createdAt: new Date().toISOString(),
+    };
+    const post3: PostData = {
+        user: {
+            username: "johndoe",
+            picture: "/images/default_profile.png",
+            first_name: "John",
+            last_name: "Doe",
+            gender: "male",
+        },
+        text: "This is a mock post description with multiple images.",
+        images: ["/stories/1.jpg", "/stories/3.jpg"],
+
+        comments: [
+            {
+                comment: "Great post!",
+                commentBy: "user1",
+                commentAt: new Date(),
+            },
+        ],
+        createdAt: new Date().toISOString(),
+    };
 
     const middle = useRef<HTMLDivElement | null>(null);
-    const [visible, setVisible] = useState(true);
+    const [visible, setVisible] = useState(false);
     const [height, setHeight] = useState<number | undefined>();
 
     useEffect(() => {
@@ -96,6 +137,8 @@ const Home = () => {
                     <CreatePost user={user} setVisible={setVisible} />
                     <div className={styles.posts}>
                         <Post post={postVar} user={user} />
+                        <Post post={post2} user={user} />
+                        <Post post={post3} user={user} />
                     </div>
                 </div>
                 <RightHome user={user} />
