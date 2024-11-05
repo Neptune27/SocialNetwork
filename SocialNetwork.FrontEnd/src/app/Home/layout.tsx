@@ -8,6 +8,7 @@ import CreatePost from "@/components/createPost";
 import CreatePostPopUp from "@/components/createPostPopUp";
 import Post from "@/components/post";
 import styles from "@/styles/homeLayout.module.scss";
+import InfinityScroll from "@/components/post/infinityScroll";
 
 interface UserProps {
     name: string;
@@ -95,12 +96,18 @@ const Home = () => {
                     <Stories />
                     <CreatePost user={user} setVisible={setVisible} />
                     <div className={styles.posts}>
+                    
                         <Post post={postVar} user={user} />
+                        <Post post={post2} user={user} />
+                        <Post post={post3} user={user} />
+                    
+                        <InfinityScroll />
                     </div>
                 </div>
                 <RightHome user={user} />
             </div>
         </>
+        
     );
 };
 
