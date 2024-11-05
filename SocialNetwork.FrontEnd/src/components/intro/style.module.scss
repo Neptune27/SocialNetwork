@@ -1,0 +1,225 @@
+.blur_background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.768);
+    z-index: 9999999999;
+    backdrop-filter: blur(10px);
+}
+.flex{
+    display: flex;
+    align-items:center;
+    justify-content:space-between
+}
+.postBox {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg-primary);
+    box-shadow: 0 12px 28px 0 var(--shadow-1), 0 2px 4px 0 var(--shadow-2), inset 0 0 0 1px var(--shadow-inset);
+    min-height: 228px;
+    width: 500px;
+    border-radius: 5px;
+    z-index: 10000000000;
+}
+.box_header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 14px 15px 17px 15px;
+    border-bottom: 1px solid var(--bg-third);
+}
+.textarea_blue {
+    width: 100%;
+    height: 85px;
+    resize: none;
+    border-radius: 7px;
+    outline-offset: 5px;
+    border-color: var(--bg-third);
+    padding: 1.1rem;
+    font-size: 16px;
+    font-family: inherit;
+    background: var(--bg-primary);
+    color: var(--color-primary);
+}
+
+.textarea_blue:focus {
+    outline-color: var(--blue-color);
+}
+
+.textarea_blue:hover {
+    border-color: var(--color-secondary);
+}
+
+.profile_card {
+    background: var(--bg-primary);
+    border-radius: 10px;
+    box-shadow: 0 1px 2px var(--shadow-1);
+    padding: 10px 15px;
+    margin-top: 15px;
+}
+
+.profile_card_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.profile_header_link {
+    font-weight: normal;
+    font-size: 16px;
+    color: var(--blue-color);
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.profile_header_link:hover {
+    background: var(--bg-secondary);
+}
+
+.info_profile {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: var(--color-primary);
+}
+
+.info_profile img {
+    filter: invert(40%);
+}
+
+.info_text {
+    word-break: break-word;
+}
+
+.info_col {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info_col button {
+    width: 100%;
+}
+
+.w100 {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.add_bio_wrap {
+    display: flex;
+    flex-direction: column;
+}
+
+.details_input {
+    margin-top: 10px;
+    background: var(--bg-secondary) !important;
+}
+
+.details_input:focus {
+    outline-color: var(--blue-color) !important;
+    outline-offset: 1px !important;
+}
+
+.remaining {
+    font-size: 12px;
+    color: var(--color-secondary);
+    align-self: flex-end;
+    margin-top: 2px;
+}
+
+.add_bio_wrap .flex {
+    margin-top: 5px;
+    justify-content: space-between;
+}
+
+.flex_left {
+    font-size: 14px;
+    color: var(--color-secondary);
+}
+
+.flex_left i {
+    filter: invert(40%);
+}
+
+.infosBox {
+    height: 650px;
+    width: 800px !important;
+}
+
+.details_wrapper {
+    padding: 1rem;
+    overflow-y: auto;
+    height: 570px;
+}
+
+.details_col {
+    display: flex;
+    flex-direction: column;
+}
+
+.details_col span:first-of-type {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.details_col span:last-of-type {
+    color: var(--color-secondary);
+    font-size: 14px;
+}
+
+.details_header {
+    margin-top: 15px;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.add_details_flex {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 15px;
+    color: var(--blue-color);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.add_details_flex .edit_icon {
+    position: absolute;
+    right: 1rem;
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.underline:hover {
+    text-decoration: underline;
+}
+
+.select_rel {
+    height: 30px;
+    outline: none;
+    border: none;
+    background: var(--bg-secondary);
+    margin: 10px 0;
+    padding: 0 10px;
+    border-radius: 5px;
+}
+
+@media (max-width: 810px) {
+    .infosBox {
+        width: 96% !important;
+    }
+}

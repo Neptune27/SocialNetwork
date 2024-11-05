@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
+builder.Services.AddMediator();
+
 // Add services to the container.
 builder.Services.AddDbContext<AppDBContext>(option =>
 {
@@ -19,11 +21,12 @@ builder.AddDefaultMassTransit(option =>
     option.AddConsumer<AddUserConsumer>();
 });
 
+builder.AddDefaultJWTConfig();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerWithJwtAuth();
 
 var app = builder.Build();
 
@@ -38,6 +41,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
