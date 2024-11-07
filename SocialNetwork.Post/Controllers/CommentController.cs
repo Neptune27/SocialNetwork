@@ -51,7 +51,7 @@ public class CommentController(IMediator mediator)
             return NotFound("Post with id " + dto.PostId + " not found");       
         Comment comment = new Comment()
         {
-            //Post = postHost,
+            Post = postHost,
             User = loginUser,
             Message = dto.Message,
         };
