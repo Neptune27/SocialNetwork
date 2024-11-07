@@ -1,5 +1,6 @@
 ﻿using Mediator;
 using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Core.Enums;
 using SocialNetwork.Post.Data;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +16,12 @@ public class GetListPostHandler
 
     public async ValueTask<List<PostModel>> Handle(GetListPostRequest request, CancellationToken cancellationToken)
     {
-        var postList = await context.Posts.ToListAsync();
+        var postList = await context.Posts
+            .Include(p => p.User)
+            .Include(p => p.Reactions)
+            .Include(P => P.Comments)
+            .Where(p => p.Visibility == EVisibility.PUBLIC)
+            .ToListAsync();
         return postList;
     }
 }
