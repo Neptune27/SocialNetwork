@@ -100,9 +100,21 @@ public class PostController(
 
     // DELETE api/<PostController>/5
     [HttpDelete("{id}")]
-    public async void Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var user = HttpContext.User.Claims.GetClaimByUserId();
-        var result = await mediator.Send(new DeletePostRequest(id,user.Value));
+        var user = HttpContext.User;
+        var userId = user.Claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier).Value;
+        if (userId == null)
+            return Unauthorized("Id not found");
+
+        var loginUser = await mediator.Send(new GetUserRequest(userId));
+
+
+        var result = await mediator.Send(new DeletePostRequest(id, userId));
+
+        if (result) // true
+            return Ok(result);
+        else
+            return NotFound("Post with id " + id + " not found.");
     }
 }

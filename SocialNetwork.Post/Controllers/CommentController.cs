@@ -95,6 +95,9 @@ public class CommentController(IMediator mediator)
         var userId = loginUser.Id;
         var result = await mediator.Send(new DeleteCommentRequest(commentId, userId));
 
-        return Ok(result);
+        if (result != null)
+            return Ok(result);
+        else
+            return NotFound("Comment with id " + commentId + " not found.");
     }
 }
