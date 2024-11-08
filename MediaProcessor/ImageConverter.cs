@@ -20,7 +20,7 @@ public class ImageConverter
         
         await image.SaveAsWebpAsync(fileAt + ".webp", new WebpEncoder()
         {
-            Quality = 70
+            Quality = 30
         });
     }
 
