@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.Core.Extensions;
 using SocialNetwork.Profile.APIs.Profiles;
 using SocialNetwork.Profile.Data.DTOs;
+using SocialNetwork.Profile.Data.DTOs.Profiles;
 using SocialNetwork.Profile.Data.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -34,13 +35,12 @@ public class ProfileController(
 
 		var user = await mediator.Send(new GetProfileRequest(profileId, userId));
 
-            if (user == null)
-            {
+        if (user == null)
+        {
 			return BadRequest("UserId not found");
-            }
+        }
 
-            var userDto = (User) user.Clone();
-		userDto.Friends = userDto.Friends.Take(9).ToList();
+        var userDto = (User) user.Clone();
 
 		var profile = new ProfileDTO()
 		{
@@ -51,28 +51,6 @@ public class ProfileController(
 		return Ok(profile);
 	}
 
-	[HttpGet("api/{profileId}/{userId}")]
-	public async Task<IActionResult> TestGet(string profileId,string userId)
-	{
-
-		var user = await mediator.Send(new GetProfileRequest(profileId, userId));
-
-		if (user == null)
-		{
-			return BadRequest("UserId not found");
-		}
-
-		var userDto = (User)user.Clone();
-		userDto.Friends = userDto.Friends.Take(9).ToList();
-
-		var profile = new ProfileDTO()
-		{
-			IsVisitor = profileId == userId ? false : true,
-			User = userDto
-		};
-
-		return Ok(profile);
-	}
 
 	// POST api/<ProfileController>
 	[HttpPost]
@@ -84,7 +62,60 @@ public class ProfileController(
 	[HttpPut("{id}")]
 	public void Put(int id, [FromBody] string value)
 	{
+
 	}
+	[HttpPut("ProfilePicture")]
+	public async void UpdateProfilePicture([FromBody] IFormFile profilePicture)
+	{
+		//profilePicture.
+
+		//string userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+		//var user = await mediator.Send(new UpdateProfilePictureRequest(userId, profilePicture));
+
+	}
+
+	[HttpPut("BirthDay")]
+	public async Task<IActionResult> UpdateBirthDay([FromBody] DateOnly birthday )
+	{
+		string userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+		var user = await mediator.Send(new UpdateBirthdayRequest(birthday, userId));
+
+		if(user == false)
+		{
+			return BadRequest("User not found");
+		}
+		return Ok(user);
+
+	}
+
+	[HttpPut("Name")]
+	public async Task<IActionResult> UpdateName([FromBody] ProfileNameDTO dto)
+	{
+		string userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+		var user = await mediator.Send(new UpdateFirstLastNameRequest(dto, userId));
+
+		if (user == false)
+		{
+			return BadRequest("User not found");
+		}
+		return Ok(user);
+
+	}
+
+	[HttpPut("SocialInformation")]
+	public async Task<IActionResult> UpdateSocialInformation([FromBody] SocialInformationDTO dto)
+	{
+		string userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+		var user = await mediator.Send(new UpdateSocialInformationRequest(userId,dto));
+
+		if (user == false)
+		{
+			return BadRequest("User not found");
+		}
+		return Ok(user);
+
+	}
+
 
 	// DELETE api/<ProfileController>/5
 	[HttpDelete("{id}")]

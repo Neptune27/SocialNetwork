@@ -86,6 +86,8 @@ var apiGateway = builder.AddProject<Projects.SocialNetwork_Proxy>("socialnetwork
     .WithReference(identityService)
     .WithReference(messagingService)
     .WithReference(notificationService)
+    .WithReference(postService)
+    .WithReference(profileService)
     .WithReference(frontend)
     .WithReference(broker)
     ;

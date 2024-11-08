@@ -95,7 +95,7 @@ export default function Post({ post, user }: PostProps) {
                 >
                     <div className={styles.post_bg_text}>{post.text}</div>
                 </div>
-            ) : (
+            ) : post.type === null ? (
                 <>
                     {post.text && <div className={styles.post_text}>{post.text}</div>}
                     {post.images && post.images.length > 0 && (
@@ -109,7 +109,7 @@ export default function Post({ post, user }: PostProps) {
                                             ? styles.grid_3
                                             : post.images.length === 4
                                                 ? styles.grid_4
-                                                : styles.grid_5
+                                                : styles.grid_5 
                             }
                         >
                             {post.images.slice(0, 5).map((image, i) => (
@@ -130,7 +130,17 @@ export default function Post({ post, user }: PostProps) {
                         </div>
                     )}
                 </>
-            )}
+                ) : post.type === "profilePicture" ? (
+                        <div className={styles.post_profile_wrap }>
+                            <div className={styles.post_updated_bg}>
+                                <Image src={"/stories/profile2.jpg"} alt="" width={100} height={300} />
+                            </div>
+                            <Image src={"/stories/1.jpg"} alt="" width={100} height={105} className={styles.post_updated_picture} />
+                         
+                    </div>
+                ) : (
+                    <div className="post_cover_wrap"></div>
+                ) }
             {/*  */}
             <div className={styles.post_infos}>
                 <div className={styles.reacts_count}>

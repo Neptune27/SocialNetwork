@@ -1,5 +1,6 @@
 ﻿using Mediator;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using SocialNetwork.Profile.Data;
 using SocialNetwork.Profile.Data.Models;
 
@@ -16,7 +17,10 @@ namespace SocialNetwork.Profile.APIs.Profiles
 
 		public async ValueTask<User> Handle(GetProfileRequest request, CancellationToken cancellationToken)
 		{
-			var user = await dBContext.Users.FirstOrDefaultAsync(u => u.Id == request.ProfileId);
+			var user = await dBContext
+				.Users
+				.Include(u => u.Friends.Take(request.TotalFriends))
+				.FirstOrDefaultAsync(u => u.Id == request.ProfileId);
 			if (user == null) {
 				return null;
 			}

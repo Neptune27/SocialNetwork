@@ -23,7 +23,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SocialNetwork.Core\SocialNetwork.Core.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Identity.Data\SocialNetwork.Identity.Data.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Messaging.Data\SocialNetwork.Messaging.Data.csproj" />
     <ProjectReference Include="..\SocialNetwork.Post.Data\SocialNetwork.Post.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
   </ItemGroup>
 
 </Project>

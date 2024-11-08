@@ -30,11 +30,13 @@
     <ProjectReference Include="..\MediaProcessor\MediaProcessor.csproj" />
     <ProjectReference Include="..\SocialNetwork.Core\SocialNetwork.Core.csproj" />
     <ProjectReference Include="..\SocialNetwork.Messaging.Data\SocialNetwork.Messaging.Data.csproj" />
+    <ProjectReference Include="..\SocialNetwork.Post.Data\SocialNetwork.Post.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Interfaces\Services\" />
     <Folder Include="Mediator\" />
+    <Folder Include="DTOs\" />
     <Folder Include="StaticFiles\Output\" />
   </ItemGroup>
 

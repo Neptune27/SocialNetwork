@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UserHeader from "@/components/header/header";
 import style from "@/styles/Profile.module.scss";
 import icons from "@/public/icons.module.scss";
@@ -14,6 +14,9 @@ import Post from "@/components/post";
 import Photos from "./Photos";
 import Link from "next/link";
 import Friends from "./Friends";
+import Intro from "../../components/intro";
+import { authorizedFetch } from "../../Ultility/authorizedFetcher";
+import { api, ApiEndpoint } from "../../api/const";
 
 const visitor = false; //Visitor or not
 
@@ -98,9 +101,47 @@ const postVar1: PostData = {
   ],
   createdAt: new Date().toISOString(),
 };
+const details = {
+    bio: "A passionate software developer",
+    othername: "Nguyen Huy",
+    job: "Software Engineer",
+    workplace: "Tech Corp",
+    highSchool: "Nguyen Huu Canh High",
+    college: "Sai Gon University",
+    currentCity: "Ho Chi Minh",
+    hometown: "Quang Nam",
+    relationship: "Single",
+    instagram: "NguyenHuy",
+};
 
 const ProfilePage = () => {
-  const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        const getData = async () => {
+            const searchParams = new URLSearchParams(window.location.search);
+            let profileId = searchParams.get("profileId")
+            if (profileId == null) {
+                profileId = ""
+            }
+            const url = `${api(ApiEndpoint.PROFILE)}/Profile/${profileId}`;
+            try {
+                const response = await authorizedFetch(url);
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+
+                const json = await response.json();
+                console.log(json);
+            } catch (error) {
+                console.error(error.message);
+            }
+            
+        }
+
+        getData()
+    }, [])
+
   return (
     <>
       {visible && <CreatePostPopUp user={user} setVisible={setVisible} />}
@@ -126,6 +167,7 @@ const ProfilePage = () => {
               <PplYouMayKnow />
               <div className={style.profile_grid}>
                 <div className={style.profile_left}>
+                  <Intro details={details} visitor />
                   <Photos />
                   <Friends />
                   <div className={style.relative_fb_copyright}>
