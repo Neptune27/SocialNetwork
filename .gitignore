@@ -368,4 +368,4 @@ FodyWeavers.xsd
 **/.idea/*
 /SocialNetwork.Identity/Media
 /SocialNetwork.Messaging/wwwroot/Media
-/SocialNetwork.Messaging/StaticFiles/Output/7a3a7c2f-130a-43b6-b90d-d58563fa59a3
+/SocialNetwork.Messaging/StaticFiles/

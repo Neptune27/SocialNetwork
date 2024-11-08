@@ -8,6 +8,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
+
   <ItemGroup>
     <PackageReference Include="Dapr.AspNetCore" Version="1.14.0" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
@@ -26,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MediaProcessor\MediaProcessor.csproj" />
     <ProjectReference Include="..\SocialNetwork.Core\SocialNetwork.Core.csproj" />
     <ProjectReference Include="..\SocialNetwork.Messaging.Data\SocialNetwork.Messaging.Data.csproj" />
   </ItemGroup>
@@ -33,6 +35,7 @@
   <ItemGroup>
     <Folder Include="Interfaces\Services\" />
     <Folder Include="Mediator\" />
+    <Folder Include="StaticFiles\Output\" />
   </ItemGroup>
 
 </Project>

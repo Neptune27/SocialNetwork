@@ -40,8 +40,8 @@ public class AddMessageFriendConsumer(
         {
             CreatedAt = DateTime.Now,
             LastUpdated = DateTime.Now,
-            UserFrom = user,
-            UserTo = user2,
+            UserFromsId = user.Id,
+            UserTosId = user2.Id,
             Visibility = Core.Enums.EVisibility.PUBLIC
         };
 
@@ -49,13 +49,13 @@ public class AddMessageFriendConsumer(
         {
             CreatedAt = DateTime.Now,
             LastUpdated = DateTime.Now,
-            UserFrom = user2,
-            UserTo = user,
+            UserFromsId = user2.Id,
+            UserTosId = user.Id,
             Visibility = Core.Enums.EVisibility.PUBLIC
         };
 
-        user.Friends.Add(friend);
-        user2.Friends.Add(friend2);
+        user.Friends.Add(user2);
+        user2.Friends.Add(user);
 
         await dBContext.SaveChangesAsync();
 

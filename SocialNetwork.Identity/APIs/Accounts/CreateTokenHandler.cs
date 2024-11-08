@@ -17,7 +17,7 @@ public class CreateTokenHandler(
     {
         var appUser = request.AppUser;
 
-        return new TokenResultDto(appUser.UserName, appUser.Email,
+        return new TokenResultDto(appUser.Id, appUser.UserName, appUser.Email,
             await tokenService.CreateToken(appUser, request.Host));
     }
 }

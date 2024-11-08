@@ -9,13 +9,13 @@ import MainChat from "../../components/Chat/MainChat";
 
 const Page = () => {
     
-    const [roomId, setRoomId] = useState("")
     
     return (
-        <div className="d-flex">
-            <MainRoom setRoomId={ setRoomId} />
-            <MainChat roomId={roomId} />
-        </div>
+        <div>La</div>
+        // <div className="d-flex">
+        //     <MainRoom setRoomId={ setRoomId} />
+        //     <MainChat roomId={roomId} />
+        // </div>
         
 
     )

@@ -4,30 +4,30 @@ export const enum EMessageType {
 }
 
 export interface IMessage {
-    Id: number,
-    Content: string,
-    MessageType: EMessageType,
-    CreatedAt: number,
-    LastUpdated: number,
-    User: IMessageUser,
-    Room: {
-        Id: string
+    id: number,
+    content: string,
+    messageType: EMessageType,
+    createdAt: number,
+    lastUpdated: number,
+    user: IMessageUser,
+    room: {
+        id: string
     }
  }
 
 export interface IMessageUser {
-    Id: string,
-    Name: string,
-    Picture: string
+    id: string,
+    name: string,
+    picture: string
 
 }
 
 export interface IRoom {
-    CreatedBy: string,
-    Users: IMessageUser[],
-    Messages: IMessage[],
-    Id: string,
-    LastSeen: number,
-    Profile: string,
-    Name: string
+    createdBy: string,
+    users: IMessageUser[],
+    messages: IMessage[],
+    id: string,
+    lastSeen: number,
+    profile: string,
+    name: string
 }

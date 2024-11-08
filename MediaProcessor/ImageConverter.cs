@@ -11,10 +11,14 @@ namespace MediaProcessor;
 
 public class ImageConverter
 {
+
+
     public static async Task DefaultConvert(string input, string output)
     {
         using Image image = await Image.LoadAsync(input);
-        await image.SaveAsWebpAsync(output, new WebpEncoder()
+        var fileAt = Helpers.FileNameWithoutExtension(output);
+        
+        await image.SaveAsWebpAsync(fileAt + ".webp", new WebpEncoder()
         {
             Quality = 70
         });

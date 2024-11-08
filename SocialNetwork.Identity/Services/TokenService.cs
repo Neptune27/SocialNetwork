@@ -50,7 +50,7 @@ public class TokenService : ITokenService
         {
             SigningCredentials = creds,
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddMinutes(10),
+            Expires = DateTime.Now.AddDays(1),
             Issuer = configuration["JWT:Issuer"],
             Audience = host.Value
         };

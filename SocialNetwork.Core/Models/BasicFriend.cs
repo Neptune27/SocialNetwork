@@ -12,8 +12,4 @@ public class BasicFriend : BaseModel
 
     public string UserFromsId { get; set; } = null!;
 
-    public BasicUser UserTo { get; set; } = null!;
-
-    public BasicUser UserFrom { get; set; } = null!;
-
 }
