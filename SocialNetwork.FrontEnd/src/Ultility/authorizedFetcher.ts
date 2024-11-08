@@ -1,5 +1,5 @@
 const authorizedFetch = async (input: string | URL | globalThis.Request,
-                               init?: RequestInit): Promise<Response> => {
+    init?: RequestInit, redirectOnUnathorized = () => { window.location.href = "/Login" }): Promise<Response> => {
 
     if (init === undefined) {
         init = {
@@ -16,7 +16,14 @@ const authorizedFetch = async (input: string | URL | globalThis.Request,
     // @ts-ignore
     init["headers"]["Authorization"] = "Bearer " + localStorage.getItem("token")
 
-    return await fetch(input, init)
+    const result = await fetch(input, init)
+
+    if (result.status == 401) {
+        console.log("Unauthorize, redirecting")
+        redirectOnUnathorized();
+    }
+
+    return result
 }
 
 

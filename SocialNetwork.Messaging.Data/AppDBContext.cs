@@ -32,11 +32,20 @@ public class AppDBContext : DbContext
                 c.RoomId
             });
 
+        modelBuilder.Entity<BasicUser>()
+            .HasMany(m => m.Friends)
+            .WithMany(m => m.FriendOf)
+            .UsingEntity<BasicFriend>(
+                e => e.HasOne<BasicUser>().WithMany().HasForeignKey(e => e.UserTosId),
+                e => e.HasOne<BasicUser>().WithMany().HasForeignKey(e => e.UserFromsId)
+            );
+
     }
 
     public DbSet<MessageUser> Users { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<RoomLastSeen> RoomsLastSeen { get; set; }
+    public DbSet<BasicFriend> Friends { get; set; }
 
 }
