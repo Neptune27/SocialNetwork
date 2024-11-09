@@ -17,7 +17,8 @@ public class NotifyMessageHandler(
 
     public async ValueTask<bool> Handle(NotifyMessageRequest request, CancellationToken cancellationToken)
     {
-        await messageHubContext.Clients.Group(request.Message.Room.Id.ToString()).RecieveMessage(request.Message);
+        //await messageHubContext.Clients.All.RecieveMessage(request.Message);
+        await messageHubContext.Clients.Group(request.Message.Room.Id.ToString()).RecieveMessage(new(request.Message));
         return true;
     }
 }

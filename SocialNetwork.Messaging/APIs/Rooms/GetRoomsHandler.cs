@@ -21,7 +21,7 @@ public class GetRoomsHandler(
         return await dBContext.Rooms
             .Include(r => r.Messages
                             .OrderByDescending(m => m.CreatedAt)
-                            .Take(20))
+                            .Take(10))
             .Include(r => r.Users)
             .Include(r => r.CreatedBy)
             .Where(r => r.Users.Contains(user))

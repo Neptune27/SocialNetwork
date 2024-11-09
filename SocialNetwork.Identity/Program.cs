@@ -12,6 +12,10 @@ using MassTransit;
 using SocialNetwork.Core.Extensions;
 using SocialNetwork.Identity.APIs.WeatherForecasts;
 using SocialNetwork.Messaging.Data;
+using SocialNetwork.Core.Middlewares;
+using Mediator;
+using SocialNetwork.Core.Behaviors;
+using FluentValidation;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +34,9 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 
 builder.Services.AddMediator();
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 builder.Services.AddMassTransit(option =>
 {
@@ -79,6 +86,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerWithJwtAuth();
 
 var app = builder.Build();
+
+app.UseMiddleware<ValidationExceptionHandlingMiddleware>();
 
 app.UseCors("AllowedOrigins");
 

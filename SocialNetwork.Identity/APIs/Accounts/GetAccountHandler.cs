@@ -1,4 +1,5 @@
-﻿using Mediator;
+﻿using FluentValidation;
+using Mediator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Identity.Data.Models;
@@ -15,6 +16,12 @@ public class GetAccountHandler(
         var username = request.Username;
         var user = await userManager.Users.
             FirstOrDefaultAsync(it => it.UserName == username, cancellationToken: cancellationToken);
+
+        if (user == null)
+        {
+            throw new ValidationException("Username not found");
+        }
+
         return user;
     }
 }

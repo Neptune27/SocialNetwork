@@ -2,7 +2,7 @@
 
 import { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { api, ApiEndpoint } from "../../api/const";
-import { IRoom } from "../../interfaces/IRoom"
+import { IRoom } from "../../interfaces/IMessage"
 import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 
 const MainRoom = (props: {
