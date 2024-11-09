@@ -101,6 +101,33 @@ public class ProfileController(
 		return Ok(user);
 
 	}
+	[HttpPut("FirstName")]
+	public async Task<IActionResult> UpdateFirstName([FromBody] String firstName)
+	{
+		string userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+		var updateFirstNameSuccess = await mediator.Send(new UpdateFirstNameRequest(userId, firstName));
+
+		if (!updateFirstNameSuccess)
+		{
+			return BadRequest("Update Fail");
+		}
+		return Ok("Update Finish");
+		//return Ok(firstName);
+	}
+
+	[HttpPut("LastName")]
+	public async Task<IActionResult> UpdateLastName([FromBody] String lastName)
+	{
+		string userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+		var updateLastNameSuccess = await mediator.Send(new UpdateLastNameRequest(userId, lastName));
+
+		if (!updateLastNameSuccess)
+		{
+			return BadRequest("Update Fail");
+		}
+		return Ok("Update Finish");
+		//return Ok(lastName);
+	}
 
 	[HttpPut("SocialInformation")]
 	public async Task<IActionResult> UpdateSocialInformation([FromBody] SocialInformationDTO dto)

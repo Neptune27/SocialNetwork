@@ -18,7 +18,7 @@ import Intro from "../../components/intro";
 import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
 
-const visitor = false; //Visitor or not
+let visitor = false; //Visitor or not
 
 interface UserProps {
   name: string;
@@ -101,21 +101,40 @@ const postVar1: PostData = {
   ],
   createdAt: new Date().toISOString(),
 };
-const details = {
-    bio: "A passionate software developer",
-    othername: "Nguyen Huy",
-    job: "Software Engineer",
-    workplace: "Tech Corp",
-    highSchool: "Nguyen Huu Canh High",
-    college: "Sai Gon University",
-    currentCity: "Ho Chi Minh",
-    hometown: "Quang Nam",
-    relationship: "Single",
-    instagram: "NguyenHuy",
-};
+
+interface Details {
+    bio: string;
+    othername: string;
+    job: string;
+    workplace: string;
+    highSchool: string;
+    college: string;
+    currentCity: string;
+    hometown: string;
+    relationship: string;
+    instagram: string;
+    firstName: string;
+    lastName: string;
+}
+
+
 
 const ProfilePage = () => {
     const [visible, setVisible] = useState(false);
+    const [details, setDetails] = useState<Details>({
+        bio: "A passionate software developer",
+        othername: "Nguyen Huy",
+        job: "Software Engineer",
+        workplace: "Tech Corp",
+        highSchool: "Nguyen Huu Canh High",
+        college: "Sai Gon University",
+        currentCity: "Ho Chi Minh",
+        hometown: "Quang Nam",
+        relationship: "Single",
+        instagram: "NguyenHuy",
+        firstName: "Test First Name H",
+        lastName: "Test"
+    });
 
     useEffect(() => {
         const getData = async () => {
@@ -133,6 +152,13 @@ const ProfilePage = () => {
 
                 const json = await response.json();
                 console.log(json);
+                visitor = json["isVisitor"]
+                const user = json["user"]
+                setDetails(prevDetails => ({
+                    ...prevDetails,  
+                    firstName: user.firstName,
+                    lastName: user.lastName
+                }));
             } catch (error) {
                 console.error(error.message);
             }
