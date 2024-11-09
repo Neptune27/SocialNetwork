@@ -10,7 +10,8 @@ import { Input } from "../../ui/input"
 import axios, { AxiosProgressEvent } from 'axios';
 import useMessageHub from "../../../hooks/useMessageHub"
 import AnimatedCircularProgressBar from "../../ui/animated-circular-progress-bar"
-
+import { GoFileBinary } from "react-icons/go";
+import { CgFilm } from "react-icons/cg";
 
 type FileType = {
     source: File,
@@ -39,11 +40,11 @@ const ChatFile = ({ file }: ChatProps) => {
     if (fileType.startsWith("image")) {
         return (
             <div className="relative">
-                <img key={file.source.name} alt={file.source.name} src={url} className={"object-cover h-40 w-40 hover:object-scale-down rounded"} />
+                <img key={file.source.name} alt={file.source.name} src={url} className={"object-cover h-40 w-40 hover:object-scale-down rounded transition-all"} />
                 {file.progress == 2
                     ? null
                     :
-                    <div className="absolute inset-0 bg-white/50 truncate [&>span]:w-3/4">
+                    <div className="absolute inset-0 bg-white/50 [&_div]:truncate [&>div]:truncate [&_span]:w-3/4">
                         <AnimatedCircularProgressBar 
                         max={2} min={0} value={file.progress}
                         gaugePrimaryColor="rgb(79 70 229)"
@@ -56,9 +57,49 @@ const ChatFile = ({ file }: ChatProps) => {
         )
     }
 
+    if (fileType.startsWith("movie")) {
+        return (
+            <div className="relative w-40 truncate flex flex-col justify-between">
+                <div className="flex justify-center">
+                    <CgFilm size={72} />
+                </div>
+                <span className="">{file.source.name}</span>
+
+                {file.progress == 2
+                    ? null
+                    :
+                    <div className="absolute inset-0 bg-white/50 [&_div]:truncate [&_span]:w-3/4">
+                        <AnimatedCircularProgressBar
+                            max={2} min={0} value={file.progress}
+                            gaugePrimaryColor="rgb(79 70 229)"
+                            gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
+                        />
+                    </div>
+                }
+
+            </div>
+
+        )
+    }
+
     return (
-        <div >
-            {file.source.name}
+        <div className="relative w-40 truncate flex flex-col justify-between">
+            <div className="flex justify-center">
+                <GoFileBinary size={125} />
+            </div>
+            <span className="">{file.source.name}</span>
+
+            {file.progress == 2
+                ? null
+                :
+                <div className="absolute inset-0 bg-white/50 [&_div]:truncate  [&_span]:w-2/4">
+                    <AnimatedCircularProgressBar
+                        max={2} min={0} value={file.progress}
+                        gaugePrimaryColor="rgb(79 70 229)"
+                        gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
+                    />
+                </div>
+            }
         </div>
     )
 }
@@ -121,6 +162,19 @@ const ChatFooter = () => {
         }
     }, [hub.hub, files])
 
+    useEffect(() => {
+
+
+        if (isReady) {
+            setIsReady(false)
+        }
+
+        if (files.every(f => f.progress == 2)) {
+            setIsReady(true)
+        }
+
+    }, [files])
+
 
     async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault()
@@ -169,6 +223,8 @@ const ChatFooter = () => {
                     })
                 }
 
+                setFiles([])
+
             }
 
 
@@ -192,7 +248,9 @@ const ChatFooter = () => {
             return
         }
 
-        files[index].progress = event.progress
+
+        if (files[index].progress < event.progress)
+            files[index].progress = event.progress
         setFiles([...files])
 
     }

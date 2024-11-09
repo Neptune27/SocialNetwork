@@ -7,6 +7,7 @@ import { IMessage } from "@/interfaces/IMessage"
 import { forwardRef, MutableRefObject, useEffect, useRef } from "react"
 import InfiniteScroll from "react-infinite-scroll-component";
 import { api, ApiEndpoint } from "../../../api/const"
+import { GoFileBinary } from "react-icons/go"
 
 type Props = {
     messages: IMessage[],
@@ -105,7 +106,17 @@ const ChatMessage = ({ m }: ChatMessageProps) => {
         return (<img src={`${api(ApiEndpoint.MESSAGING)}/${m.content}`} />)
     }
 
-    return (<>{m.content}</>)
+
+    const urlChunks = m.content.split(/[\/\\]/g)
+
+    return (<a href={`${api(ApiEndpoint.MESSAGING)}/${m.content}`}>
+        <div className="w-40 truncate flex flex-col justify-between">
+            <div className="flex justify-center">
+                <GoFileBinary size={125} />
+            </div>
+            <span className="">{urlChunks[urlChunks.length-1]}</span>
+        </div>
+        </a>)
 }
 
 export default ChatBody

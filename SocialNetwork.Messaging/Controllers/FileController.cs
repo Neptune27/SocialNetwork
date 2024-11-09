@@ -67,12 +67,6 @@ public class FileController(IMediator mediator) : ControllerBase
             if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data") &&
                 !string.IsNullOrEmpty(contentDisposition.FileName.Value))
             {
-                // Don't trust any file name, file extension, and file data from the request unless you trust them completely
-                // Otherwise, it is very likely to cause problems such as virus uploading, disk filling, etc
-                // In short, it is necessary to restrict and verify the upload
-                // Here, we just use the temporary folder and a random file name
-
-                // Get the temporary folder, and combine a random file name with it
                 var fileName = contentDisposition.FileName.ToString();
                 var saveToPath = Path.Combine("./StaticFiles/Media/", userId, fileName);
                 var dir = Path.GetDirectoryName(saveToPath);
@@ -83,10 +77,21 @@ public class FileController(IMediator mediator) : ControllerBase
                     await section.Body.CopyToAsync(targetStream);
                 }
 
-                if (imageExtension.Any(fileName.EndsWith))
+
+                switch (FileHelpers.GetFileType(fileName))
                 {
-                    await mediator.Send(new AddImageRequest(userId, fileName));
+                    case EFileType.BIN:
+                        await mediator.Send(new AddFileRequest(userId, fileName));
+                        break;
+                    case EFileType.IMAGE:
+                        await mediator.Send(new AddImageRequest(userId, fileName));
+                        break;
+                    case EFileType.VIDEO:
+                        //await mediator.Send(new AddVideoRequest(userId, fileName));
+                        break;
                 }
+
+
 
                 //VideoConverter.Convert(saveToPath, "./Media/a.mp4");
 

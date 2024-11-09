@@ -28,14 +28,30 @@ public class AddMessageHandler(
         return true;
     }
 
+    private bool HandleBin(Message message) {
+        var uuid = Guid.NewGuid().ToString();
+
+        var fileLocation = Path.Combine("./StaticFiles", "Media", message.User.Id, message.Content);
+        var newLocation = Path.Combine("Media", message.Room.Id.ToString(), message.User.Id, uuid, message.Content);
+        var saveLocation = Path.Combine("./wwwroot", newLocation);
+        var dir = Path.GetDirectoryName(saveLocation);
+        Directory.CreateDirectory(dir);
+
+
+        message.Content = newLocation;
+        File.Copy(fileLocation, saveLocation);
+        return true;
+    }
+
     private bool HandleFile(Message message)
     {
+
         var fileName = message.Content;
         var fileType = FileHelpers.GetFileType(fileName);
         switch (fileType)
         {
             case EFileType.BIN:
-                break;
+                return HandleBin(message);
             case EFileType.IMAGE:
                 return HandleImage(message);
             case EFileType.VIDEO:

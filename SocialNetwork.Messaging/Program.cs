@@ -96,7 +96,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowedOrigins");
 
-app.UseStaticFiles();
+var fileServerOption = new FileServerOptions
+{
+};
+
+fileServerOption.StaticFileOptions.ServeUnknownFileTypes = true;
+fileServerOption.StaticFileOptions.DefaultContentType = "application/binary";
+
+app.UseFileServer(fileServerOption );
 
 
 app.UseAuthentication();
