@@ -5,7 +5,6 @@ import { ChatMessageList } from "@/components/ui/chat/chat-message-list"
 import useUserId from "@/hooks/useUserId"
 import { IMessage } from "@/interfaces/IMessage"
 import { forwardRef, MutableRefObject, useEffect, useRef } from "react"
-import InfiniteScroll from "react-infinite-scroll-component";
 import { api, ApiEndpoint } from "../../../api/const"
 import { GoFileBinary } from "react-icons/go"
 
@@ -104,6 +103,13 @@ const ChatMessage = ({ m }: ChatMessageProps) => {
 
     if (m.content.endsWith("webp")) {
         return (<img src={`${api(ApiEndpoint.MESSAGING)}/${m.content}`} />)
+    }
+
+
+    if (m.content.endsWith("mp4")) {
+        return (<video key={m.content} controls>
+            <source src={`${api(ApiEndpoint.MESSAGING)}/${m.content}`} type="video/mp4" />
+        </video>)
     }
 
 

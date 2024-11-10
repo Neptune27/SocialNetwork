@@ -14,7 +14,7 @@ public class AddMessageHandler(
     private readonly AppDBContext dBContext = dBContext;
     private readonly IMediator mediator = mediator;
 
-    private bool HandleImage(Message message)
+    private bool HandleMedia(Message message)
     {
         var fileLocation = Path.Combine("./StaticFiles", "Output", message.User.Id, message.Content);
         var newLocation = Path.Combine("Media", message.Room.Id.ToString(), message.User.Id, message.Content);
@@ -53,9 +53,9 @@ public class AddMessageHandler(
             case EFileType.BIN:
                 return HandleBin(message);
             case EFileType.IMAGE:
-                return HandleImage(message);
+                return HandleMedia(message);
             case EFileType.VIDEO:
-                break;
+                return HandleMedia(message);
             default:
                 break;
         }

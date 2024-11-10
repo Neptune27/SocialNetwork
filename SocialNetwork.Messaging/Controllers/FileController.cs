@@ -87,7 +87,7 @@ public class FileController(IMediator mediator) : ControllerBase
                         await mediator.Send(new AddImageRequest(userId, fileName));
                         break;
                     case EFileType.VIDEO:
-                        //await mediator.Send(new AddVideoRequest(userId, fileName));
+                        await mediator.Send(new AddVideoRequest(userId, fileName));
                         break;
                 }
 

@@ -12,7 +12,7 @@ import useMessageHub from "../../../hooks/useMessageHub"
 import AnimatedCircularProgressBar from "../../ui/animated-circular-progress-bar"
 import { GoFileBinary } from "react-icons/go";
 import { CgFilm } from "react-icons/cg";
-
+import { motion } from "framer-motion"
 type FileType = {
     source: File,
     progress: number,
@@ -57,11 +57,11 @@ const ChatFile = ({ file }: ChatProps) => {
         )
     }
 
-    if (fileType.startsWith("movie")) {
+    if (fileType.startsWith("video")) {
         return (
-            <div className="relative w-40 truncate flex flex-col justify-between">
+            <div className="relative w-40 h-40 truncate flex flex-col justify-between">
                 <div className="flex justify-center">
-                    <CgFilm size={72} />
+                    <CgFilm size={125} />
                 </div>
                 <span className="">{file.source.name}</span>
 
@@ -83,7 +83,7 @@ const ChatFile = ({ file }: ChatProps) => {
     }
 
     return (
-        <div className="relative w-40 truncate flex flex-col justify-between">
+        <div className="relative w-40 h-40 truncate flex flex-col justify-between">
             <div className="flex justify-center">
                 <GoFileBinary size={125} />
             </div>
@@ -300,9 +300,16 @@ const ChatFooter = () => {
     return (
         <div>
             <div className="flex gap-1 overflow-auto p-2">
-                {files.map((f, i) => <ChatFile file={f} key={`file${i}`}/>)}
+                {files.map((f, i) => <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 260,
+                        damping: 20
+                    }}
+                    key={`fileDiv${f.source.name}`}><ChatFile file={f} key={`file${f.source.name}`} /></motion.div>)}
             </div>
-         
             <form onSubmit={handleSubmit}
                 className="relative rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring p-1"
             >
