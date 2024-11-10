@@ -8,8 +8,12 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
+
   <ItemGroup>
     <PackageReference Include="Dapr.AspNetCore" Version="1.14.0" />
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
     <PackageReference Include="MassTransit" Version="8.2.5" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.5" />
     <PackageReference Include="Mediator.Abstractions" Version="2.1.7" />
@@ -23,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MediaProcessor\MediaProcessor.csproj" />
     <ProjectReference Include="..\SocialNetwork.Core\SocialNetwork.Core.csproj" />
     <ProjectReference Include="..\SocialNetwork.Messaging.Data\SocialNetwork.Messaging.Data.csproj" />
     <ProjectReference Include="..\SocialNetwork.Post.Data\SocialNetwork.Post.Data.csproj" />
@@ -32,6 +37,7 @@
     <Folder Include="Interfaces\Services\" />
     <Folder Include="Mediator\" />
     <Folder Include="DTOs\" />
+    <Folder Include="StaticFiles\Output\" />
   </ItemGroup>
 
 </Project>

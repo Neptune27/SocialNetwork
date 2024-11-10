@@ -1,1 +1,11 @@
-﻿<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.1184077" />
+﻿<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.1184077">
+  <ItemGroup>
+    <Folder Include="src\app\public\" />
+    <Folder Include="src\app\Profile\" />
+    <Folder Include="src\components\errorPopup\" />
+    <Folder Include="src\components\createPostPopUp\" />
+    <Folder Include="src\components\post\" />
+    <Folder Include="src\components\profilePicture\" />
+    <Folder Include="src\hooks\NewFolder\" />
+  </ItemGroup>
+</Project>

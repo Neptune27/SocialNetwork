@@ -5,6 +5,9 @@ namespace SocialNetwork.Messaging.Interfaces.Hubs;
 
 public interface IMessageHubClient
 {
-    Task RecieveMessage(Message message);
+    Task RecieveMessage(MessageResponseDTO message);
 
+    Task RecieveFileProgressUpdate(FileUpdateProgressDTO progress);
+
+    Task RecieveFileChangedUpdate(FileNameChangeDTO dto);
 }

@@ -16,6 +16,7 @@ using SocialNetwork.Identity.APIs.Accounts;
 using MassTransit;
 using SocialNetwork.Identity.Data.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using FluentValidation;
 
 namespace SocialNetwork.Identity.Controllers;
 
@@ -45,16 +46,11 @@ public class AccountController(
 
         var user = await mediator.Send(new GetAccountRequest(loginDto.Username));
 
-        if (user == null)
-        {
-            return Unauthorized("Invalid Username.");
-        }
-
         var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
         if (!result.Succeeded)
         {
-            return Unauthorized("Password is not correct");
+            throw new ValidationException("Wrong Password");    
         }
 
 

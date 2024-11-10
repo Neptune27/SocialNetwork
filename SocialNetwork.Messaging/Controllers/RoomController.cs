@@ -41,11 +41,7 @@ public class RoomController(
     {
         var result = await mediator.Send(new GetRoomRequest(id));
 
-        return Ok(new
-        {
-            result = result,
-            user = result.Users
-        });
+        return Ok(result);
     }
 
     // POST api/<ValuesController>
