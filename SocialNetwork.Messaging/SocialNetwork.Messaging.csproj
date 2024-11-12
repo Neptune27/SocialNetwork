@@ -37,7 +37,8 @@
     <Folder Include="Interfaces\Services\" />
     <Folder Include="Mediator\" />
     <Folder Include="DTOs\" />
-    <Folder Include="StaticFiles\Output\" />
+    <Folder Include="StaticFiles\" />
+    <Folder Include="wwwroot\Media\" />
   </ItemGroup>
 
 </Project>

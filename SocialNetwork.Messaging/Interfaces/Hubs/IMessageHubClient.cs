@@ -10,4 +10,7 @@ public interface IMessageHubClient
     Task RecieveFileProgressUpdate(FileUpdateProgressDTO progress);
 
     Task RecieveFileChangedUpdate(FileNameChangeDTO dto);
+    Task RecieveRoomNameChanged(SignalRoomResponseDTO dto);
+    Task RecieveRoomProfileChanged(SignalRoomResponseDTO dto);
+    Task RecieveCall(SignalRoomResponseDTO dto);
 }

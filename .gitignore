@@ -369,3 +369,4 @@ FodyWeavers.xsd
 /SocialNetwork.Identity/Media
 /SocialNetwork.Messaging/wwwroot/Media
 /SocialNetwork.Messaging/StaticFiles/
+/MediaProcessor/FFMpeg
