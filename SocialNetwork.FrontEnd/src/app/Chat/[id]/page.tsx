@@ -4,7 +4,7 @@ import ChatBody from "@/components/Chat/Chat/ChatBody"
 import ChatFooter from "@/components/Chat/Chat/ChatFooter"
 import ChatHeader from "@/components/Chat/Chat/ChatHeader"
 import useCurrentRoom from "@/hooks/useCurrentRoom"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState, useRef, useCallback } from "react"
 import useRooms from "../../../hooks/useRooms"
 import { api, ApiEndpoint } from "../../../api/const"
@@ -13,6 +13,7 @@ import useMessagesByRoom from "../../../hooks/useMessagesByRoom"
 import useMessageHub from "../../../hooks/useMessageHub"
 import { IMessage } from "../../../interfaces/IMessage"
 import setDebounce from "../../../helper/debounce"
+import { toast } from "sonner"
 
 const ChatRoom = () => {
     const params = useParams()
@@ -20,6 +21,8 @@ const ChatRoom = () => {
 
     const rooms = useRooms()
     const currentRoom = useCurrentRoom()
+    const router = useRouter()
+
 
     const currentRoomRef = useRef(currentRoom)
     const roomsRef = useRef(rooms)
@@ -35,10 +38,16 @@ const ChatRoom = () => {
         if (data.room.id != id) {
             console.log(`Room: ${data.room.id}, id: ${id}`)
             const otherRoom = rooms.rooms.find(r => r.id == data.room.id)
+            toast(data.room.name, {
+                description: `${data.user.name}: ${data.messageType == 0 ? data.content : 'Media'}`,
+                action: {
+                    label: "Go to Room",
+                    onClick: () => router.push(`/Chat/${data.room.id}`)
+                }
+            })
 
             if (otherRoom == undefined) {
                 console.log("Undefined")
-
                 //Handle undefined
                 return
             }
@@ -72,7 +81,7 @@ const ChatRoom = () => {
         const messageHub = hub.hub
         
         messageHub.on("RecieveMessage", handleNewMessage)
-
+        
         return () => {
             messageHub.off("RecieveMessage", handleNewMessage)
         }

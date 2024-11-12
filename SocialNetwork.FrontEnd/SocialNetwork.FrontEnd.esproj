@@ -6,6 +6,5 @@
     <Folder Include="src\components\createPostPopUp\" />
     <Folder Include="src\components\post\" />
     <Folder Include="src\components\profilePicture\" />
-    <Folder Include="src\hooks\NewFolder\" />
   </ItemGroup>
 </Project>

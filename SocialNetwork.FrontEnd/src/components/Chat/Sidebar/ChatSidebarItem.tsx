@@ -10,6 +10,11 @@ import { useParams, useRouter } from "next/navigation"
 import useCurrentRoom from "../../../hooks/useCurrentRoom"
 import { ContextMenu, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "../../ui/context-menu"
 import { ContextMenuContent } from "@radix-ui/react-context-menu"
+import useUserId from "../../../hooks/useUserId"
+import { useModifyRoomDialog, useRenameRoomDialog, useLeaveRoomDialog } from "../../../hooks/Chat/Sidebar/useLeaveRoomDialog"
+import { authorizedFetch } from "../../../Ultility/authorizedFetcher"
+import { api, ApiEndpoint } from "../../../api/const"
+import { toast } from "sonner"
 
 type Props = {
     room: IRoom
@@ -20,6 +25,10 @@ const ChatSidebarItem = ({ room }: Props) => {
     const params = useParams()
     const router = useRouter()
     const currentRoom = useCurrentRoom()
+    const userId = useUserId()
+    const leaveStore = useLeaveRoomDialog()
+    const modifyStore = useModifyRoomDialog()
+    const renameStore = useRenameRoomDialog()
     const handleClick = () => {
         if (params.id == room.id) {
             return
@@ -27,6 +36,47 @@ const ChatSidebarItem = ({ room }: Props) => {
 
         currentRoom.set(room)
         router.push(`/Chat/${room.id}`)
+    }
+
+    const handleLeave = () => {
+        const data = {
+            room: room,
+            open: true
+        }
+
+        leaveStore.set(data)
+
+    }
+
+    const handleRename = () => {
+        const data = {
+            room: room,
+            open: true
+        }
+
+        renameStore.set(data)
+    }
+
+    const handleModify = () => {
+        const data = {
+            room: room,
+            open: true
+        }
+
+        modifyStore.set(data)
+    }
+
+    const handleCall = async () => {
+        const resp = await authorizedFetch(`${api(ApiEndpoint.MESSAGING)}/Room/Call/${room.id}`, {
+            method: "POST"
+        })
+
+        if (!resp.ok) {
+            toast("Error has occured, cannot make a call")
+            return
+        }
+
+        window.open(`/CallSimple/${room.id}`, '_blank');
     }
 
     return (
@@ -50,12 +100,33 @@ const ChatSidebarItem = ({ room }: Props) => {
                     </SidebarMenuAction>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="right" align="start">
-                    <DropdownMenuItem>
+
+                    {userId == room.createdBy.id
+                        ?
+                        <DropdownMenuItem onClick={ handleRename}>
+                            <span>Rename room</span>
+                        </DropdownMenuItem>
+                        : null
+                    }
+                    {userId == room.createdBy.id
+                        ?
+                        <DropdownMenuItem onClick={handleModify}>
+                            <span>Change users</span>
+                        </DropdownMenuItem>
+                        : null
+                    }
+                    <DropdownMenuItem onClick={handleCall}>
                         <span>Call</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        <span>Delete</span>
-                    </DropdownMenuItem>
+
+                    {room.users.length > 2
+                        ?
+                        <DropdownMenuItem onClick={handleLeave}>
+                            <span>Leave</span>
+                        </DropdownMenuItem>
+                        : null
+                    }
+
                 </DropdownMenuContent>
             </DropdownMenu>
         </SidebarMenuItem>

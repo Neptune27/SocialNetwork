@@ -11,6 +11,7 @@ import useRooms from "../../hooks/useRooms";
 import useMessageHub from "../../hooks/useMessageHub";
 import useAuthorizeHub from "../../hooks/useAuthorizeHub";
 import { ResizableHandle } from "../../components/ui/resizable";
+import { Toaster } from "../../components/ui/sonner";
 
 export default function ConversationsLayout({
   children,
@@ -53,6 +54,7 @@ export default function ConversationsLayout({
             <ChatSidebar rooms={rooms.rooms} />
             <main className="grow max-h-full min-h-full flex flex-col">
                 {children}
+                <Toaster/>
             </main>
 
         </SidebarProvider>

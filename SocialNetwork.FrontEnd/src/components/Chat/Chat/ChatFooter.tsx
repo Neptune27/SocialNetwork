@@ -16,7 +16,8 @@ import { motion } from "framer-motion"
 type FileType = {
     source: File,
     progress: number,
-    changedName: string
+    changedName: string,
+    blobUrl?: string
 }
 
 
@@ -36,17 +37,16 @@ type FileProgressType = {
 
 const ChatFile = ({ file }: ChatProps) => {
     const fileType = file.source.type
-    const url = URL.createObjectURL(file.source)
     if (fileType.startsWith("image")) {
         return (
             <div className="relative">
-                <img key={file.source.name} alt={file.source.name} src={url} className={"object-cover h-40 w-40 hover:object-scale-down rounded transition-all"} />
+                <img key={file.source.name} alt={file.source.name} src={file.blobUrl} className={"object-cover h-40 w-40 hover:object-scale-down rounded transition-all"} />
                 {file.progress == 2
                     ? null
                     :
-                    <div className="absolute inset-0 bg-white/50 [&_div]:truncate [&>div]:truncate [&_span]:w-3/4">
+                    <div className="absolute inset-0 bg-white/50 ">
                         <AnimatedCircularProgressBar 
-                        max={2} min={0} value={file.progress}
+                            max={1.0526} min={0} value={file.progress}
                         gaugePrimaryColor="rgb(79 70 229)"
                         gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
                         />
@@ -68,7 +68,7 @@ const ChatFile = ({ file }: ChatProps) => {
                 {file.progress == 2
                     ? null
                     :
-                    <div className="absolute inset-0 bg-white/50 [&_div]:truncate [&_span]:w-3/4">
+                    <div className="absolute inset-0 bg-white/50">
                         <AnimatedCircularProgressBar
                             max={2} min={0} value={file.progress}
                             gaugePrimaryColor="rgb(79 70 229)"
@@ -92,9 +92,9 @@ const ChatFile = ({ file }: ChatProps) => {
             {file.progress == 2
                 ? null
                 :
-                <div className="absolute inset-0 bg-white/50 [&_div]:truncate  [&_span]:w-2/4">
+                <div className="absolute inset-0 bg-white/50">
                     <AnimatedCircularProgressBar
-                        max={2} min={0} value={file.progress}
+                        max={1.0526} min={0} value={file.progress}
                         gaugePrimaryColor="rgb(79 70 229)"
                         gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
                     />
@@ -274,10 +274,20 @@ const ChatFooter = () => {
 
         const inputFiles = [...fileRef.current.files]
         const filesWithProgress: FileType[] = inputFiles.map((f, i) => {
+
+
+            let blobUrl = undefined;
+
+            if (f.type.startsWith("image")) {
+                blobUrl = URL.createObjectURL(f)
+            }
+
+
             return {
                 progress: 0,
                 source: f,
-                changedName: f.name
+                changedName: f.name,
+                blobUrl: blobUrl
             }
         })
 
