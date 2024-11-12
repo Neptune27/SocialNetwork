@@ -26,4 +26,8 @@
     <ProjectReference Include="..\SocialNetwork.Profile.Data\SocialNetwork.Profile.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Media\" />
+  </ItemGroup>
+
 </Project>

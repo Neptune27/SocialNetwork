@@ -4,6 +4,10 @@ import Cropper from "react-easy-crop";
 import style from "@/components/profilePicture/style.module.scss";
 import icons from "@/public/icons.module.scss";
 import getCroppedImg from "@/helper/getCroppedImg";
+import axios from "axios";
+import { api, ApiEndpoint } from "../../api/const";
+import { Console } from "console";
+import { useRouter } from "next/navigation"
 
 interface UpdateProfilePictureProps {
     setImage: (value: string) => void;
@@ -31,6 +35,8 @@ const UpdateProfilePicture: React.FC<UpdateProfilePictureProps> = ({
     const slider = useRef<HTMLInputElement>(null);
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<PixelCrop | null>(null);
+    const router = useRouter()
+
 
     const onCropComplete = useCallback((croppedArea: any, croppedAreaPixels: PixelCrop) => {
         setCroppedAreaPixels(croppedAreaPixels);
@@ -61,6 +67,7 @@ const UpdateProfilePicture: React.FC<UpdateProfilePictureProps> = ({
                             setZoom(1);
                             setCrop({ x: 0, y: 0 });
                             setImage(img);
+                            return img
                             console.log("just show");
                         } else {
                             console.log("not show");
@@ -79,6 +86,39 @@ const UpdateProfilePicture: React.FC<UpdateProfilePictureProps> = ({
         },
         [croppedAreaPixels, image, setImage]
     );
+
+ 
+
+    const handleUploadFile = async () => {
+        const data = new FormData();
+
+        const image = await getCroppedImage(false);
+
+        if (image == undefined) {
+            console.error("huh")
+            return
+        }
+
+        const blobResp = await fetch(image)
+        const blob = await blobResp.blob()
+
+        const file = new File([blob], "profile.jpg", {
+            type: "image/jpeg"
+        })
+        //const imageFile = await blobToImage(image);
+        data.append('file', file);
+        const resp = axios.put(`${api(ApiEndpoint.PROFILE)}/Profile/ProfilePicture/`, data, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            },
+            
+        })
+        if ((await resp).status == 200) {
+            
+            console.log("Upload finish")
+            location.reload()
+        }
+    }
 
     return (
         <div className={`${style.postBox} ${style.update_img}`}>
@@ -144,7 +184,7 @@ const UpdateProfilePicture: React.FC<UpdateProfilePictureProps> = ({
                 <div className={style.blue_link} onClick={() => setImage("")}>
                     Cancel
                 </div>
-                <button className="blue_btn" onClick={() => getCroppedImage(false)}>
+                <button className="blue_btn" onClick={() => handleUploadFile(   )}>
                     Save
                 </button>
             </div>

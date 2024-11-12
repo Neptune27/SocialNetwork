@@ -1,7 +1,10 @@
 ﻿using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Net.Http.Headers;
 using SocialNetwork.Core.Extensions;
+using SocialNetwork.Core.Helpers;
 using SocialNetwork.Profile.APIs.Profiles;
 using SocialNetwork.Profile.Data.DTOs;
 using SocialNetwork.Profile.Data.DTOs.Profiles;
@@ -65,14 +68,116 @@ public class ProfileController(
 
 	}
 	[HttpPut("ProfilePicture")]
-	public async void UpdateProfilePicture([FromBody] IFormFile profilePicture)
+	[RequestSizeLimit(10L * 1024L * 1024L * 1024L)]
+	[RequestFormLimits(MultipartBodyLengthLimit = 10L * 1024L * 1024L * 1024L)]
+	[DisableFormValueModelBinding]
+	public async Task<IActionResult> UpdateProfilePicture()
 	{
-		//profilePicture.
+		if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
+		{
+			ModelState.AddModelError("File",
+				$"The request couldn't be processed (Error 1).");
+			// Log error
 
-		//string userId = HttpContext.User.Claims.GetClaimByUserId().Value;
-		//var user = await mediator.Send(new UpdateProfilePictureRequest(userId, profilePicture));
+			return BadRequest(ModelState);
+		}
 
+		var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+
+
+		var boundary = MultipartRequestHelper.GetBoundary(
+			MediaTypeHeaderValue.Parse(Request.ContentType),
+			int.MaxValue);
+		var reader = new MultipartReader(boundary, HttpContext.Request.Body);
+		var section = await reader.ReadNextSectionAsync();
+
+		while (section != null)
+		{
+			var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition,
+			out var contentDisposition);
+
+			if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data") &&
+				!string.IsNullOrEmpty(contentDisposition.FileName.Value))
+			{
+				var fileName = contentDisposition.FileName.ToString();
+				var saveToPath = Path.Combine("./StaticFiles/Media/", userId, fileName);
+				var dir = Path.GetDirectoryName(saveToPath);
+				Directory.CreateDirectory(dir);
+
+				using (var targetStream = System.IO.File.Create(saveToPath))
+				{
+					await section.Body.CopyToAsync(targetStream);
+				}
+
+				await mediator.Send(new UpdateProfilePictureRequest(userId, fileName));
+
+				return Ok("Upload finish");
+			}
+
+			section = await reader.ReadNextSectionAsync();
+		}
+
+		// If the code runs to this location, it means that no files have been saved
+		return BadRequest("No files data in the request.");
+		return Ok("Update Profile Picture Finish");
 	}
+
+
+	[HttpPut("Background")]
+	[RequestSizeLimit(10L * 1024L * 1024L * 1024L)]
+	[RequestFormLimits(MultipartBodyLengthLimit = 10L * 1024L * 1024L * 1024L)]
+	[DisableFormValueModelBinding]
+	public async Task<IActionResult> UpdateBackgroundPicture()
+	{
+		if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
+		{
+			ModelState.AddModelError("File",
+				$"The request couldn't be processed (Error 1).");
+			// Log error
+
+			return BadRequest(ModelState);
+		}
+
+		var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+
+
+		var boundary = MultipartRequestHelper.GetBoundary(
+			MediaTypeHeaderValue.Parse(Request.ContentType),
+			int.MaxValue);
+		var reader = new MultipartReader(boundary, HttpContext.Request.Body);
+		var section = await reader.ReadNextSectionAsync();
+
+		while (section != null)
+		{
+			var hasContentDispositionHeader = ContentDispositionHeaderValue.TryParse(section.ContentDisposition,
+			out var contentDisposition);
+
+			if (hasContentDispositionHeader && contentDisposition.DispositionType.Equals("form-data") &&
+				!string.IsNullOrEmpty(contentDisposition.FileName.Value))
+			{
+				var fileName = contentDisposition.FileName.ToString();
+				var saveToPath = Path.Combine("./StaticFiles/Media/", userId, fileName);
+				var dir = Path.GetDirectoryName(saveToPath);
+				Directory.CreateDirectory(dir);
+
+				using (var targetStream = System.IO.File.Create(saveToPath))
+				{
+					await section.Body.CopyToAsync(targetStream);
+				}
+
+				await mediator.Send(new UpdateBackgroundRequest(userId, fileName));
+
+				return Ok("Upload finish");
+			}
+
+			section = await reader.ReadNextSectionAsync();
+		}
+
+		// If the code runs to this location, it means that no files have been saved
+		return BadRequest("No files data in the request.");
+		return Ok("Update Profile Picture Finish");
+	}
+
 
 	[HttpPut("BirthDay")]
 	public async Task<IActionResult> UpdateBirthDay([FromBody] DateOnly birthday )
