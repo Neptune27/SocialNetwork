@@ -6,6 +6,7 @@ using SocialNetwork.Core.Extensions;
 using SocialNetwork.Messaging.APIs.Messages;
 using SocialNetwork.Messaging.APIs.Rooms;
 using SocialNetwork.Messaging.Data.DTOs;
+using System;
 using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -65,7 +66,51 @@ public class RoomController(
             ));
 
         return Ok(res);
+    }
 
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> Patch(int id, [FromBody] string name)
+    {
+        var creator = HttpContext.User.Claims
+         .FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        var result = await mediator.Send(new PatchNameRoomRequest(creator, id, name));
+
+        if (result)
+        {
+            return Ok();
+        }
+        return BadRequest();
+    }
+
+    [HttpPatch("Image/{id}")]
+    public async Task<IActionResult> PatchImage(int id, [FromBody] string url)
+    {
+        var creator = HttpContext.User.Claims
+         .FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        var result = await mediator.Send(new PatchImageRoomRequest(creator, id, url));
+
+        if (result)
+        {
+            return Ok();
+        }
+        return BadRequest();
+    }
+
+    [HttpPost("Call/{id}")]
+    public async Task<IActionResult> Call(int id)
+    {
+        var creator = HttpContext.User.Claims
+ .FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        var result = await mediator.Send(new NotifyCallRequest(creator, id));
+
+        if (result)
+        {
+            return Ok();
+        }
+        return BadRequest();
     }
 
     //// PUT api/<ValuesController>/5

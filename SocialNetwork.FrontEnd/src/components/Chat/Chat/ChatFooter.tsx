@@ -12,11 +12,12 @@ import useMessageHub from "../../../hooks/useMessageHub"
 import AnimatedCircularProgressBar from "../../ui/animated-circular-progress-bar"
 import { GoFileBinary } from "react-icons/go";
 import { CgFilm } from "react-icons/cg";
-
+import { motion } from "framer-motion"
 type FileType = {
     source: File,
     progress: number,
-    changedName: string
+    changedName: string,
+    blobUrl?: string
 }
 
 
@@ -36,17 +37,16 @@ type FileProgressType = {
 
 const ChatFile = ({ file }: ChatProps) => {
     const fileType = file.source.type
-    const url = URL.createObjectURL(file.source)
     if (fileType.startsWith("image")) {
         return (
             <div className="relative">
-                <img key={file.source.name} alt={file.source.name} src={url} className={"object-cover h-40 w-40 hover:object-scale-down rounded transition-all"} />
+                <img key={file.source.name} alt={file.source.name} src={file.blobUrl} className={"object-cover h-40 w-40 hover:object-scale-down rounded transition-all"} />
                 {file.progress == 2
                     ? null
                     :
-                    <div className="absolute inset-0 bg-white/50 [&_div]:truncate [&>div]:truncate [&_span]:w-3/4">
+                    <div className="absolute inset-0 bg-white/50 ">
                         <AnimatedCircularProgressBar 
-                        max={2} min={0} value={file.progress}
+                            max={1.0526} min={0} value={file.progress}
                         gaugePrimaryColor="rgb(79 70 229)"
                         gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
                         />
@@ -57,18 +57,18 @@ const ChatFile = ({ file }: ChatProps) => {
         )
     }
 
-    if (fileType.startsWith("movie")) {
+    if (fileType.startsWith("video")) {
         return (
-            <div className="relative w-40 truncate flex flex-col justify-between">
+            <div className="relative w-40 h-40 truncate flex flex-col justify-between">
                 <div className="flex justify-center">
-                    <CgFilm size={72} />
+                    <CgFilm size={125} />
                 </div>
                 <span className="">{file.source.name}</span>
 
                 {file.progress == 2
                     ? null
                     :
-                    <div className="absolute inset-0 bg-white/50 [&_div]:truncate [&_span]:w-3/4">
+                    <div className="absolute inset-0 bg-white/50">
                         <AnimatedCircularProgressBar
                             max={2} min={0} value={file.progress}
                             gaugePrimaryColor="rgb(79 70 229)"
@@ -83,7 +83,7 @@ const ChatFile = ({ file }: ChatProps) => {
     }
 
     return (
-        <div className="relative w-40 truncate flex flex-col justify-between">
+        <div className="relative w-40 h-40 truncate flex flex-col justify-between">
             <div className="flex justify-center">
                 <GoFileBinary size={125} />
             </div>
@@ -92,9 +92,9 @@ const ChatFile = ({ file }: ChatProps) => {
             {file.progress == 2
                 ? null
                 :
-                <div className="absolute inset-0 bg-white/50 [&_div]:truncate  [&_span]:w-2/4">
+                <div className="absolute inset-0 bg-white/50">
                     <AnimatedCircularProgressBar
-                        max={2} min={0} value={file.progress}
+                        max={1.0526} min={0} value={file.progress}
                         gaugePrimaryColor="rgb(79 70 229)"
                         gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
                     />
@@ -274,10 +274,20 @@ const ChatFooter = () => {
 
         const inputFiles = [...fileRef.current.files]
         const filesWithProgress: FileType[] = inputFiles.map((f, i) => {
+
+
+            let blobUrl = undefined;
+
+            if (f.type.startsWith("image")) {
+                blobUrl = URL.createObjectURL(f)
+            }
+
+
             return {
                 progress: 0,
                 source: f,
-                changedName: f.name
+                changedName: f.name,
+                blobUrl: blobUrl
             }
         })
 
@@ -300,9 +310,16 @@ const ChatFooter = () => {
     return (
         <div>
             <div className="flex gap-1 overflow-auto p-2">
-                {files.map((f, i) => <ChatFile file={f} key={`file${i}`}/>)}
+                {files.map((f, i) => <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 260,
+                        damping: 20
+                    }}
+                    key={`fileDiv${f.source.name}`}><ChatFile file={f} key={`file${f.source.name}`} /></motion.div>)}
             </div>
-         
             <form onSubmit={handleSubmit}
                 className="relative rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring p-1"
             >

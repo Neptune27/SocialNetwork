@@ -11,7 +11,8 @@ export interface IMessage {
     lastUpdated: number,
     user: IMessageUser,
     room: {
-        id: string
+        id: string,
+        name: string
     }
  }
 
@@ -23,7 +24,7 @@ export interface IMessageUser {
 }
 
 export interface IRoom {
-    createdBy: string,
+    createdBy: IMessageUser,
     users: IMessageUser[],
     messages: IMessage[],
     id: string,
