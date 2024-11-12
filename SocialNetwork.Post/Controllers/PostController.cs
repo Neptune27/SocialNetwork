@@ -61,7 +61,8 @@ public class PostController(
         {
             User = loginUser,
             Message = postDTO.Message,
-            CreatedAt = postDTO.CreatedAt,
+            CreatedAt = DateTime.Now,
+            LastUpdated = DateTime.Now,
             Medias = new List<string>(),
             Reactions = new List<Reaction>(),
             Comments = new List<Comment>(),
