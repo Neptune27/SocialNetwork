@@ -35,6 +35,8 @@ builder.Services.AddControllers()
 }); ;
 
 
+List<string> hubUrls = ["/videohub", "/messagehub"];
+
 builder.AddDefaultJWTConfig(options =>
 {
     options.Events = new JwtBearerEvents
@@ -47,7 +49,7 @@ builder.AddDefaultJWTConfig(options =>
             // If the request is for our hub...
             var path = context.HttpContext.Request.Path;
             if (!string.IsNullOrEmpty(accessToken) &&
-                (path.StartsWithSegments("/videohub")))
+                hubUrls.Any(url => path.StartsWithSegments(url)))
             {
                 // Read the token out of the query string
                 context.Token = accessToken;
@@ -94,6 +96,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowedOrigins");
 
+var fileServerOption = new FileServerOptions
+{
+};
+
+fileServerOption.StaticFileOptions.ServeUnknownFileTypes = true;
+fileServerOption.StaticFileOptions.DefaultContentType = "application/binary";
+
+app.UseFileServer(fileServerOption );
+
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -101,7 +112,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 //Map SignalR message hub
-app.MapHub<MessageHub>("/hub");
+app.MapHub<MessageHub>("/messagehub");
 app.MapHub<VideoHub>("/videohub");
 
 app.Run();

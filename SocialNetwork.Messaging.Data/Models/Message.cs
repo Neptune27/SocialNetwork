@@ -20,7 +20,6 @@ public class Message : BaseModel
 
     public BasicUser User { get; set; }
 
-
     public Room Room { get; set; }
 
     public string Content { get; set; }

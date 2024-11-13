@@ -1,6 +1,6 @@
 ﻿using Microsoft.Net.Http.Headers;
 
-namespace SocialNetwork.Identity.Helpers;
+namespace SocialNetwork.Core.Helpers;
 
 public static class MultipartRequestHelper
 {

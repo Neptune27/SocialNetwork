@@ -14,8 +14,11 @@ public class GetRoomHandler(
     public async ValueTask<Room?> Handle(GetRoomRequest request, CancellationToken cancellationToken)
     {
         return await dBContext.Rooms
-            .Include(it => it.Users)
-            
+            .Include(r => r.Messages
+                            .OrderByDescending(m => m.CreatedAt)
+                            .Take(1))
+            .Include(r => r.Users)
+            .Include(r => r.CreatedBy)
             .FirstOrDefaultAsync(r => r.Id == request.RoomId, cancellationToken: cancellationToken);
     }
 }

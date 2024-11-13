@@ -40,7 +40,6 @@ if (app.Environment.IsDevelopment())
 }
 
 
-
 app.UseAuthentication();
 app.UseAuthorization();
 
