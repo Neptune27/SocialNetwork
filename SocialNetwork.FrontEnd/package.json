@@ -42,6 +42,7 @@
     "react-select": "^5.8.2",
     "recharts": "^2.13.3",
     "sass": "^1.79.5",
+    "shadcn-dropzone": "^0.2.1",
     "simple-peer": "^9.11.1",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.4",

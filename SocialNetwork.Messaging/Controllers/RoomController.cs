@@ -1,7 +1,9 @@
 ﻿using Mediator;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using SocialNetwork.Core.Extensions;
 using SocialNetwork.Messaging.APIs.Messages;
 using SocialNetwork.Messaging.APIs.Rooms;
@@ -84,12 +86,31 @@ public class RoomController(
     }
 
     [HttpPatch("Image/{id}")]
-    public async Task<IActionResult> PatchImage(int id, [FromBody] string url)
+    public async Task<IActionResult> PatchImage(int id, IFormFile file)
     {
         var creator = HttpContext.User.Claims
          .FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        var result = await mediator.Send(new PatchImageRoomRequest(creator, id, url));
+
+        if (file.Length == 0)
+        {
+            return BadRequest();
+        }
+
+        //file.jpg => jpg | .jpg
+        var fileExtension = Path.GetExtension(file.FileName);
+
+
+        var saveLocation = Path.Combine("Media", id.ToString(), $"profile{fileExtension}");
+        var wwwPath = Path.Combine("www", saveLocation);
+        var directory = Path.GetDirectoryName(wwwPath);
+        Directory.CreateDirectory(directory);
+
+        using var stream = System.IO.File.Create(wwwPath);
+
+        await file.CopyToAsync(stream);
+
+        var result = await mediator.Send(new PatchImageRoomRequest(creator, id, saveLocation));
 
         if (result)
         {

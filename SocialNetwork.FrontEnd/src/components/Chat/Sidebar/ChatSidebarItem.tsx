@@ -1,6 +1,6 @@
 "use client"
 
-import { EMessageType, IRoom } from "@/interfaces/IMessage"
+import { EMessageType, ERoomType, IRoom } from "@/interfaces/IMessage"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu"
 import { SidebarMenuAction, SidebarMenuButton, SidebarMenuItem } from "../../ui/sidebar"
 import { MoreHorizontal } from "lucide-react"
@@ -79,12 +79,31 @@ const ChatSidebarItem = ({ room }: Props) => {
         window.open(`/CallSimple/${room.id}`, '_blank');
     }
 
+    let finalProfileUrl = ""
+
+    switch (room.roomType) {
+        case ERoomType.Normal:
+            const otherUser = room.users.find(u => u.id != userId)
+
+            if (otherUser !== undefined) {
+                finalProfileUrl = `${api(ApiEndpoint.PROFILE)}/${otherUser.picture}`
+            }
+            break
+        case ERoomType.Group:
+            finalProfileUrl = `${api(ApiEndpoint.MESSAGING)}/${room.profile}`
+            break;
+
+        default:
+            break;
+    }
+
+
     return (
         <SidebarMenuItem>
             <SidebarMenuButton size="xl" onClick={handleClick} asChild>
                 <div className="flex gap-1">
                     <Avatar>
-                        <AvatarImage src={`${room.profile}`} />
+                        <AvatarImage src={`${finalProfileUrl}`} />
                     </Avatar>
                     <div className="w-4/6">
                         <div className="text-xl font-semibold">{room.name}</div>
@@ -119,7 +138,7 @@ const ChatSidebarItem = ({ room }: Props) => {
                         <span>Call</span>
                     </DropdownMenuItem>
 
-                    {room.users.length > 2
+                    {room.roomType == ERoomType.Group
                         ?
                         <DropdownMenuItem onClick={handleLeave}>
                             <span>Leave</span>
