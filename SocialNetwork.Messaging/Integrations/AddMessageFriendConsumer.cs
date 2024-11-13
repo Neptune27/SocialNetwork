@@ -19,11 +19,9 @@ public class AddMessageFriendConsumer(
     {
         var data = context.Message;
         var user = await dBContext.Users
-            .Include(u => u.Friends)
             .FirstOrDefaultAsync(u => u.Id == data.ToUserId);
 
         var user2 = await dBContext.Users
-            .Include(u => u.Friends)
             .FirstOrDefaultAsync(u => u.Id == data.FromUserId);
 
         if (user == null)
@@ -40,8 +38,8 @@ public class AddMessageFriendConsumer(
         {
             CreatedAt = DateTime.Now,
             LastUpdated = DateTime.Now,
-            UserFromsId = user.Id,
-            UserTosId = user2.Id,
+            UserFrom = user,
+            UserTo = user2,
             Visibility = Core.Enums.EVisibility.PUBLIC
         };
 
@@ -49,13 +47,16 @@ public class AddMessageFriendConsumer(
         {
             CreatedAt = DateTime.Now,
             LastUpdated = DateTime.Now,
-            UserFromsId = user2.Id,
-            UserTosId = user.Id,
+            UserFrom = user2,
+            UserTo = user,
             Visibility = Core.Enums.EVisibility.PUBLIC
         };
 
-        user.Friends.Add(user2);
-        user2.Friends.Add(user);
+        //user.Add(friend2);
+        //user2.FriendDetails.Add(friend);
+
+        await dBContext.AddRangeAsync(friend, friend2);
+
 
         await dBContext.SaveChangesAsync();
 

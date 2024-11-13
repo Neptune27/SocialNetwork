@@ -8,8 +8,10 @@ namespace SocialNetwork.Core.Models;
 
 public class BasicFriend : BaseModel
 {
-    public string UserTosId { get; set; } = null!;
+    public string UserToId { get; set; } = null!;
+    public BasicUser UserTo { get; set; } = null!;
 
-    public string UserFromsId { get; set; } = null!;
+    public string UserFromId { get; set; } = null!;
+    public BasicUser UserFrom { get; set; } = null!;
 
 }
