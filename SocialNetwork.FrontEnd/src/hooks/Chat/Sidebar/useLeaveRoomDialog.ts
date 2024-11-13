@@ -42,6 +42,14 @@ const useRenameRoomDialog = create<IRoomDialogStore>((set) => ({
     })
 }))
 
+const useChangeProfileRoomDialog = create<IRoomDialogStore>((set) => ({
+    data: {
+        open: false
+    },
+    set: (data) => set({
+        data: { ...data }
+    })
+}))
 
 const useCallNotifyDialog = create<IRoomDialogStore>((set) => ({
     data: {
@@ -52,5 +60,5 @@ const useCallNotifyDialog = create<IRoomDialogStore>((set) => ({
     })
 }))
 
-export { useLeaveRoomDialog, useModifyRoomDialog, useRenameRoomDialog, useCallNotifyDialog }
+export { useLeaveRoomDialog, useModifyRoomDialog, useRenameRoomDialog, useCallNotifyDialog, useChangeProfileRoomDialog }
 

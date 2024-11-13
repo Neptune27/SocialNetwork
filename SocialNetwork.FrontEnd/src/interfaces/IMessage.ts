@@ -23,6 +23,11 @@ export interface IMessageUser {
 
 }
 
+export const enum ERoomType {
+    Normal = 0,
+    Group = 1
+}
+
 export interface IRoom {
     createdBy: IMessageUser,
     users: IMessageUser[],
@@ -30,5 +35,6 @@ export interface IRoom {
     id: string,
     lastSeen: number,
     profile: string,
-    name: string
+    name: string,
+    roomType: ERoomType
 }
