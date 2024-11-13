@@ -187,7 +187,7 @@ const ChatRoom = () => {
         setRoom()
         //Fetch room and set current
         // currentRoom.set(null)
-    }, [rooms.rooms])
+    }, [rooms, currentRoom])
 
     const getDataDebounced =
         setDebounce(async () => {

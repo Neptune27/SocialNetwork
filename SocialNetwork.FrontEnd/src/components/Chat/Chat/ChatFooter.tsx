@@ -275,7 +275,6 @@ const ChatFooter = () => {
         const inputFiles = [...fileRef.current.files]
         const filesWithProgress: FileType[] = inputFiles.map((f, i) => {
 
-
             let blobUrl = undefined;
 
             if (f.type.startsWith("image")) {
