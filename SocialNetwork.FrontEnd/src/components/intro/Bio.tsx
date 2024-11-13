@@ -7,7 +7,7 @@ interface BioProps {
     handleChange: (e: React.ChangeEvent<HTMLTextAreaElement> | React.ChangeEvent<HTMLSelectElement>) => void;
     max: number;
     setShowBio?: (show: boolean) => void;
-    updateDetails: () => void;
+    updateDetails: (nameInfo:string, value:string) => void;
     placeholder: string;
     name: string;
     detail?: boolean;
@@ -28,7 +28,13 @@ const Bio = ({
     rel = false,
 }: BioProps) => {
     const remainingChars = max - (infos[name]?.length || 0);
-
+    console.log(infos)
+    const handleSave = () => {
+        const value = infos[name]
+        console.log("Click handle save")
+        updateDetails(name, value);
+        setShow?.(false);
+    };
     return (
         <div className={style.add_bio_wrap}>
             {rel ? (
@@ -67,7 +73,7 @@ const Bio = ({
                     >
                         Cancel
                     </button>
-                    <button className="blue_btn" onClick={() => { updateDetails(); setShow?.(false); }}>
+                    <button className="blue_btn" onClick={() => { handleSave()}}>
                         Save
                     </button>
                 </div>

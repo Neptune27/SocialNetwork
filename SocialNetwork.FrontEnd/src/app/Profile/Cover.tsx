@@ -7,6 +7,8 @@ import icons from "@/public/icons.module.scss";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../../helper/getCroppedImg";
 import OldCovers from "./OldCover";
+import axios from "axios";
+import { api, ApiEndpoint } from "../../api/const";
 
 interface CoverProps {
   cover: string;
@@ -104,6 +106,36 @@ const Cover = ({ cover, visitor }: CoverProps) => {
         //setCoverPicture("");
             
     };
+    const handleUploadFile = async () => {
+        const data = new FormData();
+
+        const image = await getCroppedImage(false);
+
+        if (image == undefined) {
+            console.error("huh")
+            return
+        }
+
+        const blobResp = await fetch(image)
+        const blob = await blobResp.blob()
+
+        const file = new File([blob], "background.jpg", {
+            type: "image/jpeg"
+        })
+        //const imageFile = await blobToImage(image);
+        data.append('file', file);
+        const resp = axios.put(`${api(ApiEndpoint.PROFILE)}/Profile/Background/`, data, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            },
+
+        })
+        if ((await resp).status == 200) {
+
+            console.log("Upload finish")
+            location.reload()
+        }
+    }
 
   return (
       <div className={style.profile_cover} ref={coverRef}>
@@ -120,19 +152,18 @@ const Cover = ({ cover, visitor }: CoverProps) => {
                       >
                           Cancel
                       </button>
-                      <button className="blue_btn " onClick={() => updateCoverPicture()}>
+                      <button className="blue_btn " onClick={() => handleUploadFile()}>
                           Save changes
                       </button>
                   </div>
               </div>
           )}
       {cover && (
-        <Image
+        <img
           src={cover}
           className={style.cover}
           alt=""
-          width={945}
-          height={350}
+
         />
       )}
           <input
@@ -157,7 +188,7 @@ const Cover = ({ cover, visitor }: CoverProps) => {
               />
           </div>}
 
-      {visitor && (
+      {!visitor && (
         <div className={style.udpate_cover_wrapper}>
           <div
             className={style.open_cover_update}
@@ -192,3 +223,4 @@ const Cover = ({ cover, visitor }: CoverProps) => {
 };
 
 export default Cover;
+

@@ -16,9 +16,11 @@ interface EditDetailProps {
         hometown?: string;
         relationship?: string;
         instagram?: string;
+        firstName?: string;
+        lastName?: string;
     };
     handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-    updateDetails: (name: string, value: string) => void;
+    updateDetails: (nameInfo: string, value: string) => void;
     infos?: any;
     setVisible: (visible: boolean) => void;
 }
@@ -51,22 +53,22 @@ const EditDetail: React.FC<EditDetailProps> = ({ details, handleChange, updateDe
                         updateDetails={updateDetails}
                         infos={infos}
                     />
-                    <div className={style.details_header }>Work</div>
+                    <div className={style.details_header }>FirstLastName</div>
                     <Detail
-                        value={details.job}
+                        value={details.firstName}
                         img="job"
-                        placeholder="Add job title"
-                        name="job"
+                        placeholder="Add First Name"
+                        name="firstName"
                         text="a job"
                         handleChange={handleChange}
                         updateDetails={updateDetails}
                         infos={infos}
                     />
                     <Detail
-                        value={details.workplace}
+                        value={details.lastName}
                         img="job"
-                        placeholder="Add a workplace"
-                        name="workplace"
+                        placeholder="Add a LastName"
+                        name="lastName"
                         text="workplace"
                         handleChange={handleChange}
                         updateDetails={updateDetails}

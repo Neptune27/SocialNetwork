@@ -18,8 +18,19 @@ import Intro from "../../components/intro";
 import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
 
-const visitor = false; //Visitor or not
 
+interface Friendship {
+    friends?: boolean;
+    following?: boolean;
+    requestSent?: boolean;
+    requestReceived?: boolean;
+}
+const testFriendshipData: Friendship = {
+    friends: true,          
+    following: false,         
+    requestSent: false,      
+    requestReceived: false,  
+};
 interface UserProps {
   name: string;
   firstName: string;
@@ -101,21 +112,45 @@ const postVar1: PostData = {
   ],
   createdAt: new Date().toISOString(),
 };
-const details = {
-    bio: "A passionate software developer",
-    othername: "Nguyen Huy",
-    job: "Software Engineer",
-    workplace: "Tech Corp",
-    highSchool: "Nguyen Huu Canh High",
-    college: "Sai Gon University",
-    currentCity: "Ho Chi Minh",
-    hometown: "Quang Nam",
-    relationship: "Single",
-    instagram: "NguyenHuy",
-};
+
+interface Details {
+    bio: string;
+    othername: string;
+    job: string;
+    workplace: string;
+    highSchool: string;
+    college: string;
+    currentCity: string;
+    hometown: string;
+    relationship: string;
+    instagram: string;
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+    background: string;
+}
+
+
 
 const ProfilePage = () => {
+    const [visitor, setVisitor] = useState(false);
     const [visible, setVisible] = useState(false);
+    const [details, setDetails] = useState<Details>({
+        bio: "A passionate software developer",
+        othername: "Nguyen Huy",
+        job: "Software Engineer",
+        workplace: "Tech Corp",
+        highSchool: "Nguyen Huu Canh High",
+        college: "Sai Gon University",
+        currentCity: "Ho Chi Minh",
+        hometown: "Quang Nam",
+        relationship: "Single",
+        instagram: "NguyenHuy",
+        firstName: "Test First Name H",
+        lastName: "Test",
+        profilePicture: "",
+        background:""
+    });
 
     useEffect(() => {
         const getData = async () => {
@@ -133,6 +168,17 @@ const ProfilePage = () => {
 
                 const json = await response.json();
                 console.log(json);
+                setVisitor(json["isVisitor"]);
+                console.log(json["isVisitor"]);
+                const user = json["user"]
+                setDetails(prevDetails => ({
+                    ...prevDetails,  
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    profilePicture: `${api(ApiEndpoint.PROFILE)}/${user.profilePicture.replaceAll("\\", "\/")}`,
+                    background: `${api(ApiEndpoint.PROFILE)}/${user.background.replaceAll("\\", "\/")}`
+                }));
+
             } catch (error) {
                 console.error(error.message);
             }
@@ -145,16 +191,18 @@ const ProfilePage = () => {
   return (
     <>
       {visible && <CreatePostPopUp user={user} setVisible={setVisible} />}
-      <div className={style.profile}>
+          <div className={style.profile}>
+              
         <UserHeader user={user} page="profile" />
         <div className={style.profile_top}>
-          <div className={style.profile_container}>
-            <Cover cover={"/images/postBackgrounds/1.jpg"} visitor />
+                  <div className={style.profile_container}>
+                      <Cover cover={details.background} visitor />
             <ProfilePictureInfos
-              profile={{
-                picture: user.profilePicture,
+                          profile={{
+                              picture: details.profilePicture,
                 first_name: user.firstName,
-                last_name: user.lastName,
+                              last_name: user.lastName,
+                              friendship:testFriendshipData
               }}
               visitor
             />
@@ -186,7 +234,8 @@ const ProfilePage = () => {
                     <span>. </span> <br />
                     Meta © 2022
                   </div>
-                </div>
+                              </div>
+                              
                 <div className={style.profile_right}>
                   {!visitor && (
                     <CreatePost user={user} profile setVisible={setVisible} />

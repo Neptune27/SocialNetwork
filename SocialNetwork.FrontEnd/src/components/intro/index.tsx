@@ -1,9 +1,11 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import style from "@/components/intro/style.module.scss";
 import icons from "@/public/icons.module.scss";
 import Bio from "./Bio";
 import EditDetails from "./EditDetail";
+import { api, ApiEndpoint } from "../../api/const";
+import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 
 interface IntroProps {
     details: {
@@ -17,6 +19,8 @@ interface IntroProps {
         hometown?: string;
         relationship?: string;
         instagram?: string;
+        firstName?: string;
+        lastName?: string;
     };
     visitor: boolean;
 }
@@ -29,6 +33,8 @@ const Intro = ({ details, visitor }: IntroProps) => {
     const initial = {
         bio: details.bio || "",
         othername: details.othername || "NguyenHuy",
+        firstName: details.firstName || "Test First Name",
+        lastName: details.lastName || "Test Last Name",
         job: details.job || "",
         workplace: details.workplace || "Google",
         highSchool: details.highSchool || "some high school",
@@ -49,14 +55,43 @@ const Intro = ({ details, visitor }: IntroProps) => {
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newBio = e.target.value;
-        setInfos(prevInfos => ({ ...prevInfos, bio: newBio }));
+        const nameBio = e.target.name;
+        console.log(`Handle Change ${e.target.name}`)
+        setInfos(prevInfos => ({ ...prevInfos, [nameBio]: newBio }));
         setMax(100 - newBio.length);
     };
 
-    const updateDetails = () => {
+    const updateDetails = (nameInfo: string, value: string) => {
+        nameInfo = nameInfo.charAt(0).toUpperCase() + nameInfo.slice(1)
+        const updateDetailsWithNameInfo = async () => {
+            const url = `${api(ApiEndpoint.PROFILE)}/Profile/${nameInfo}`; 
+
+            try {
+                const response = await authorizedFetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(value), 
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+
+                const result = await response.text();
+                console.log(result); // Log thông báo trả về từ server
+
+            } catch (error) {
+                console.error("Error:", error.message);
+            }
+        };
+
+        updateDetailsWithNameInfo();
         setCurrentDetails(infos);
         setShowBio(false);
     };
+
 
     const renderEditButton = (text: string, onClick: () => void) => (
         <button className="gray_btn hover1 w100" onClick={onClick}>{text}</button>
@@ -87,7 +122,14 @@ const Intro = ({ details, visitor }: IntroProps) => {
             {infos.job && infos.workplace && (
                 <div className={style.info_profile}>
                     <Image src="/icons/job.png" alt="Job icon" width={24} height={24} />
-                    works as {infos.job} at <b>{infos.workplace}</b>
+                    { "First Name: "} <b>{infos.firstName}</b>
+                </div>
+            )}
+
+            {infos.job && infos.workplace && (
+                <div className={style.info_profile}>
+                    <Image src="/icons/job.png" alt="Job icon" width={24} height={24} />
+                    {"Last Name: "} <b>{infos.lastName}</b>
                 </div>
             )}
             {infos.relationship && (
