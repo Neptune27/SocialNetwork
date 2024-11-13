@@ -32,18 +32,13 @@ public class AppDBContext : DbContext
                 c.RoomId
             });
 
-        modelBuilder.Entity<BasicFriend>()
-            .HasKey(f => new { f.UserToId, f.UserFromId});
-
-
-
-        //modelBuilder.Entity<BasicUser>()
-        //    .HasMany(m => m.Friends)
-        //    .WithMany(m => m.FriendOf)
-        //    .UsingEntity<BasicFriend>(
-        //        e => e.HasOne<BasicUser>(f => f.UserTo).WithMany(e => e.Friends).HasForeignKey(e => e.UserTosId),
-        //        e => e.HasOne<BasicUser>().WithMany().HasForeignKey(e => e.UserFromsId)
-        //    );
+        modelBuilder.Entity<BasicUser>()
+            .HasMany(m => m.Friends)
+            .WithMany(m => m.FriendOf)
+            .UsingEntity<BasicFriend>(
+                e => e.HasOne<BasicUser>().WithMany().HasForeignKey(e => e.UserTosId),
+                e => e.HasOne<BasicUser>().WithMany().HasForeignKey(e => e.UserFromsId)
+            );
 
     }
 

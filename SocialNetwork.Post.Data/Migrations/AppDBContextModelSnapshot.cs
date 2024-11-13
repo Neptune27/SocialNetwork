@@ -22,28 +22,19 @@ namespace SocialNetwork.Post.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SocialNetwork.Core.Models.BasicFriend", b =>
+            modelBuilder.Entity("BasicUserBasicUser", b =>
                 {
-                    b.Property<string>("UserToId")
+                    b.Property<string>("FriendOfId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserFromId")
+                    b.Property<string>("FriendsId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.HasKey("FriendOfId", "FriendsId");
 
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
+                    b.HasIndex("FriendsId");
 
-                    b.Property<int>("Visibility")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserToId", "UserFromId");
-
-                    b.HasIndex("UserFromId");
-
-                    b.ToTable("Friends");
+                    b.ToTable("BasicUserBasicUser");
                 });
 
             modelBuilder.Entity("SocialNetwork.Core.Models.BasicUser", b =>
@@ -210,23 +201,19 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.ToTable("Reactions");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Core.Models.BasicFriend", b =>
+            modelBuilder.Entity("BasicUserBasicUser", b =>
                 {
-                    b.HasOne("SocialNetwork.Core.Models.BasicUser", "UserFrom")
+                    b.HasOne("SocialNetwork.Core.Models.BasicUser", null)
                         .WithMany()
-                        .HasForeignKey("UserFromId")
+                        .HasForeignKey("FriendOfId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SocialNetwork.Core.Models.BasicUser", "UserTo")
+                    b.HasOne("SocialNetwork.Core.Models.BasicUser", null)
                         .WithMany()
-                        .HasForeignKey("UserToId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("FriendsId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
-
-                    b.Navigation("UserFrom");
-
-                    b.Navigation("UserTo");
                 });
 
             modelBuilder.Entity("SocialNetwork.Post.Data.Models.Comment", b =>

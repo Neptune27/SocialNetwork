@@ -17,4 +17,7 @@ public class BasicUser : BaseModel
 
     public string Picture { get; set; }
 
+    public List<BasicUser> Friends { get; set; } = [];
+    public List<BasicUser> FriendOf { get; set; } = [];
+
 }

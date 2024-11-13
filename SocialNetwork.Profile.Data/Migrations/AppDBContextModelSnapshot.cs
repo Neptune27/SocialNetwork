@@ -22,30 +22,6 @@ namespace SocialNetwork.Profile.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SocialNetwork.Profile.Data.Models.Friend", b =>
-                {
-                    b.Property<string>("UserToId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserFromId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Visibility")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserToId", "UserFromId");
-
-                    b.HasIndex("UserFromId");
-
-                    b.ToTable("Friends");
-                });
-
             modelBuilder.Entity("SocialNetwork.Profile.Data.Models.FriendRequest", b =>
                 {
                     b.Property<string>("RecieverId")
@@ -122,25 +98,6 @@ namespace SocialNetwork.Profile.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("SocialNetwork.Profile.Data.Models.Friend", b =>
-                {
-                    b.HasOne("SocialNetwork.Profile.Data.Models.User", "UserFrom")
-                        .WithMany()
-                        .HasForeignKey("UserFromId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SocialNetwork.Profile.Data.Models.User", "UserTo")
-                        .WithMany()
-                        .HasForeignKey("UserToId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserFrom");
-
-                    b.Navigation("UserTo");
                 });
 
             modelBuilder.Entity("SocialNetwork.Profile.Data.Models.FriendRequest", b =>

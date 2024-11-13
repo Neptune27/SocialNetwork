@@ -1,7 +1,5 @@
 ﻿using MassTransit;
 using Mediator;
-using SocialNetwork.Core.Integrations.Users;
-using SocialNetwork.Core.Models;
 
 namespace SocialNetwork.Profile.Integrations;
 
@@ -11,9 +9,6 @@ public class PublishFriendAddHandler(IBus bus) : IRequestHandler<PublishFriendAd
 
     public async ValueTask<bool> Handle(PublishFriendAddRequest request, CancellationToken cancellationToken)
     {
-        AddFriendDTO basicFriend = new(request.FromUser, request.ToUser);
-
-        await bus.Publish(basicFriend, cancellationToken);
-        return true;
+        bus.Publish();
     }
 }

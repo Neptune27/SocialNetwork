@@ -23,11 +23,6 @@ public class AppDBContext : DbContext
             .WithOne()
             .OnDelete(DeleteBehavior.NoAction);
 
-
-        modelBuilder.Entity<BasicFriend>()
-    .HasKey(f => new { f.UserToId, f.UserFromId });
-
-
         //modelBuilder.Entity<CommentReaction>()
         //    .HasKey(t => new
         //    {
@@ -55,6 +50,5 @@ public class AppDBContext : DbContext
     public DbSet<Models.Post> Posts { get; set; }
     public DbSet<Reaction> Reactions { get; set; }
     public DbSet<BasicUser> Users { get; set; }
-    public DbSet<BasicFriend> Friends { get; set; }
 
 }
