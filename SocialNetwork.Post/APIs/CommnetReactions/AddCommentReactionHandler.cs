@@ -12,12 +12,7 @@ public class AddCommentReactionHandler(AppDBContext context)
     public async ValueTask<CommentReaction> Handle(AddCommentReactionRequest request, CancellationToken cancellationToken)
     {
         var commentReaction = await context.CommentReactions.AddAsync(request.CommentReaction, cancellationToken);
-        var comment = await context.Comments.FindAsync(request.CommentReaction.CommentId);
-        context.Attach(comment);
-        comment.Reactions.Add(commentReaction.Entity);
-        context.Comments.Update(comment);
         await context.SaveChangesAsync();
         return commentReaction.Entity;
-
     }
 }

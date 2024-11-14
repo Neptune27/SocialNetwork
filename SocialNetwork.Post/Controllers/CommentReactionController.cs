@@ -58,6 +58,37 @@ public class CommentReactionController(IMediator mediator) : ControllerBase
         return BadRequest(result);
     }
 
+    [HttpPut("{commentId}")]
+    public async Task<IActionResult> Put(int commentId)
+    {
+        BasicUser loginUser = await GetAuthorizeAsync();
+        if (loginUser == null) return Unauthorized("No authorized.");
+
+        Comment comment = await mediator.Send(new GetCommentRequest(commentId));
+        if (comment == null) return NotFound("Comment with " + commentId + " not found.");
+
+        CommentReaction commentReaction = await mediator.Send(new GetCommentReactionRequest(commentId, loginUser.Id));
+        commentReaction.LastUpdated = DateTime.Now;
+        return Ok();
+    }
+
+    [HttpDelete("{commentId}")]
+    public async Task<IActionResult> Put(int commentId)
+    {
+        BasicUser loginUser = await GetAuthorizeAsync();
+        if (loginUser == null) return Unauthorized("No authorized.");
+
+        Comment comment = await mediator.Send(new GetCommentRequest(commentId));
+        if (comment == null) return NotFound("Comment with " + commentId + " not found.");
+
+        var result = await mediator.Send(new DeleteCommentReactionRequest(commentId, loginUser.Id));
+        if (result != null)
+            return Ok(result);
+        else
+            return BadRequest("Something wong >.<' ");
+    }
+    
+
     private async Task<BasicUser> GetAuthorizeAsync()
     {
         var user = HttpContext.User;
