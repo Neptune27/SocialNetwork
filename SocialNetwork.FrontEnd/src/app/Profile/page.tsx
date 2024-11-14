@@ -123,11 +123,15 @@ interface Details {
     currentCity: string;
     hometown: string;
     relationship: string;
-    instagram: string;
     firstName: string;
     lastName: string;
     profilePicture: string;
     background: string;
+    username: string;
+    location: string;
+    twitter: string;
+    instagram: string;
+    github: string;
 }
 
 
@@ -145,11 +149,15 @@ const ProfilePage = () => {
         currentCity: "Ho Chi Minh",
         hometown: "Quang Nam",
         relationship: "Single",
-        instagram: "NguyenHuy",
         firstName: "Test First Name H",
         lastName: "Test",
         profilePicture: "",
-        background:""
+        background: "",
+        username: "",
+        location: "",
+        twitter: "",
+        instagram: "",
+        github: "",
     });
 
     useEffect(() => {
@@ -176,7 +184,12 @@ const ProfilePage = () => {
                     firstName: user.firstName,
                     lastName: user.lastName,
                     profilePicture: `${api(ApiEndpoint.PROFILE)}/${user.profilePicture.replaceAll("\\", "\/")}`,
-                    background: `${api(ApiEndpoint.PROFILE)}/${user.background.replaceAll("\\", "\/")}`
+                    background: `${api(ApiEndpoint.PROFILE)}/${user.background.replaceAll("\\", "\/")}`,
+                    username: user.userName,
+                    location: user.location,
+                    instagram: user.instagram,
+                    twitter: user.twitter,
+                    github:user.github
                 }));
 
             } catch (error) {
@@ -198,12 +211,11 @@ const ProfilePage = () => {
                   <div className={style.profile_container}>
                       <Cover cover={details.background} visitor />
             <ProfilePictureInfos
-                          profile={{
-                              picture: details.profilePicture,
-                first_name: user.firstName,
-                              last_name: user.lastName,
-                              friendship:testFriendshipData
-              }}
+                profile={{
+                    picture: details.profilePicture,
+                    username: details.username,
+                    friendship:testFriendshipData
+                }}
               visitor
             />
             <ProfileMenu />

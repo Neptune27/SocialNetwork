@@ -15,8 +15,7 @@ interface Friendship {
 interface ProfilePictureInfosProps {
     profile: {
         picture: string;
-        first_name: string;
-        last_name: string;
+        username: string;
         friendship: Friendship
     };
     visitor: boolean;
@@ -50,8 +49,8 @@ const ProfilePictureInfos = ({ profile, visitor }: ProfilePictureInfosProps) => 
                 </div>
                 <div className={style.profile_w_col}>
                     <div className={style.profile_name}>
-                        {profile.first_name} {profile.last_name}
-                        <div className={style.othername}>Othername</div>
+                        {profile.username}
+                        {/*<div className={style.othername}>Othername</div>*/}
                     </div>
                     <div className={style.profile_friend_count}></div>
                     <div className={style.profile_friend_imgs}></div>
