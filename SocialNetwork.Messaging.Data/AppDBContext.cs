@@ -32,13 +32,24 @@ public class AppDBContext : DbContext
                 c.RoomId
             });
 
-        modelBuilder.Entity<BasicUser>()
-            .HasMany(m => m.Friends)
-            .WithMany(m => m.FriendOf)
-            .UsingEntity<BasicFriend>(
-                e => e.HasOne<BasicUser>().WithMany().HasForeignKey(e => e.UserTosId),
-                e => e.HasOne<BasicUser>().WithMany().HasForeignKey(e => e.UserFromsId)
-            );
+
+        modelBuilder.Entity<BasicFriend>()
+    .HasOne(f => f.UserFrom)
+    .WithMany()
+    .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<BasicFriend>()
+           .HasOne(f => f.UserTo)
+           .WithMany()
+           .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<BasicFriend>()
+           .HasKey(f => new
+           {
+               f.UserFromId,
+               f.UserToId
+           });
+
 
     }
 

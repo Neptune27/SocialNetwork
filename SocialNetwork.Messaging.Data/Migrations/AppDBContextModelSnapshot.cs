@@ -39,10 +39,10 @@ namespace SocialNetwork.Messaging.Data.Migrations
 
             modelBuilder.Entity("SocialNetwork.Core.Models.BasicFriend", b =>
                 {
-                    b.Property<string>("UserFromsId")
+                    b.Property<string>("UserFromId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserTosId")
+                    b.Property<string>("UserToId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -54,9 +54,9 @@ namespace SocialNetwork.Messaging.Data.Migrations
                     b.Property<int>("Visibility")
                         .HasColumnType("int");
 
-                    b.HasKey("UserFromsId", "UserTosId");
+                    b.HasKey("UserFromId", "UserToId");
 
-                    b.HasIndex("UserTosId");
+                    b.HasIndex("UserToId");
 
                     b.ToTable("Friends");
                 });
@@ -223,17 +223,21 @@ namespace SocialNetwork.Messaging.Data.Migrations
 
             modelBuilder.Entity("SocialNetwork.Core.Models.BasicFriend", b =>
                 {
-                    b.HasOne("SocialNetwork.Core.Models.BasicUser", null)
+                    b.HasOne("SocialNetwork.Core.Models.BasicUser", "UserFrom")
                         .WithMany()
-                        .HasForeignKey("UserFromsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UserFromId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("SocialNetwork.Core.Models.BasicUser", null)
+                    b.HasOne("SocialNetwork.Core.Models.BasicUser", "UserTo")
                         .WithMany()
-                        .HasForeignKey("UserTosId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .HasForeignKey("UserToId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("UserFrom");
+
+                    b.Navigation("UserTo");
                 });
 
             modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.Message", b =>

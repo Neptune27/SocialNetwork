@@ -40,9 +40,6 @@ const Cover = ({ cover, visitor }: CoverProps) => {
         ) {
             setError(`${file.name} format is not supported.`);
             return;
-        } else if (file.size > 1024 * 1024 * 5) {
-            setError(`${file.name} is too large. Max 5MB allowed.`);
-            return;
         }
 
         const reader = new FileReader();

@@ -15,10 +15,10 @@ public class DeleteMessageFriendConsumer(
     {
         var data = context.Message;
         var friend = await dBContext.Friends
-            .FirstOrDefaultAsync(u => u.UserFromsId == data.FromUserId || u.UserTosId == data.ToUserId);
+            .FirstOrDefaultAsync(u => u.UserFrom.Id == data.FromUserId || u.UserTo.Id == data.ToUserId);
 
         var friendOther = await dBContext.Friends
-            .FirstOrDefaultAsync(u => u.UserFromsId == data.ToUserId || u.UserTosId == data.FromUserId);
+            .FirstOrDefaultAsync(u => u.UserFrom.Id == data.ToUserId || u.UserTo.Id == data.FromUserId);
 
         if (friend is null && friendOther is null)
         {

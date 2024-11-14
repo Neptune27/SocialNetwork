@@ -80,6 +80,7 @@ const ChatSidebarItem = ({ room }: Props) => {
     }
 
     let finalProfileUrl = ""
+    let roomName = room.name
 
     switch (room.roomType) {
         case ERoomType.Normal:
@@ -87,6 +88,7 @@ const ChatSidebarItem = ({ room }: Props) => {
 
             if (otherUser !== undefined) {
                 finalProfileUrl = `${api(ApiEndpoint.PROFILE)}/${otherUser.picture}`
+                roomName = otherUser.name
             }
             break
         case ERoomType.Group:
@@ -106,7 +108,7 @@ const ChatSidebarItem = ({ room }: Props) => {
                         <AvatarImage src={`${finalProfileUrl}`} />
                     </Avatar>
                     <div className="w-4/6">
-                        <div className="text-xl font-semibold">{room.name}</div>
+                        <div className="text-xl font-semibold">{roomName}</div>
                         <div className="truncate">{lastMessage == null ? "Start a chat" : lastMessage.messageType == EMessageType.Media ? "Media" : lastMessage.content}</div>
                     </div>
                 </div>
@@ -115,19 +117,19 @@ const ChatSidebarItem = ({ room }: Props) => {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <SidebarMenuAction showOnHover>
-                        <MoreHorizontal />
+                        <MoreHorizontal/>
                     </SidebarMenuAction>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="right" align="start">
 
-                    {userId == room.createdBy.id
+                    {userId == room.createdBy.id && room.roomType == ERoomType.Group
                         ?
                         <DropdownMenuItem onClick={ handleRename}>
                             <span>Rename room</span>
                         </DropdownMenuItem>
                         : null
                     }
-                    {userId == room.createdBy.id
+                    {userId == room.createdBy.id && room.roomType == ERoomType.Group
                         ?
                         <DropdownMenuItem onClick={handleModify}>
                             <span>Change users</span>

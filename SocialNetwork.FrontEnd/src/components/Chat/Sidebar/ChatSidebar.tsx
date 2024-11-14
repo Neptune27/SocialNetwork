@@ -1,8 +1,7 @@
 import { Plus } from "lucide-react"
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupAction, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "../../ui/sidebar"
-import { DropdownMenu } from "../../ui/dropdown-menu"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../../ui/alert-dialog"
-import { IRoom } from "@/interfaces/IMessage"
+import { IMessageUser, IRoom } from "@/interfaces/IMessage"
 import ChatSidebarItem from "./ChatSidebarItem"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog"
 import { Button } from "../../ui/button"
@@ -12,13 +11,16 @@ import { authorizedFetch } from "../../../Ultility/authorizedFetcher"
 import { api, ApiEndpoint } from "../../../api/const"
 import { Input } from "../../ui/input"
 import { Label } from "../../ui/label"
-import { useEffect, useRef } from "react"
+import { SyntheticEvent, useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 import useCurrentRoom from "../../../hooks/useCurrentRoom"
 import { useRouter } from "next/navigation"
 import useMessageHub from "../../../hooks/useMessageHub"
 import Dropzone from 'shadcn-dropzone';
 import axios from "axios"
+import { Separator } from "../../ui/separator"
+import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
+import { Avatar, AvatarImage } from "../../ui/avatar"
 
 type Props = {
     rooms: IRoom[]
@@ -26,9 +28,77 @@ type Props = {
 
 
 const ChatAddRoomDialog = () => {
+    const [totalFriends, setTotalFriends] = useState<IMessageUser[]>([])
+    const [selected, setSelected] = useState<IMessageUser[]>([])
+    const [filtered, setFiltered] = useState<IMessageUser[]>([])
+    const handleOpened = async () => {
+        const resp = await authorizedFetch(`${api(ApiEndpoint.MESSAGING)}/Friend/`);
+
+        if (!resp.ok) {
+            toast("Something wrong in getting friends")
+        }
+
+        const data = await resp.json();
+        setTotalFriends(data)
+        setFiltered(data)
+        setSelected([])
+    }
+
+    const ref = useRef<HTMLInputElement>(null)
+
+    const handleInputChanged = () => {
+        if (!ref.current) {
+            return
+        }
+
+        const value = ref.current.value.trim().toLowerCase()
+
+        const excludedFilter = totalFriends.filter(f => !selected.includes(f));
+
+        console.log(excludedFilter)
+        if (value === "") {
+            setFiltered(excludedFilter)
+            return
+        }
+
+        const filteredUser = excludedFilter.filter(f => f.name.toLowerCase().includes(value))
+        setFiltered(filteredUser)
+    }
+
+    const handleAddUser = (user: IMessageUser) => {
+        selected.push(user)
+        const remove = filtered.filter(f => f != user)
+
+        setSelected([...selected])
+        setFiltered(remove)
+    }
+
+    const handleRemoveUser = (user: IMessageUser) => {
+        filtered.push(user)
+        const remove = selected.filter(f => f != user)
+
+        setSelected(remove)
+        setFiltered([...filtered])
+    }
+
+    const handleCreateRoom = async () => {
+        const otherUserId = selected.map(u => u.id)
+        const name = `Room with ${selected.join(", ")}`
+        const resp = await authorizedFetch(`${api(ApiEndpoint.MESSAGING)}/Room`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: name,
+                userIds: otherUserId
+            })
+        })
+    }
+
     return (
         <Dialog>
-            <DialogTrigger asChild>
+            <DialogTrigger asChild onClick={handleOpened}>
                 <Plus/>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
@@ -39,16 +109,42 @@ const ChatAddRoomDialog = () => {
                     </DialogDescription>
                 </DialogHeader>
 
-                {/*<div className="grid gap-4 py-4">*/}
-                {/*    <div className="grid grid-cols-4 items-center gap-4">*/}
-                {/*    Thing here*/}
-                {/*    </div>*/}
-                {/*    <div className="grid grid-cols-4 items-center gap-4">*/}
-                {/*    </div>*/}
-                {/*</div>*/}
+                <div className="grid gap-4 py-4">
+                    <div className="space-y-1">
+                        <h4 className="text-sm font-medium leading-none">Selected Users</h4>
+                        {selected.map(f => <div key={f.id} className="flex justify-between">
+                            <div className="flex gap-2">
+                                <Avatar>
+                                    <AvatarImage src={`${api(ApiEndpoint.PROFILE)}/${f.picture}`} />
+                                </Avatar>
+                                <span>{f.name}</span>
+                            </div>
+                            <button onClick={() => handleRemoveUser(f)}>
+                                <CiCircleMinus size={32} />
+                            </button>
+                        </div>)}
+                    </div>
+                    <Separator className="my-4" />
+                    <div className="space-y-1">
+                        <h4 className="text-sm font-medium leading-none">All Friends</h4>
+                        <Input ref={ref} placeholder="Find friends" onChange={handleInputChanged} className="py-2"/>
+                        {filtered.map(f => <div key={f.id} className="flex justify-between">
+                            <div className="flex gap-2">
+                                <Avatar>
+                                    <AvatarImage src={`${api(ApiEndpoint.PROFILE)}/${f.picture}`} />
+                                </Avatar>
+                                <span>{f.name}</span>
+                            </div>
+                            <button onClick={()=>handleAddUser(f)}>
+                                <CiCirclePlus size={32} />
+                            </button>
+                        </div>)}
+                    </div>
+
+                </div>
 
                 <DialogFooter>
-                    <Button type="submit">Create Room</Button>
+                    <Button type="submit" onClick={handleCreateRoom}>Create Room</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
@@ -330,6 +426,7 @@ const ChatSidebar = ({
     const hub = useMessageHub()
     const callNotifyStore = useCallNotifyDialog()
     const totalRooms = useRooms();
+    const currentRoomStore = useCurrentRoom()
 
     const handleRecieveCall = (data: IRoom) => {
         console.log("Calling in room ")
@@ -349,6 +446,13 @@ const ChatSidebar = ({
         }
 
         room.name = data.name
+
+        if (currentRoomStore.room) {
+            currentRoomStore.room.name = data.name
+            currentRoomStore.set(currentRoomStore.room)
+        } 
+
+
         totalRooms.set(totalRooms.rooms)
     }
 
@@ -365,7 +469,7 @@ const ChatSidebar = ({
             messageHub.off("RecieveCall", handleRecieveCall)
             messageHub.off("RecieveRoomNameChanged", handleRecieveRoomNameChanged)
         }
-    }, [hub.hub, totalRooms, callNotifyStore])
+    }, [hub.hub, totalRooms, callNotifyStore, currentRoomStore])
     return (
         <>
             <Sidebar collapsible="icon">

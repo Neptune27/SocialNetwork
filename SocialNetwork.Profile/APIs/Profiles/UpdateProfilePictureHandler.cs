@@ -32,7 +32,7 @@ namespace SocialNetwork.Profile.APIs.Profiles
 			}
 			user.ProfilePicture = saveToPath;
 			await dBContext.SaveChangesAsync(cancellationToken);
-			await mediator.Send(new PublishAvatarChangeRequest(request.UserId, request.ProfilePicture), cancellationToken);
+			await mediator.Send(new PublishAvatarChangeRequest(request.UserId, saveToPath), cancellationToken);
 
 			return true;
 		}
