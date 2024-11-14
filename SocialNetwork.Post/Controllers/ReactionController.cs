@@ -55,7 +55,14 @@ public class ReactionController(IMediator mediator) : ControllerBase
 
         var result = await mediator.Send(new AddReactionRequest(reaction));
 
-        return Ok(result);
+        if (result != null)
+        {
+            post.Reactions.Add(reaction);
+            await mediator.Send(new UpdatePostRequest(post));
+            return Ok(result);
+        }
+        else
+            return BadRequest(result); 
     }
 
     [HttpPut("{postId}")]
@@ -89,7 +96,12 @@ public class ReactionController(IMediator mediator) : ControllerBase
             return NotFound("Post with id + " + postId + " not found.");
 
         var result = await mediator.Send(new DeleteReactionRequest(postId, loginUser.Id));
-        return Ok(result);
+        if(result != null)
+        {
+            //post.Reactions.Remove(reaction);
+            return Ok(result);
+        }
+        return BadRequest(result);
     }
 
     private async Task<BasicUser> GetAuthorizeAsync()
