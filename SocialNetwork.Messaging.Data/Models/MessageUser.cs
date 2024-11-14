@@ -16,8 +16,6 @@ public class MessageUser : BasicUser
         Id = user.Id;
         Name = user.Name;
         Picture = user.Picture;
-        Friends = user.Friends;
-        FriendOf = user.FriendOf;
     }
 
     public List<Room> Rooms { get; set; } = [];  

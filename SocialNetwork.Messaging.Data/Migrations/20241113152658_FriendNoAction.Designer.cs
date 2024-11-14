@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SocialNetwork.Post.Data;
+using SocialNetwork.Messaging.Data;
 
 #nullable disable
 
-namespace SocialNetwork.Post.Data.Migrations
+namespace SocialNetwork.Messaging.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241113152658_FriendNoAction")]
+    partial class FriendNoAction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,21 @@ namespace SocialNetwork.Post.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MessageUserRoom", b =>
+                {
+                    b.Property<int>("RoomsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("RoomsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("MessageUserRoom");
+                });
 
             modelBuilder.Entity("SocialNetwork.Core.Models.BasicFriend", b =>
                 {
@@ -54,6 +72,11 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
@@ -70,10 +93,14 @@ namespace SocialNetwork.Post.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("BasicUser");
+
+                    b.HasDiscriminator().HasValue("BasicUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("SocialNetwork.Post.Data.Models.Comment", b =>
+            modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -81,8 +108,9 @@ namespace SocialNetwork.Post.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CommentId")
-                        .HasColumnType("int");
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -90,18 +118,13 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Medias")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PostId")
+                    b.Property<int>("MessageType")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReplyToId")
+                    b.Property<int?>("ReplyToId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoomId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -111,44 +134,19 @@ namespace SocialNetwork.Post.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("PostId");
 
                     b.HasIndex("ReplyToId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ReplyToId] IS NOT NULL");
+
+                    b.HasIndex("RoomId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Post.Data.Models.CommentReaction", b =>
-                {
-                    b.Property<int>("CommentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Visibility")
-                        .HasColumnType("int");
-
-                    b.HasKey("CommentId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("CommentReactions");
-                });
-
-            modelBuilder.Entity("SocialNetwork.Post.Data.Models.Post", b =>
+            modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.Room", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -159,55 +157,71 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Medias")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Message")
+                    b.Property<string>("Profile")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("RoomType")
+                        .HasColumnType("int");
 
                     b.Property<int>("Visibility")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("CreatedById");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Post.Data.Models.Reaction", b =>
+            modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.RoomLastSeen", b =>
                 {
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ReactionType")
+                    b.Property<int>("RoomId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Visibility")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("LastSeen")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("PostId", "UserId");
+                    b.HasKey("UserId", "RoomId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("RoomId");
 
-                    b.ToTable("Reactions");
+                    b.ToTable("RoomsLastSeen");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.MessageUser", b =>
+                {
+                    b.HasBaseType("SocialNetwork.Core.Models.BasicUser");
+
+                    b.HasDiscriminator().HasValue("MessageUser");
+                });
+
+            modelBuilder.Entity("MessageUserRoom", b =>
+                {
+                    b.HasOne("SocialNetwork.Messaging.Data.Models.Room", null)
+                        .WithMany()
+                        .HasForeignKey("RoomsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Messaging.Data.Models.MessageUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SocialNetwork.Core.Models.BasicFriend", b =>
@@ -229,94 +243,61 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.Navigation("UserTo");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Post.Data.Models.Comment", b =>
+            modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.Message", b =>
                 {
-                    b.HasOne("SocialNetwork.Post.Data.Models.Comment", null)
-                        .WithMany("Replys")
-                        .HasForeignKey("CommentId");
-
-                    b.HasOne("SocialNetwork.Post.Data.Models.Post", "Post")
-                        .WithMany("Comments")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SocialNetwork.Post.Data.Models.Comment", "ReplyTo")
+                    b.HasOne("SocialNetwork.Messaging.Data.Models.Message", "ReplyTo")
                         .WithOne()
-                        .HasForeignKey("SocialNetwork.Post.Data.Models.Comment", "ReplyToId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasForeignKey("SocialNetwork.Messaging.Data.Models.Message", "ReplyToId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("SocialNetwork.Messaging.Data.Models.Room", "Room")
+                        .WithMany("Messages")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SocialNetwork.Core.Models.BasicUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Post");
 
                     b.Navigation("ReplyTo");
 
+                    b.Navigation("Room");
+
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Post.Data.Models.CommentReaction", b =>
+            modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.Room", b =>
                 {
-                    b.HasOne("SocialNetwork.Post.Data.Models.Comment", "Comment")
-                        .WithMany("Reactions")
-                        .HasForeignKey("CommentId")
+                    b.HasOne("SocialNetwork.Core.Models.BasicUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.Navigation("CreatedBy");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.RoomLastSeen", b =>
+                {
+                    b.HasOne("SocialNetwork.Messaging.Data.Models.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SocialNetwork.Core.Models.BasicUser", "User")
+                    b.HasOne("SocialNetwork.Messaging.Data.Models.MessageUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Comment");
+                    b.Navigation("Room");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Post.Data.Models.Post", b =>
+            modelBuilder.Entity("SocialNetwork.Messaging.Data.Models.Room", b =>
                 {
-                    b.HasOne("SocialNetwork.Core.Models.BasicUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SocialNetwork.Post.Data.Models.Reaction", b =>
-                {
-                    b.HasOne("SocialNetwork.Post.Data.Models.Post", "Post")
-                        .WithMany("Reactions")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SocialNetwork.Core.Models.BasicUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SocialNetwork.Post.Data.Models.Comment", b =>
-                {
-                    b.Navigation("Reactions");
-
-                    b.Navigation("Replys");
-                });
-
-            modelBuilder.Entity("SocialNetwork.Post.Data.Models.Post", b =>
-                {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Reactions");
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

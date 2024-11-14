@@ -11,10 +11,14 @@ public class GetFriendsHandler(AppDBContext dBContext) : IRequestHandler<GetFrie
 
     public async ValueTask<List<FriendDTO>> Handle(GetFriendsRequest request, CancellationToken cancellationToken)
     {
-        var result = await dBContext.Users
-            .Where(u => u.Friends.Any(f => f.Id == request.UserId))
+        var temp = await dBContext.Friends.ToListAsync();
+        var result = await dBContext.Friends
+            .Where(f => f.UserFrom.Id == request.UserId || f.UserTo.Id == request.UserId)
             .ToListAsync(cancellationToken: cancellationToken);
 
-        return result.Select(r => new FriendDTO(r)).ToList();
+        var user = await dBContext.Users.FirstOrDefaultAsync(u => u.Id == request.UserId);
+
+        return result.Select(r => r.UserFrom.Id == user.Id ? new FriendDTO(r.UserFrom)
+                                                : new FriendDTO(r.UserTo)).ToList();
     }
 }

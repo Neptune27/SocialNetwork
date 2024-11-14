@@ -11,9 +11,10 @@ import { api, ApiEndpoint } from "../../../api/const"
 import { authorizedFetch } from "../../../helper/authorizedFetcher"
 import useMessagesByRoom from "../../../hooks/useMessagesByRoom"
 import useMessageHub from "../../../hooks/useMessageHub"
-import { IMessage } from "../../../interfaces/IMessage"
+import { ERoomType, IMessage } from "../../../interfaces/IMessage"
 import setDebounce from "../../../helper/debounce"
 import { toast } from "sonner"
+import useUserId from "../../../hooks/useUserId"
 
 const ChatRoom = () => {
     const params = useParams()
@@ -148,7 +149,7 @@ const ChatRoom = () => {
         getMessages()
 
 
-    }, [currentRoom.room])
+    }, [currentRoom, rooms])
 
     const [isLastMessage, setIsLastMessage] = useState(false)
 
@@ -219,13 +220,11 @@ const ChatRoom = () => {
 
             r.messages = [...r.messages, ...newMessage]
 
-
-
-
             currentRoom.set(r)
         }, 100)
 
 
+    const userId = useUserId();
 
     const handleGetData = async () => {
         getDataDebounced()
@@ -238,9 +237,24 @@ const ChatRoom = () => {
         )
     }
 
+    let roomName = currentRoom.room.name
+    switch (currentRoom.room.roomType) {
+        case ERoomType.Normal:
+            const otherUser = currentRoom.room.users.find(u => u.id != userId)
+
+            if (otherUser !== undefined) {
+                roomName = otherUser.name
+            }
+            break
+        case ERoomType.Group:
+            break;
+
+        default:
+            break;
+    }
     return (
         <>
-            <ChatHeader name={currentRoom.room.name} profile={currentRoom.room.profile} total={currentRoom.room.users.length} />
+            <ChatHeader name={roomName} profile={currentRoom.room.profile} total={currentRoom.room.users.length} />
             <ChatBody messages={currentRoom.room.messages} handleGetData={handleGetData} isInitalized={init} />
             <ChatFooter />
         </>
