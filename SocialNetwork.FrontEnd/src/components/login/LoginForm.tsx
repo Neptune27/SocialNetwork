@@ -8,25 +8,28 @@ import { Form, Formik } from "formik";
 import LoginInput from "@/components/inputs/loginInput";
 import * as Yup from "yup";
 import { api, ApiEndpoint } from "../../api/const";
+
 const loginInfos = {
     username: "",
     password: "",
+    rememberMe: false,
 };
 
 interface LoginFormProps {
     setVisible: (visible: boolean) => void; // Accept setVisible as a prop
 }
+
 const LoginForm = ({ setVisible }: LoginFormProps) => {
     const [login, setLogin] = useState(loginInfos);
-    const { username, password } = login;
+    const { username, password, rememberMe } = login;
+
     const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setLogin({ ...login, [name]: value });
+        const { name, value, type, checked } = e.target;
+        setLogin({ ...login, [name]: type === "checkbox" ? checked : value });
     };
+
     const loginValidation = Yup.object({
-        username: Yup.string()
-            .required("Username is required.")
-            .max(100),
+        username: Yup.string().required("Username is required.").max(100),
         password: Yup.string().required("Password is required"),
     });
 
@@ -39,19 +42,26 @@ const LoginForm = ({ setVisible }: LoginFormProps) => {
             body: JSON.stringify({
                 username: login.username,
                 password: login.password,
-            })
-        })
+            }),
+        });
 
         if (!result.ok) {
             const error = await result.text();
-            console.log(error)
-            return
+            console.log(error);
+            alert(error);
+            return;
         }
+
         const resultJson = await result.json();
-        console.log(resultJson)
+        console.log(resultJson);
         localStorage.setItem("token", resultJson["token"]);
-        window.location.href = "/Home"
-    }
+
+        if (login.rememberMe) {
+            localStorage.setItem("username", login.username);
+        }
+
+        window.location.href = "/Home";
+    };
 
     return (
         <div className={style.login_wrap}>
@@ -68,6 +78,7 @@ const LoginForm = ({ setVisible }: LoginFormProps) => {
                         initialValues={{
                             username,
                             password,
+                            rememberMe,
                         }}
                         validationSchema={loginValidation}
                         onSubmit={handleSubmit}
@@ -89,6 +100,18 @@ const LoginForm = ({ setVisible }: LoginFormProps) => {
                                 <button type="submit" className="blue_btn">
                                     Log In
                                 </button>
+                                {/* Checkbox "Remember Me" below the "Log In" button */}
+                                <label className={style.remember_me}>
+                                    <input
+                                        type="checkbox"
+                                        name="rememberMe"
+                                        id="rememberMe"
+                                        checked={rememberMe}
+                                        onChange={handleLoginChange}
+                                    />
+                                    Remember Me
+                                </label>
+
                             </Form>
                         )}
                     </Formik>

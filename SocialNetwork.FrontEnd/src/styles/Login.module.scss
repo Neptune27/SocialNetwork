@@ -63,6 +63,31 @@
 }
 /*-------login-----*/
 
+/* Style for Remember Me checkbox */
+.remember_me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 14px;
+    color: var(--color-secondary);
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.remember_me input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--blue-color); /* Change checkbox color */
+}
+
+.remember_me label {
+    cursor: pointer;
+    user-select: none;
+}
+
+/*-----Rememberme-------*/
+
 /*-----Register---------*/
 .blur_background {
   position: fixed;

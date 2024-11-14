@@ -17,6 +17,8 @@ import Friends from "./Friends";
 import Intro from "../../components/intro";
 import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
+import LoadMore from "../../components/profilePicture/LoadMore";
+
 
 const visitor = false; //Visitor or not
 
@@ -196,6 +198,8 @@ const ProfilePage = () => {
                     {/* <div className={style.no_posts}>No posts available</div> */}
                     <Post post={postVar} user={user} key={1} />
                     <Post post={postVar1} user={user} key={2} />
+
+                    <LoadMore/>
                   </div>
                 </div>
               </div>

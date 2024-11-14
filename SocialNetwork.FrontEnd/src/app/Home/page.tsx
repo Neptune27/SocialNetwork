@@ -1,7 +1,8 @@
 import React from "react";
+import Layout from "../Profile/layout";
 
 const page = () => {
-  return <div></div>;
+    return <Layout/>;
 };
 
 export default page;
