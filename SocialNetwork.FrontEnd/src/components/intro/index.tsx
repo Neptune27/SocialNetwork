@@ -114,7 +114,7 @@ const Intro = ({ details, visitor }: IntroProps) => {
             {infos.bio && !showBio && (
                 <div className={style.info_col}>
                     <span className={style.info_text}>{infos.bio}</span>
-                    {visitor && renderEditButton("Edit Bio", () => setShowBio(true))}
+                    {!visitor && renderEditButton("Edit Bio", () => setShowBio(true))}
                 </div>
             )}
 
@@ -132,7 +132,7 @@ const Intro = ({ details, visitor }: IntroProps) => {
             {infos.job && infos.workplace && (
                 <div className={style.info_profile}>
                     <Image src="/icons/job.png" alt="Job icon" width={24} height={24} />
-                    { "First Name: "} <b>{infos.firstName}</b>
+                    {"First Name: "} <b>{infos.firstName}</b>
                 </div>
             )}
 
