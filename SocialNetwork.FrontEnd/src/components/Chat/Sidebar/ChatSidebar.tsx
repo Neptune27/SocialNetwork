@@ -6,7 +6,7 @@ import { IRoom } from "@/interfaces/IMessage"
 import ChatSidebarItem from "./ChatSidebarItem"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../../ui/dialog"
 import { Button } from "../../ui/button"
-import { useModifyRoomDialog, useRenameRoomDialog, useCallNotifyDialog, useLeaveRoomDialog } from "../../../hooks/Chat/Sidebar/useLeaveRoomDialog"
+import { useModifyRoomDialog, useRenameRoomDialog, useCallNotifyDialog, useLeaveRoomDialog, useChangeProfileRoomDialog } from "../../../hooks/Chat/Sidebar/useLeaveRoomDialog"
 import useRooms from "../../../hooks/useRooms"
 import { authorizedFetch } from "../../../Ultility/authorizedFetcher"
 import { api, ApiEndpoint } from "../../../api/const"
@@ -17,6 +17,8 @@ import { toast } from "sonner"
 import useCurrentRoom from "../../../hooks/useCurrentRoom"
 import { useRouter } from "next/navigation"
 import useMessageHub from "../../../hooks/useMessageHub"
+import Dropzone from 'shadcn-dropzone';
+import axios from "axios"
 
 type Props = {
     rooms: IRoom[]
@@ -174,7 +176,7 @@ const CallNotifyDialog = () => {
                         Do you want to join?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className="justify-between pl-4 pr-4">
+                <AlertDialogFooter className="!justify-between pl-4 pr-4">
                     <AlertDialogCancel>Decline</AlertDialogCancel>
                     <AlertDialogAction onClick={handleConfirm}>Answer</AlertDialogAction>
                 </AlertDialogFooter>
@@ -238,6 +240,83 @@ const RenameRoomDialog = () => {
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction onClick={handleConfirm}>Change</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    )
+}
+
+
+const ChangeProfileRoomDialog = () => {
+    const store = useChangeProfileRoomDialog()
+    const roomStore = useRooms()
+
+    const data = store.data
+
+    const inputRef = useRef<HTMLInputElement>(null)
+
+    const handleOnOpenChanged = (open: boolean) => {
+        data.open = open
+        store.set(data)
+    }
+
+    const handleConfirm = async () => {
+        if (inputRef.current == null) {
+            return
+        }
+
+
+        const resp = await authorizedFetch(`${api(ApiEndpoint.MESSAGING)}/Room/${data.room?.id}`, {
+            method: "PATCH",
+            headers: {
+                Accept: 'application/json',
+                "Content-Type": 'application/json'
+            },
+            body: JSON.stringify(inputRef.current.value.trim())
+        })
+
+        if (!resp.ok) {
+            toast("Unexpected error had occured")
+        }
+    }
+
+    return (
+        <AlertDialog open={data?.open} onOpenChange={handleOnOpenChanged}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Change profile {data.room?.name}?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        Change image of a profile {data.room?.name}
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <div className="grid gap-4 py-4">
+                    <Dropzone onDrop={async (acceptedFile: File[]) => {
+                        const form = new FormData();
+                        form.append('file', acceptedFile[0]);
+                        const resp = await axios.post(`${api(ApiEndpoint.MESSAGING)}/Room/Image/${data.room?.id}`, form, {
+                            headers: {
+                                Authorization: "Bearer " + localStorage.getItem("token")
+                            },
+                        })
+
+                        if (resp.status == 200) {
+                            toast("Updated successfully")
+                        }
+                        else {
+                            toast("Unexpected error had occured")
+                        }
+                        data.open = false
+                        store.set(data)
+
+
+                    }
+                    } accept={{
+                        'image/*': ['.jpeg', '.png']
+                    }} />
+                </div>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction>Change</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
