@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialNetwork.Profile.Data;
 
@@ -11,9 +12,11 @@ using SocialNetwork.Profile.Data;
 namespace SocialNetwork.Profile.Data.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241113072847_AddFriendRequest")]
+    partial class AddFriendRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,30 +24,6 @@ namespace SocialNetwork.Profile.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("SocialNetwork.Profile.Data.Models.Friend", b =>
-                {
-                    b.Property<string>("UserFromId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserToId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Visibility")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserFromId", "UserToId");
-
-                    b.HasIndex("UserToId");
-
-                    b.ToTable("Friends");
-                });
 
             modelBuilder.Entity("SocialNetwork.Profile.Data.Models.FriendRequest", b =>
                 {
@@ -107,6 +86,9 @@ namespace SocialNetwork.Profile.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -116,26 +98,9 @@ namespace SocialNetwork.Profile.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("SocialNetwork.Profile.Data.Models.Friend", b =>
-                {
-                    b.HasOne("SocialNetwork.Profile.Data.Models.User", "UserFrom")
-                        .WithMany()
-                        .HasForeignKey("UserFromId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("SocialNetwork.Profile.Data.Models.User", "UserTo")
-                        .WithMany()
-                        .HasForeignKey("UserToId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("UserFrom");
-
-                    b.Navigation("UserTo");
                 });
 
             modelBuilder.Entity("SocialNetwork.Profile.Data.Models.FriendRequest", b =>
@@ -143,18 +108,30 @@ namespace SocialNetwork.Profile.Data.Migrations
                     b.HasOne("SocialNetwork.Profile.Data.Models.User", "Reciever")
                         .WithMany()
                         .HasForeignKey("RecieverId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SocialNetwork.Profile.Data.Models.User", "Sender")
                         .WithMany()
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Reciever");
 
                     b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Profile.Data.Models.User", b =>
+                {
+                    b.HasOne("SocialNetwork.Profile.Data.Models.User", null)
+                        .WithMany("Friends")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Profile.Data.Models.User", b =>
+                {
+                    b.Navigation("Friends");
                 });
 #pragma warning restore 612, 618
         }

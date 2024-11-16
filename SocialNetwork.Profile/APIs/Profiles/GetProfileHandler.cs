@@ -19,7 +19,6 @@ namespace SocialNetwork.Profile.APIs.Profiles
 		{
 			var user = await dBContext
 				.Users
-				.Include(u => u.Friends.Take(request.TotalFriends))
 				.FirstOrDefaultAsync(u => u.Id == request.ProfileId);
 			if (user == null) {
 				return null;

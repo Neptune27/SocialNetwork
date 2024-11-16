@@ -10,7 +10,7 @@ public class PublishAvatarChangeHandler(IBus bus) : IRequestHandler<PublishAvata
 
     public async ValueTask<bool> Handle(PublishAvatarChangeRequest request, CancellationToken cancellationToken)
     {
-        UpdateUserAvatarDTO dto = new(request.ProfileUrl, request.UserId);
+        UpdateUserAvatarDTO dto = new(request.UserId, request.ProfileUrl);
         await bus.Publish(dto, cancellationToken);
         return true;
     }

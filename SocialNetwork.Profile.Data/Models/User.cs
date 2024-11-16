@@ -25,8 +25,6 @@ public class User : BaseModel, ICloneable
 
     public string Background { get; set; }
 
-    public List<User> Friends { get; set; } = [];
-
     public string FullName => $"{FirstName} {LastName}";
 
     public string Location { get; set; }

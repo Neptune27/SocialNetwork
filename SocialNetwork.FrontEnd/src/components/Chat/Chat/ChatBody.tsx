@@ -82,7 +82,7 @@ type ChatContentProps = {
 const ChatContent = forwardRef<HTMLDivElement, ChatContentProps>(({ m, userId } : ChatContentProps, ref) => {
     return (
         <ChatBubble ref={ref} variant={m.user.id == userId ? "sent" : "received"} >
-            <ChatBubbleAvatar src={m.user.picture} fallback='UD' />
+            <ChatBubbleAvatar src={`${api(ApiEndpoint.PROFILE)}/${m.user.picture}`} fallback='UD' />
             <ChatBubbleMessage variant={m.user.id == userId ? "sent" : "received"}>
                 <ChatMessage m={m}/>
             </ChatBubbleMessage>
