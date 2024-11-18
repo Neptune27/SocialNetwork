@@ -97,17 +97,17 @@ const ChatAddRoomDialog = () => {
     }
 
     return (
-        <Dialog>
-            <DialogTrigger asChild onClick={handleOpened}>
-                <Plus/>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                    <DialogTitle>Create new Room</DialogTitle>
-                    <DialogDescription>
+        <AlertDialog>
+            <AlertDialogTrigger asChild onClick={handleOpened}>
+                <Plus />
+            </AlertDialogTrigger>
+            <AlertDialogContent className="sm:max-w-[425px]">
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Create new Room</AlertDialogTitle>
+                    <AlertDialogDescription>
                         Select which users you want to add. Click Create Room when you're done
-                    </DialogDescription>
-                </DialogHeader>
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
 
                 <div className="grid gap-4 py-4">
                     <div className="space-y-1">
@@ -127,7 +127,7 @@ const ChatAddRoomDialog = () => {
                     <Separator className="my-4" />
                     <div className="space-y-1">
                         <h4 className="text-sm font-medium leading-none">All Friends</h4>
-                        <Input ref={ref} placeholder="Find friends" onChange={handleInputChanged} className="py-2"/>
+                        <Input ref={ref} placeholder="Find friends" onChange={handleInputChanged} className="py-2" />
                         {filtered.map(f => <div key={f.id} className="flex justify-between">
                             <div className="flex gap-2">
                                 <Avatar>
@@ -135,7 +135,7 @@ const ChatAddRoomDialog = () => {
                                 </Avatar>
                                 <span>{f.name}</span>
                             </div>
-                            <button onClick={()=>handleAddUser(f)}>
+                            <button onClick={() => handleAddUser(f)}>
                                 <CiCirclePlus size={32} />
                             </button>
                         </div>)}
@@ -143,11 +143,13 @@ const ChatAddRoomDialog = () => {
 
                 </div>
 
-                <DialogFooter>
-                    <Button type="submit" onClick={handleCreateRoom}>Create Room</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleCreateRoom}>Create</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+       
     )
 }
 
