@@ -1,21 +1,24 @@
-"use client";
-import style from "@/styles/Login.module.scss";
-import Footer from "@/components/login/Footer";
-import LoginForm from "@/components/login/LoginForm";
-import RegisterForm from "@/components/login/RegisterForm";
-import { useState } from "react";
+﻿"use client";
+import React, { useState, useEffect } from "react";
+import Layout from "./page";
+import Loading from "@/components/Loading";
 
-const Layout = () => {
-  const [visible, setVisible] = useState(false);
-  return (
-    <div className={style.login}>
-      <div className={style.login_wrapper}>
-        <LoginForm setVisible={setVisible} />
-        {visible && <RegisterForm setVisible={setVisible} />}
-        <Footer />
-      </div>
-    </div>
-  );
+const PageLogin: React.FC = () => {
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 3000); // 3000 milliseconds = 3 seconds
+
+        return () => clearTimeout(timer); // Clear timer when component unmounts
+    }, []);
+
+    return (
+        <>
+            {isLoading ? <Loading /> : <Layout />}
+        </>
+    );
 };
 
-export default Layout;
+export default PageLogin;

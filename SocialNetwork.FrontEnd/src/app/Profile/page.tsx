@@ -145,34 +145,35 @@ const ProfilePage = () => {
     }, [])
 
   return (
-    <>
-      {visible && <CreatePostPopUp user={user} setVisible={setVisible} />}
-      <div className={style.profile}>
+      <>
+    <div className="profile">
+        {visible && <CreatePostPopUp user={user} setVisible={setVisible} />}
+        <div className={style.profile}>
         <UserHeader user={user} page="profile" />
         <div className={style.profile_top}>
-          <div className={style.profile_container}>
+            <div className={style.profile_container}>
             <Cover cover={"/images/postBackgrounds/1.jpg"} visitor />
             <ProfilePictureInfos
-              profile={{
+                profile={{
                 picture: user.profilePicture,
                 first_name: user.firstName,
                 last_name: user.lastName,
-              }}
-              visitor
+                }}
+                visitor
             />
             <ProfileMenu />
-          </div>
+            </div>
         </div>
         <div className={style.profile_bottom}>
-          <div className={style.profile_container}>
+            <div className={style.profile_container}>
             <div className={style.bottom_container}>
-              <PplYouMayKnow />
-              <div className={style.profile_grid}>
+                <PplYouMayKnow />
+                <div className={style.profile_grid}>
                 <div className={style.profile_left}>
-                  <Intro details={details} visitor />
-                  <Photos />
-                  <Friends />
-                  <div className={style.relative_fb_copyright}>
+                    <Intro details={details} visitor />
+                    <Photos />
+                    <Friends />
+                    <div className={style.relative_fb_copyright}>
                     <Link href="/">Privacy </Link>
                     <span>. </span>
                     <Link href="/">Terms </Link>
@@ -180,33 +181,34 @@ const ProfilePage = () => {
                     <Link href="/">Advertising </Link>
                     <span>. </span>
                     <Link href="/">
-                      Ad Choices <i className={icons.ad_choices_icon}></i>{" "}
+                        Ad Choices <i className={icons.ad_choices_icon}></i>{" "}
                     </Link>
                     <span>. </span>
                     <Link href="/"></Link>Cookies <span>. </span>
                     <Link href="/">More </Link>
                     <span>. </span> <br />
                     Meta © 2022
-                  </div>
+                    </div>
                 </div>
                 <div className={style.profile_right}>
-                  {!visitor && (
+                    {!visitor && (
                     <CreatePost user={user} profile setVisible={setVisible} />
-                  )}
-                  <GridPosts />
-                  <div className={style.posts}>
+                    )}
+                    <GridPosts />
+                    <div className={style.posts}>
                     {/* <div className={style.no_posts}>No posts available</div> */}
                     <Post post={postVar} user={user} key={1} />
                     <Post post={postVar1} user={user} key={2} />
 
                     <LoadMore/>
-                  </div>
+                    </div>
                 </div>
-              </div>
+                </div>
             </div>
-          </div>
+            </div>
         </div>
-      </div>
+        </div>
+    </div>
     </>
   );
 };

@@ -1,4 +1,8 @@
-﻿.blur_background {
+﻿.posts {
+    margin-top: 10px;
+}
+
+.blur_background {
     position: fixed;
     top: 0;
     left: 0;
@@ -89,14 +93,13 @@
 }
 
 .profile_top {
-    max-width: 100%;
     margin-top: 56px;
     box-shadow: 0 1px 2px var(--shadow-1);
     background: var(--bg-primary);
 }
 
 .profile_container {
-    max-width: 1100px;
+    max-width: 945px;
     margin: 0 auto;
 }
 
@@ -170,7 +173,6 @@
     justify-content: space-between;
     padding: 0 1rem;
     margin-bottom: -2.8rem;
-    z-index: 1;
 }
 
 .profile_w_left {
@@ -623,7 +625,7 @@
     }
 
     .bottom_container {
-        padding: 10px;
+        padding: 5px;
     }
 
     .friendship {
@@ -642,10 +644,6 @@
     .profile_friend_imgs {
         justify-content: center;
         transform: translateY(-10px);
-    }
-
-    .fix1 {
-        transform: translate(1.2rem, -10px);
     }
 }
 

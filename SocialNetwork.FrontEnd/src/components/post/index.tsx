@@ -133,9 +133,10 @@ export default function Post({ post, user }: PostProps) {
                 ) : post.type === "profilePicture" ? (
                         <div className={styles.post_profile_wrap }>
                             <div className={styles.post_updated_bg}>
-                                <Image src={"/stories/profile2.jpg"} alt="" width={100} height={300} />
+                                <Image src={"/stories/profile2.jpg"} alt="" width={700} height={100} objectFit="cover" />
                             </div>
                             <Image src={"/stories/1.jpg"} alt="" width={100} height={105} className={styles.post_updated_picture} />
+                            
                          
                     </div>
                 ) : (
