@@ -17,6 +17,8 @@ import Friends from "./Friends";
 import Intro from "../../components/intro";
 import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
+import LoadMore from "../../components/profilePicture/LoadMore";
+
 
 
 interface Friendship {
