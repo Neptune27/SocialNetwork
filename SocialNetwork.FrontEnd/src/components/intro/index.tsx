@@ -21,6 +21,10 @@ interface IntroProps {
         instagram?: string;
         firstName?: string;
         lastName?: string;
+        location?: string;
+        twitter?: string;
+        github?: string;
+
     };
     visitor: boolean;
 }
@@ -42,7 +46,11 @@ const Intro = ({ details, visitor }: IntroProps) => {
         currentCity: details.currentCity || "Tanger",
         hometown: details.hometown || "Morocco",
         relationship: details.relationship || "Single",
-        instagram: details.instagram || "med_hajji7",
+        instagram: details.instagram || "instagram",
+        location: details.location || "",
+        twitter: details.twitter || "",
+        github: details.github || "",
+
     };
 
     const [infos, setInfos] = useState(initial);
@@ -62,9 +70,9 @@ const Intro = ({ details, visitor }: IntroProps) => {
     };
 
     const updateDetails = (nameInfo: string, value: string) => {
-        nameInfo = nameInfo.charAt(0).toUpperCase() + nameInfo.slice(1)
+        nameInfo = nameInfo.charAt(0).toUpperCase() + nameInfo.slice(1);
         const updateDetailsWithNameInfo = async () => {
-            const url = `${api(ApiEndpoint.PROFILE)}/Profile/${nameInfo}`; 
+            const url = `${api(ApiEndpoint.PROFILE)}/Profile/${nameInfo}`;
 
             try {
                 const response = await authorizedFetch(url, {
@@ -72,7 +80,7 @@ const Intro = ({ details, visitor }: IntroProps) => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(value), 
+                    body: JSON.stringify(value),
                 });
 
                 if (!response.ok) {
@@ -80,7 +88,10 @@ const Intro = ({ details, visitor }: IntroProps) => {
                 }
 
                 const result = await response.text();
-                console.log(result); // Log thông báo trả về từ server
+                console.log(result);
+
+                setCurrentDetails(infos);
+                setShowBio(false);
 
             } catch (error) {
                 console.error("Error:", error.message);
@@ -88,9 +99,8 @@ const Intro = ({ details, visitor }: IntroProps) => {
         };
 
         updateDetailsWithNameInfo();
-        setCurrentDetails(infos);
-        setShowBio(false);
     };
+
 
 
     const renderEditButton = (text: string, onClick: () => void) => (
@@ -104,7 +114,7 @@ const Intro = ({ details, visitor }: IntroProps) => {
             {infos.bio && !showBio && (
                 <div className={style.info_col}>
                     <span className={style.info_text}>{infos.bio}</span>
-                    {visitor && renderEditButton("Edit Bio", () => setShowBio(true))}
+                    {!visitor && renderEditButton("Edit Bio", () => setShowBio(true))}
                 </div>
             )}
 
@@ -122,7 +132,7 @@ const Intro = ({ details, visitor }: IntroProps) => {
             {infos.job && infos.workplace && (
                 <div className={style.info_profile}>
                     <Image src="/icons/job.png" alt="Job icon" width={24} height={24} />
-                    { "First Name: "} <b>{infos.firstName}</b>
+                    {"First Name: "} <b>{infos.firstName}</b>
                 </div>
             )}
 
@@ -162,6 +172,18 @@ const Intro = ({ details, visitor }: IntroProps) => {
                     From {infos.hometown}
                 </div>
             )}
+            {infos.location && (
+                <div className={style.info_profile}>
+                    <Image src="/icons/instagram.png" alt="Location icon" width={24} height={24} />
+                    <a
+                        href={`https://www.instagram.com/${infos.location}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {infos.location}
+                    </a>
+                </div>
+            )}
             {infos.instagram && (
                 <div className={style.info_profile}>
                     <Image src="/icons/instagram.png" alt="Instagram icon" width={24} height={24} />
@@ -174,9 +196,31 @@ const Intro = ({ details, visitor }: IntroProps) => {
                     </a>
                 </div>
             )}
-
-            {visitor && renderEditButton("Edit Details", () => setVisible(true))}
-            {visitor && visible && (
+            {infos.twitter && (
+                <div className={style.info_profile}>
+                    <Image src="/icons/instagram.png" alt="Instagram icon" width={24} height={24} />
+                    <a
+                        href={`https://www.instagram.com/${infos.twitter}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {infos.twitter}
+                    </a>
+                </div>
+            )}{infos.github && (
+                <div className={style.info_profile}>
+                    <Image src="/icons/instagram.png" alt="Instagram icon" width={24} height={24} />
+                    <a
+                        href={`https://www.instagram.com/${infos.github}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {infos.github}
+                    </a>
+                </div>
+            )}
+            {!visitor && renderEditButton("Edit Details", () => setVisible(true))}
+            {!visitor && visible && (
                 <EditDetails
                     details={currentDetails}
                     handleChange={handleChange}
@@ -186,8 +230,8 @@ const Intro = ({ details, visitor }: IntroProps) => {
                 />
             )}
 
-            {visitor && renderEditButton("Add Hobbies", () => { })}
-            {visitor && renderEditButton("Add Featured", () => { })}
+            {!visitor && renderEditButton("Add Hobbies", () => { })}
+            {!visitor && renderEditButton("Add Featured", () => { })}
         </div>
     );
 };

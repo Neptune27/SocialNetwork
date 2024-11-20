@@ -1,5 +1,6 @@
 ﻿using Mediator;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
@@ -9,6 +10,8 @@ using SocialNetwork.Profile.APIs.Profiles;
 using SocialNetwork.Profile.Data.DTOs;
 using SocialNetwork.Profile.Data.DTOs.Profiles;
 using SocialNetwork.Profile.Data.Models;
+using System;
+using System.Text.RegularExpressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -234,19 +237,68 @@ public class ProfileController(
 		//return Ok(lastName);
 	}
 
-	[HttpPut("SocialInformation")]
-	public async Task<IActionResult> UpdateSocialInformation([FromBody] SocialInformationDTO dto)
+	[HttpPut("Location")]
+	public async Task<IActionResult> UpdateLocation([FromBody] String location)
 	{
 		string userId = HttpContext.User.Claims.GetClaimByUserId().Value;
-		var user = await mediator.Send(new UpdateSocialInformationRequest(userId,dto));
+		var updateLocationSuccess = await mediator.Send(new UpdateLocationRequest(userId, location));
 
-		if (user == false)
+		if (!updateLocationSuccess)
 		{
-			return BadRequest("User not found");
+			return BadRequest("Update Fail");
 		}
-		return Ok(user);
-
+		return Ok("Update Finish");
 	}
+
+	[HttpPut("Instagram")]
+	public async Task<IActionResult> UpdateInstagram([FromBody] string instagram)
+	{
+		string userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+		
+
+		bool isValidUrl = Uri.TryCreate(instagram, UriKind.Absolute, out Uri uriResult)
+					  && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+
+		if (!isValidUrl)
+		{
+			return BadRequest("Invalid Instagram URL");
+		}
+		var updateInstagramSuccess = await mediator.Send(new UpdateInstagramRequest(userId, instagram));
+
+		if (!updateInstagramSuccess)
+		{
+			return BadRequest("Update Fail");
+		}
+		return Ok("Update Finish");
+	}
+
+	[HttpPut("Twitter")]
+	public async Task<IActionResult> UpdateTwitter([FromBody] String twitter)
+	{
+		string userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+		var updateInstagramSuccess = await mediator.Send(new UpdateTwitterRequest(userId, twitter));
+
+		if (!updateInstagramSuccess)
+		{
+			return BadRequest("Update Fail");
+		}
+		return Ok("Update Finish");
+	}
+
+	[HttpPut("Github")]
+	public async Task<IActionResult> UpdateGithub([FromBody] String github)
+	{
+		string userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+		var updateGithubSuccess = await mediator.Send(new UpdateGithubRequest(userId, github));
+
+		if (!updateGithubSuccess)
+		{
+			return BadRequest("Update Fail");
+		}
+		return Ok("Update Finish");
+	}
+
+
 
 
 	// DELETE api/<ProfileController>/5
