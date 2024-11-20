@@ -21,7 +21,7 @@ const CreatePost = ({ user, setVisible, profile }: CreatePostProps) => {
     return (
         <div className={styles.createPost}>
             <div className={styles.createPost_header}>
-                <Image src={user?.profilePicture} alt="" width={40} height={40} />
+                <img src={user?.profilePicture} alt="" width={40} height={40} />
                 <div
                     className={`${styles.open_host} hover2`}
                     onClick={() => {

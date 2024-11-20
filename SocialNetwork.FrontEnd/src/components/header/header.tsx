@@ -19,9 +19,8 @@ import { useRef, useState } from "react";
 import SearchMenu from "./searchMenu";
 import AllMenu from "./AllMenu";
 import useClickOutside from "@/helper/useClickOutside";
-import Image from "next/image";
 import UserMenu from "./userMenu";
-import avatar from "@/public/images/default_profile.png";
+//import avatar from "@/public/images/default_profile.png";
 
 interface UserHeaderProps {
     user: {
@@ -95,7 +94,7 @@ const UserHeader = ({ user, page }: UserHeaderProps) => {
                     className={`${styles.profile_link} hover1 ${page === "profile" ? `${styles.active_link}` : ""
                         }`}
                 >
-                    <Image src={avatar} alt="Avartar" width="40" height="40" />
+                    <img src={user.profilePicture} alt="Avatar" width="40" height="40" />
                     <span>Nguyen Huy</span>
                 </Link>
                 <div
