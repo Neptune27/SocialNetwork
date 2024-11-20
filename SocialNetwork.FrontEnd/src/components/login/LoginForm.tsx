@@ -55,13 +55,14 @@ const LoginForm = ({ setVisible }: LoginFormProps) => {
         const resultJson = await result.json();
         console.log(resultJson);
         localStorage.setItem("token", resultJson["token"]);
+        localStorage.setItem("userId", resultJson["userId"]);
 
         if (login.rememberMe) {
-            localStorage.setItem("username", login.username);
+            //localStorage.setItem("username", login.username);
         }
 
-        window.location.href = "/Home";
-    };
+        window.location.href = "/Home"
+    }
 
     return (
         <div className={style.login_wrap}>

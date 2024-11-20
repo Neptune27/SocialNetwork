@@ -22,6 +22,45 @@ namespace SocialNetwork.Profile.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SocialNetwork.Profile.Data.Models.Friend", b =>
+                {
+                    b.Property<string>("UserFromId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserToId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserFromId", "UserToId");
+
+                    b.HasIndex("UserToId");
+
+                    b.ToTable("Friends");
+                });
+
+            modelBuilder.Entity("SocialNetwork.Profile.Data.Models.FriendRequest", b =>
+                {
+                    b.Property<string>("RecieverId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SenderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("RecieverId", "SenderId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("FriendRequests");
+                });
+
             modelBuilder.Entity("SocialNetwork.Profile.Data.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -68,9 +107,6 @@ namespace SocialNetwork.Profile.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -80,21 +116,45 @@ namespace SocialNetwork.Profile.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Profile.Data.Models.User", b =>
+            modelBuilder.Entity("SocialNetwork.Profile.Data.Models.Friend", b =>
                 {
-                    b.HasOne("SocialNetwork.Profile.Data.Models.User", null)
-                        .WithMany("Friends")
-                        .HasForeignKey("UserId");
+                    b.HasOne("SocialNetwork.Profile.Data.Models.User", "UserFrom")
+                        .WithMany()
+                        .HasForeignKey("UserFromId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Profile.Data.Models.User", "UserTo")
+                        .WithMany()
+                        .HasForeignKey("UserToId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("UserFrom");
+
+                    b.Navigation("UserTo");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Profile.Data.Models.User", b =>
+            modelBuilder.Entity("SocialNetwork.Profile.Data.Models.FriendRequest", b =>
                 {
-                    b.Navigation("Friends");
+                    b.HasOne("SocialNetwork.Profile.Data.Models.User", "Reciever")
+                        .WithMany()
+                        .HasForeignKey("RecieverId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Profile.Data.Models.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Reciever");
+
+                    b.Navigation("Sender");
                 });
 #pragma warning restore 612, 618
         }

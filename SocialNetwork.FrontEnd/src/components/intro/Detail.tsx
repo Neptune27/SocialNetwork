@@ -10,7 +10,7 @@ interface DetailProps {
     placeholder: string;
     name: string;
     handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    updateDetails: () => void;
+    updateDetails: (nameInfo: string, value: string) => void;
     infos: Record<string, any>;
     text: string;
     rel?: boolean;

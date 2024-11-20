@@ -363,7 +363,9 @@ MigrationBackup/
 FodyWeavers.xsd
 
 
-/MediaProcessor/FFMpeg/ffmpeg.exe
 
 **/.idea/*
 /SocialNetwork.Identity/Media
+/MediaProcessor/FFMpeg
+/*/StaticFiles
+/*/wwwroot/Media/

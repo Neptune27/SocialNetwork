@@ -20,104 +20,147 @@ import { api, ApiEndpoint } from "../../api/const";
 import LoadMore from "../../components/profilePicture/LoadMore";
 
 
-const visitor = false; //Visitor or not
 
+interface Friendship {
+    friends?: boolean;
+    following?: boolean;
+    requestSent?: boolean;
+    requestReceived?: boolean;
+}
+const testFriendshipData: Friendship = {
+    friends: true,
+    following: false,
+    requestSent: false,
+    requestReceived: false,
+};
 interface UserProps {
-  name: string;
-  firstName: string;
-  lastName: string;
-  profilePicture: string;
+    name: string;
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
 }
 
 interface Comment {
-  comment: string;
-  commentBy: string;
-  commentAt: Date;
+    comment: string;
+    commentBy: string;
+    commentAt: Date;
 }
 
 interface PostUser {
-  username: string;
-  picture: string;
-  first_name: string;
-  last_name: string;
-  gender: "male" | "female";
+    username: string;
+    picture: string;
+    first_name: string;
+    last_name: string;
+    gender: "male" | "female";
 }
 
 interface PostData {
-  user: PostUser;
-  type: "profilePicture" | "cover" | null;
-  text: string;
-  images: string[];
-  background?: string; // Optional
-  comments: Comment[];
-  createdAt: string;
+    user: PostUser;
+    type: "profilePicture" | "cover" | null;
+    text: string;
+    images: string[];
+    background?: string; // Optional
+    comments: Comment[];
+    createdAt: string;
 }
 
 // Mock user data
 const user: UserProps = {
-  name: "Nguyen Huy",
-  firstName: "Nguyen",
-  lastName: "Huy",
-  profilePicture: "/images/default_profile.png",
+    name: "Nguyen Huy",
+    firstName: "Nguyen",
+    lastName: "Huy",
+    profilePicture: "/images/default_profile.png",
 };
 
 // Mock post data matching the Mongoose schema
 const postVar: PostData = {
-  user: {
-    username: "johndoe",
-    picture: "/images/default_profile.png",
-    first_name: "John",
-    last_name: "Doe",
-    gender: "male",
-  },
-  type: "profilePicture",
-  text: "This is a mock post description with multiple images.",
-  images: ["/stories/1.jpg", "/stories/3.jpg"],
-  background: "/images/postBackgrounds/1.jpg",
-  comments: [
-    {
-      comment: "Great post!",
-      commentBy: "user1",
-      commentAt: new Date(),
+    user: {
+        username: "johndoe",
+        picture: "/images/default_profile.png",
+        first_name: "John",
+        last_name: "Doe",
+        gender: "male",
     },
-  ],
-  createdAt: new Date().toISOString(),
+    type: "profilePicture",
+    text: "This is a mock post description with multiple images.",
+    images: ["/stories/1.jpg", "/stories/3.jpg"],
+    background: "/images/postBackgrounds/1.jpg",
+    comments: [
+        {
+            comment: "Great post!",
+            commentBy: "user1",
+            commentAt: new Date(),
+        },
+    ],
+    createdAt: new Date().toISOString(),
 };
 const postVar1: PostData = {
-  user: {
-    username: "johndoe",
-    picture: "/images/default_profile.png",
-    first_name: "John",
-    last_name: "Doe",
-    gender: "male",
-  },
-  type: "profilePicture",
-  text: "This is a mock post description with multiple images.",
-  images: ["/stories/1.jpg", "/stories/3.jpg"],
-  comments: [
-    {
-      comment: "Great post!",
-      commentBy: "user1",
-      commentAt: new Date(),
+    user: {
+        username: "johndoe",
+        picture: "/images/default_profile.png",
+        first_name: "John",
+        last_name: "Doe",
+        gender: "male",
     },
-  ],
-  createdAt: new Date().toISOString(),
-};
-const details = {
-    bio: "A passionate software developer",
-    othername: "Nguyen Huy",
-    job: "Software Engineer",
-    workplace: "Tech Corp",
-    highSchool: "Nguyen Huu Canh High",
-    college: "Sai Gon University",
-    currentCity: "Ho Chi Minh",
-    hometown: "Quang Nam",
-    relationship: "Single",
-    instagram: "NguyenHuy",
+    type: "profilePicture",
+    text: "This is a mock post description with multiple images.",
+    images: ["/stories/1.jpg", "/stories/3.jpg"],
+    comments: [
+        {
+            comment: "Great post!",
+            commentBy: "user1",
+            commentAt: new Date(),
+        },
+    ],
+    createdAt: new Date().toISOString(),
 };
 
+interface Details {
+    bio: string;
+    othername: string;
+    job: string;
+    workplace: string;
+    highSchool: string;
+    college: string;
+    currentCity: string;
+    hometown: string;
+    relationship: string;
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+    background: string;
+    username: string;
+    location: string;
+    twitter: string;
+    instagram: string;
+    github: string;
+}
+
+
+
 const ProfilePage = () => {
+    const [visitor, setVisitor] = useState(false);
     const [visible, setVisible] = useState(false);
+    const [details, setDetails] = useState<Details>({
+        bio: "A passionate software developer",
+        othername: "Nguyen Huy",
+        job: "Software Engineer",
+        workplace: "Tech Corp",
+        highSchool: "Nguyen Huu Canh High",
+        college: "Sai Gon University",
+        currentCity: "Ho Chi Minh",
+        hometown: "Quang Nam",
+        relationship: "Single",
+        firstName: "Test First Name H",
+        lastName: "Test",
+        profilePicture: "",
+        background: "",
+        username: "",
+        location: "",
+        twitter: "",
+        instagram: "",
+        github: "",
+    });
 
     useEffect(() => {
         const getData = async () => {
@@ -135,82 +178,96 @@ const ProfilePage = () => {
 
                 const json = await response.json();
                 console.log(json);
+                setVisitor(json["isVisitor"]);
+                console.log(json["isVisitor"]);
+                const user = json["user"]
+                setDetails(prevDetails => ({
+                    ...prevDetails,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    profilePicture: `${api(ApiEndpoint.PROFILE)}/${user.profilePicture.replaceAll("\\", "\/")}`,
+                    background: `${api(ApiEndpoint.PROFILE)}/${user.background.replaceAll("\\", "\/")}`,
+                    username: user.userName,
+                    location: user.location,
+                    instagram: user.instagram,
+                    twitter: user.twitter,
+                    github: user.github
+                }));
+
             } catch (error) {
                 console.error(error.message);
             }
-            
+
         }
 
         getData()
     }, [])
 
-  return (
-      <>
-    <div className="profile">
-        {visible && <CreatePostPopUp user={user} setVisible={setVisible} />}
-        <div className={style.profile}>
-        <UserHeader user={user} page="profile" />
-        <div className={style.profile_top}>
-            <div className={style.profile_container}>
-            <Cover cover={"/images/postBackgrounds/1.jpg"} visitor />
-            <ProfilePictureInfos
-                profile={{
-                picture: user.profilePicture,
-                first_name: user.firstName,
-                last_name: user.lastName,
-                }}
-                visitor
-            />
-            <ProfileMenu />
-            </div>
-        </div>
-        <div className={style.profile_bottom}>
-            <div className={style.profile_container}>
-            <div className={style.bottom_container}>
-                <PplYouMayKnow />
-                <div className={style.profile_grid}>
-                <div className={style.profile_left}>
-                    <Intro details={details} visitor />
-                    <Photos />
-                    <Friends />
-                    <div className={style.relative_fb_copyright}>
-                    <Link href="/">Privacy </Link>
-                    <span>. </span>
-                    <Link href="/">Terms </Link>
-                    <span>. </span>
-                    <Link href="/">Advertising </Link>
-                    <span>. </span>
-                    <Link href="/">
-                        Ad Choices <i className={icons.ad_choices_icon}></i>{" "}
-                    </Link>
-                    <span>. </span>
-                    <Link href="/"></Link>Cookies <span>. </span>
-                    <Link href="/">More </Link>
-                    <span>. </span> <br />
-                    Meta © 2022
-                    </div>
-                </div>
-                <div className={style.profile_right}>
-                    {!visitor && (
-                    <CreatePost user={user} profile setVisible={setVisible} />
-                    )}
-                    <GridPosts />
-                    <div className={style.posts}>
-                    {/* <div className={style.no_posts}>No posts available</div> */}
-                    <Post post={postVar} user={user} key={1} />
-                    <Post post={postVar1} user={user} key={2} />
+    return (
+        <>
+            {visible && <CreatePostPopUp user={user} setVisible={setVisible} />}
+            <div className={style.profile}>
 
-                    <LoadMore/>
+                <UserHeader user={user} page="profile" />
+                <div className={style.profile_top}>
+                    <div className={style.profile_container}>
+                        <Cover cover={details.background} visitor={visitor} />
+                        <ProfilePictureInfos
+                            profile={{
+                                picture: details.profilePicture,
+                                username: details.username,
+                                friendship: testFriendshipData
+                            }}
+                            visitor={visitor}
+                        />
+                        <ProfileMenu />
                     </div>
                 </div>
+                <div className={style.profile_bottom}>
+                    <div className={style.profile_container}>
+                        <div className={style.bottom_container}>
+                            <PplYouMayKnow />
+                            <div className={style.profile_grid}>
+                                <div className={style.profile_left}>
+                                    <Intro details={details} visitor={visitor} />
+                                    <Photos />
+                                    <Friends />
+                                    <div className={style.relative_fb_copyright}>
+                                        <Link href="/">Privacy </Link>
+                                        <span>. </span>
+                                        <Link href="/">Terms </Link>
+                                        <span>. </span>
+                                        <Link href="/">Advertising </Link>
+                                        <span>. </span>
+                                        <Link href="/">
+                                            Ad Choices <i className={icons.ad_choices_icon}></i>{" "}
+                                        </Link>
+                                        <span>. </span>
+                                        <Link href="/"></Link>Cookies <span>. </span>
+                                        <Link href="/">More </Link>
+                                        <span>. </span> <br />
+                                        Meta © 2022
+                                    </div>
+                                </div>
+
+                                <div className={style.profile_right}>
+                                    {!visitor && (
+                                        <CreatePost user={user} profile setVisible={setVisible} />
+                                    )}
+                                    <GridPosts />
+                                    <div className={style.posts}>
+                                        {/* <div className={style.no_posts}>No posts available</div> */}
+                                        <Post post={postVar} user={user} key={1} />
+                                        <Post post={postVar1} user={user} key={2} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            </div>
-        </div>
-        </div>
-    </div>
-    </>
-  );
+        </>
+    );
 };
 
 export default ProfilePage;

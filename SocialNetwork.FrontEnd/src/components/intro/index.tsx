@@ -1,9 +1,11 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import style from "@/components/intro/style.module.scss";
 import icons from "@/public/icons.module.scss";
 import Bio from "./Bio";
 import EditDetails from "./EditDetail";
+import { api, ApiEndpoint } from "../../api/const";
+import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 
 interface IntroProps {
     details: {
@@ -17,6 +19,12 @@ interface IntroProps {
         hometown?: string;
         relationship?: string;
         instagram?: string;
+        firstName?: string;
+        lastName?: string;
+        location?: string;
+        twitter?: string;
+        github?: string;
+
     };
     visitor: boolean;
 }
@@ -29,6 +37,8 @@ const Intro = ({ details, visitor }: IntroProps) => {
     const initial = {
         bio: details.bio || "",
         othername: details.othername || "NguyenHuy",
+        firstName: details.firstName || "Test First Name",
+        lastName: details.lastName || "Test Last Name",
         job: details.job || "",
         workplace: details.workplace || "Google",
         highSchool: details.highSchool || "some high school",
@@ -36,7 +46,11 @@ const Intro = ({ details, visitor }: IntroProps) => {
         currentCity: details.currentCity || "Tanger",
         hometown: details.hometown || "Morocco",
         relationship: details.relationship || "Single",
-        instagram: details.instagram || "med_hajji7",
+        instagram: details.instagram || "instagram",
+        location: details.location || "",
+        twitter: details.twitter || "",
+        github: details.github || "",
+
     };
 
     const [infos, setInfos] = useState(initial);
@@ -49,14 +63,45 @@ const Intro = ({ details, visitor }: IntroProps) => {
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const newBio = e.target.value;
-        setInfos(prevInfos => ({ ...prevInfos, bio: newBio }));
+        const nameBio = e.target.name;
+        console.log(`Handle Change ${e.target.name}`)
+        setInfos(prevInfos => ({ ...prevInfos, [nameBio]: newBio }));
         setMax(100 - newBio.length);
     };
 
-    const updateDetails = () => {
-        setCurrentDetails(infos);
-        setShowBio(false);
+    const updateDetails = (nameInfo: string, value: string) => {
+        nameInfo = nameInfo.charAt(0).toUpperCase() + nameInfo.slice(1);
+        const updateDetailsWithNameInfo = async () => {
+            const url = `${api(ApiEndpoint.PROFILE)}/Profile/${nameInfo}`;
+
+            try {
+                const response = await authorizedFetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(value),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+
+                const result = await response.text();
+                console.log(result);
+
+                setCurrentDetails(infos);
+                setShowBio(false);
+
+            } catch (error) {
+                console.error("Error:", error.message);
+            }
+        };
+
+        updateDetailsWithNameInfo();
     };
+
+
 
     const renderEditButton = (text: string, onClick: () => void) => (
         <button className="gray_btn hover1 w100" onClick={onClick}>{text}</button>
@@ -69,7 +114,7 @@ const Intro = ({ details, visitor }: IntroProps) => {
             {infos.bio && !showBio && (
                 <div className={style.info_col}>
                     <span className={style.info_text}>{infos.bio}</span>
-                    {visitor && renderEditButton("Edit Bio", () => setShowBio(true))}
+                    {!visitor && renderEditButton("Edit Bio", () => setShowBio(true))}
                 </div>
             )}
 
@@ -87,7 +132,14 @@ const Intro = ({ details, visitor }: IntroProps) => {
             {infos.job && infos.workplace && (
                 <div className={style.info_profile}>
                     <Image src="/icons/job.png" alt="Job icon" width={24} height={24} />
-                    works as {infos.job} at <b>{infos.workplace}</b>
+                    {"First Name: "} <b>{infos.firstName}</b>
+                </div>
+            )}
+
+            {infos.job && infos.workplace && (
+                <div className={style.info_profile}>
+                    <Image src="/icons/job.png" alt="Job icon" width={24} height={24} />
+                    {"Last Name: "} <b>{infos.lastName}</b>
                 </div>
             )}
             {infos.relationship && (
@@ -120,6 +172,18 @@ const Intro = ({ details, visitor }: IntroProps) => {
                     From {infos.hometown}
                 </div>
             )}
+            {infos.location && (
+                <div className={style.info_profile}>
+                    <Image src="/icons/instagram.png" alt="Location icon" width={24} height={24} />
+                    <a
+                        href={`https://www.instagram.com/${infos.location}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {infos.location}
+                    </a>
+                </div>
+            )}
             {infos.instagram && (
                 <div className={style.info_profile}>
                     <Image src="/icons/instagram.png" alt="Instagram icon" width={24} height={24} />
@@ -132,9 +196,31 @@ const Intro = ({ details, visitor }: IntroProps) => {
                     </a>
                 </div>
             )}
-
-            {visitor && renderEditButton("Edit Details", () => setVisible(true))}
-            {visitor && visible && (
+            {infos.twitter && (
+                <div className={style.info_profile}>
+                    <Image src="/icons/instagram.png" alt="Instagram icon" width={24} height={24} />
+                    <a
+                        href={`https://www.instagram.com/${infos.twitter}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {infos.twitter}
+                    </a>
+                </div>
+            )}{infos.github && (
+                <div className={style.info_profile}>
+                    <Image src="/icons/instagram.png" alt="Instagram icon" width={24} height={24} />
+                    <a
+                        href={`https://www.instagram.com/${infos.github}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {infos.github}
+                    </a>
+                </div>
+            )}
+            {!visitor && renderEditButton("Edit Details", () => setVisible(true))}
+            {!visitor && visible && (
                 <EditDetails
                     details={currentDetails}
                     handleChange={handleChange}
@@ -144,8 +230,8 @@ const Intro = ({ details, visitor }: IntroProps) => {
                 />
             )}
 
-            {visitor && renderEditButton("Add Hobbies", () => { })}
-            {visitor && renderEditButton("Add Featured", () => { })}
+            {!visitor && renderEditButton("Add Hobbies", () => { })}
+            {!visitor && renderEditButton("Add Featured", () => { })}
         </div>
     );
 };

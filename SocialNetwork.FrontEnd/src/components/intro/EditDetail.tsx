@@ -16,9 +16,14 @@ interface EditDetailProps {
         hometown?: string;
         relationship?: string;
         instagram?: string;
+        firstName?: string;
+        lastName?: string;
+        location?: string;
+        twitter?: string;
+        github?: string;
     };
-    handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-    updateDetails: (name: string, value: string) => void;
+    handleChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    updateDetails: (nameInfo: string, value: string) => void;
     infos?: any;
     setVisible: (visible: boolean) => void;
 }
@@ -51,22 +56,22 @@ const EditDetail: React.FC<EditDetailProps> = ({ details, handleChange, updateDe
                         updateDetails={updateDetails}
                         infos={infos}
                     />
-                    <div className={style.details_header }>Work</div>
+                    <div className={style.details_header }>FirstLastName</div>
                     <Detail
-                        value={details.job}
+                        value={details.firstName}
                         img="job"
-                        placeholder="Add job title"
-                        name="job"
+                        placeholder="Add First Name"
+                        name="firstName"
                         text="a job"
                         handleChange={handleChange}
                         updateDetails={updateDetails}
                         infos={infos}
                     />
                     <Detail
-                        value={details.workplace}
+                        value={details.lastName}
                         img="job"
-                        placeholder="Add a workplace"
-                        name="workplace"
+                        placeholder="Add a LastName"
+                        name="lastName"
                         text="workplace"
                         handleChange={handleChange}
                         updateDetails={updateDetails}
@@ -127,13 +132,46 @@ const EditDetail: React.FC<EditDetailProps> = ({ details, handleChange, updateDe
                         infos={infos}
                         rel
                     />
-                    <div className={style.details_header }>Instagram</div>
+                    <div className={style.details_header }>Location</div>
+                    <Detail
+                        value={details.location}
+                        img="home"
+                        placeholder="Add Location"
+                        name="location"
+                        text="location"
+                        handleChange={handleChange}
+                        updateDetails={updateDetails}
+                        infos={infos}
+                    />
+                    <div className={style.details_header}>Instagram</div>
                     <Detail
                         value={details.instagram}
                         img="home"
                         placeholder="Add Instagram"
                         name="instagram"
                         text="instagram"
+                        handleChange={handleChange}
+                        updateDetails={updateDetails}
+                        infos={infos}
+                    />
+                    <div className={style.details_header}>Twitter</div>
+                    <Detail
+                        value={details.twitter}
+                        img="home"
+                        placeholder="Add Twitter"
+                        name="twitter"
+                        text="twitter"
+                        handleChange={handleChange}
+                        updateDetails={updateDetails}
+                        infos={infos}
+                    />
+                    <div className={style.details_header}>GitHub</div>
+                    <Detail
+                        value={details.github}
+                        img="home"
+                        placeholder="Add Github"
+                        name="github"
+                        text="github"
                         handleChange={handleChange}
                         updateDetails={updateDetails}
                         infos={infos}

@@ -34,6 +34,19 @@ public class MessageController(
         return "value";
     }
 
+    // GET api/<MessageController>/5
+    [HttpGet("ByRoom/{id}")]
+    public async Task<List<Message>> GetByRoom(int id, long date)
+    {
+        DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var user = HttpContext.User.Claims.GetClaimByUserId();
+        DateTime getDate = start.AddMilliseconds(date).ToLocalTime();
+
+        var result = await mediator.Send(new GetMessagesByRoomRequest(id, 10, getDate));
+
+        return result;
+    }
+
     // POST api/<MessageController>
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] MessageDTO dto)

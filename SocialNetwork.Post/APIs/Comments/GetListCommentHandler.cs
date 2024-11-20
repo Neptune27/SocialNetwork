@@ -1,4 +1,4 @@
-﻿using Mediator;
+using Mediator;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Post.Data;
 using SocialNetwork.Post.Data.Models;

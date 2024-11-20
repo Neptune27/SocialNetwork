@@ -22,13 +22,40 @@ namespace SocialNetwork.Post.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("SocialNetwork.Core.Models.BasicFriend", b =>
+                {
+                    b.Property<string>("UserFromId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserToId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserFromId", "UserToId");
+
+                    b.HasIndex("UserToId");
+
+                    b.ToTable("Friends");
+                });
+
             modelBuilder.Entity("SocialNetwork.Core.Models.BasicUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("BasicUserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -38,9 +65,10 @@ namespace SocialNetwork.Post.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Visibility")
+                        .HasColumnType("int");
 
-                    b.HasIndex("BasicUserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
@@ -106,6 +134,12 @@ namespace SocialNetwork.Post.Data.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("int");
 
                     b.HasKey("CommentId", "UserId");
 
@@ -176,11 +210,23 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.ToTable("Reactions");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Core.Models.BasicUser", b =>
+            modelBuilder.Entity("SocialNetwork.Core.Models.BasicFriend", b =>
                 {
-                    b.HasOne("SocialNetwork.Core.Models.BasicUser", null)
-                        .WithMany("Friends")
-                        .HasForeignKey("BasicUserId");
+                    b.HasOne("SocialNetwork.Core.Models.BasicUser", "UserFrom")
+                        .WithMany()
+                        .HasForeignKey("UserFromId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetwork.Core.Models.BasicUser", "UserTo")
+                        .WithMany()
+                        .HasForeignKey("UserToId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("UserFrom");
+
+                    b.Navigation("UserTo");
                 });
 
             modelBuilder.Entity("SocialNetwork.Post.Data.Models.Comment", b =>
@@ -257,11 +303,6 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SocialNetwork.Core.Models.BasicUser", b =>
-                {
-                    b.Navigation("Friends");
                 });
 
             modelBuilder.Entity("SocialNetwork.Post.Data.Models.Comment", b =>

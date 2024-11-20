@@ -46,7 +46,6 @@ public class PublishAccountInternalHandler(
             ProfilePicture = "",
             BirthDay = data.BirthDay,
             CreatedAt = DateTime.UtcNow,
-            Friends = [],
             FirstName = data.FirstName,
             LastName = data.LastName,
             UserName = user.UserName,

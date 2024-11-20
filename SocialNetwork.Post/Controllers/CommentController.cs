@@ -60,4 +60,44 @@ public class CommentController(IMediator mediator)
         if (result) return Ok(result);
         else return BadRequest(result);
     }
+
+    [HttpPut("{commentId}")]
+    public async Task<IActionResult> Put([FromBody] UpdateCommentDTO dto, int commentId)
+    {
+        var user = HttpContext.User;
+        var id = user.Claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier).Value;
+        if (id == null)
+            return Unauthorized("Id not found");
+
+        var loginUser = await mediator.Send(new GetUserRequest(id));
+
+        var comment = await mediator.Send(new GetCommentRequest(commentId));
+        if (comment == null)
+            return NotFound("Commnet with id " + commentId + " notfound");
+
+        comment.Message = dto.Message;
+        comment.LastUpdated = DateTime.Now;
+
+        var result = await mediator.Send(new UpdateCommentRequest(comment));
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{commentId}")]
+    public async Task<IActionResult> Delete(int commentId)
+    {
+        var user = HttpContext.User;
+        var id = user.Claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier).Value;
+        if (id == null)
+            return Unauthorized("Id not found");
+
+        var loginUser = await mediator.Send(new GetUserRequest(id));
+        var userId = loginUser.Id;
+        var result = await mediator.Send(new DeleteCommentRequest(commentId, userId));
+
+        if (result != null)
+            return Ok(result);
+        else
+            return NotFound("Comment with id " + commentId + " not found.");
+    }
 }
