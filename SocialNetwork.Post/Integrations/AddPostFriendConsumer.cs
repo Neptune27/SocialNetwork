@@ -3,9 +3,8 @@ using Mediator;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Core.Integrations.Users;
 using SocialNetwork.Core.Models;
-using SocialNetwork.Messaging.APIs.Rooms;
-using SocialNetwork.Messaging.Data;
-using SocialNetwork.Messaging.Data.Models;
+using SocialNetwork.Post.Data;
+
 
 namespace SocialNetwork.Messaging.Integrations;
 
@@ -17,8 +16,6 @@ public class AddMessageFriendConsumer(
     ) : IConsumer<AddFriendDTO>
 {
     private readonly AppDBContext dBContext = dBContext;
-    private readonly ILogger<AddMessageFriendConsumer> logger = logger;
-    private readonly IMediator mediator = mediator;
 
     public async Task Consume(ConsumeContext<AddFriendDTO> context)
     {
@@ -48,12 +45,11 @@ public class AddMessageFriendConsumer(
             Visibility = Core.Enums.EVisibility.PUBLIC
         };
 
+
         dBContext.Friends.Add(friend);
 
         await dBContext.SaveChangesAsync();
 
-
-        await mediator.Send(new AddRoomRequest(data.ToUserId, $"{user.Name}, {user2.Name}", [data.FromUserId]));
 
 
     }

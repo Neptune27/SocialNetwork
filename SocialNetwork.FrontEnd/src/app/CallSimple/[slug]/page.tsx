@@ -40,7 +40,9 @@ const Page = (props: {
     const [remoteStreams, setRemoteStreams] = useState<StreamUser>({});
 
     const [isVideo, setIsVideo] = useState<boolean>(true);
+    const [isScreen, setIsScreen] = useState<boolean>(true);
     const [isMute, setIsMute] = useState<boolean>(false);
+
 
     useEffect(()=>{
         if (localStream == null) {
@@ -51,8 +53,9 @@ const Page = (props: {
         for (let index in videoTracks) {
             videoTracks[index].enabled = isVideo
         }
-    },[isVideo])
+    }, [isVideo])
 
+        
     useEffect(()=>{
         if (localStream == null) {
             return
@@ -170,8 +173,6 @@ const Page = (props: {
         //     console.log(`Re Id ${id}`);
         //     removePeer(id)
         // })
-
-
     }
 
 
@@ -184,13 +185,16 @@ const Page = (props: {
             <div style={{
                 display: "flex"
             }}>
-            <VideoPlayer key={"local"} localStream={localStream}/>
-            {Object.keys(remoteStreams).map(it => {
-                const stream = remoteStreams[it];
-                return(
-                    <VideoPlayer key={it} localStream={stream}/>
-                )
-            })}
+                <VideoPlayer key={"local"} localStream={localStream} isLocal />
+                <div className="grid grid-flow-row-dense auto-cols-fr auto-rows-fr max-h-screen">
+                    {Object.keys(remoteStreams).map(it => {
+                        const stream = remoteStreams[it];
+                        return (
+                            <VideoPlayer key={it} localStream={stream} isLocal={false} />
+                        )
+                    })}
+                </div>
+            
             </div>
 
         </div>
