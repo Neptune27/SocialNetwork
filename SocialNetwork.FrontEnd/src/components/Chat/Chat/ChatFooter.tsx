@@ -13,6 +13,7 @@ import AnimatedCircularProgressBar from "../../ui/animated-circular-progress-bar
 import { GoFileBinary } from "react-icons/go";
 import { CgFilm } from "react-icons/cg";
 import { motion } from "framer-motion"
+import { IoMdCloseCircleOutline } from "react-icons/io";
 type FileType = {
     source: File,
     progress: number,
@@ -22,7 +23,8 @@ type FileType = {
 
 
 type ChatProps = {
-    file: FileType
+    file: FileType,
+    handleDelete: (file: FileType) => void
 }
 
 type FileChangedType = {
@@ -35,31 +37,36 @@ type FileProgressType = {
     progress: number
 }
 
-const ChatFile = ({ file }: ChatProps) => {
+const ChatFile = ({ file, handleDelete }: ChatProps) => {
     const fileType = file.source.type
     if (fileType.startsWith("image")) {
         return (
-            <div className="relative">
+            <div className="relative group">
                 <img key={file.source.name} alt={file.source.name} src={file.blobUrl} className={"object-cover h-40 w-40 hover:object-scale-down rounded transition-all"} />
                 {file.progress == 2
                     ? null
                     :
                     <div className="absolute inset-0 bg-white/50 ">
-                        <AnimatedCircularProgressBar 
+                        <AnimatedCircularProgressBar
                             max={1.0526} min={0} value={file.progress}
-                        gaugePrimaryColor="rgb(79 70 229)"
-                        gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
+                            gaugePrimaryColor="rgb(79 70 229)"
+                            gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
                         />
                     </div>
+
+
                 }
+                <div className="absolute top-0 right-0" onClick={() => handleDelete(file)}>
+                    <IoMdCloseCircleOutline size={32} />
+                </div>
             </div>
-            
+
         )
     }
 
     if (fileType.startsWith("video")) {
         return (
-            <div className="relative w-40 h-40 truncate flex flex-col justify-between">
+            <div className="relative group w-40 h-40 truncate flex flex-col justify-between">
                 <div className="flex justify-center">
                     <CgFilm size={125} />
                 </div>
@@ -75,7 +82,11 @@ const ChatFile = ({ file }: ChatProps) => {
                             gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
                         />
                     </div>
+
                 }
+                <div className="absolute top-0 right-0" onClick={() => handleDelete(file)}>
+                    <IoMdCloseCircleOutline size={32} />
+                </div>
 
             </div>
 
@@ -83,7 +94,7 @@ const ChatFile = ({ file }: ChatProps) => {
     }
 
     return (
-        <div className="relative w-40 h-40 truncate flex flex-col justify-between">
+        <div className="relative group w-40 h-40 truncate flex flex-col justify-between">
             <div className="flex justify-center">
                 <GoFileBinary size={125} />
             </div>
@@ -99,7 +110,11 @@ const ChatFile = ({ file }: ChatProps) => {
                         gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
                     />
                 </div>
+
             }
+            <div className="absolute top-0 right-0" onClick={() => handleDelete(file)}>
+                <IoMdCloseCircleOutline size={ 32} />
+            </div>
         </div>
     )
 }
@@ -306,6 +321,11 @@ const ChatFooter = () => {
 
     //}
 
+    const handleDelete = (file: FileType) => {
+        const newFiles = files.filter(f => f != file)
+        setFiles(newFiles)
+    }
+
     return (
         <div>
             <div className="flex gap-1 overflow-auto p-2">
@@ -317,7 +337,7 @@ const ChatFooter = () => {
                         stiffness: 260,
                         damping: 20
                     }}
-                    key={`fileDiv${f.source.name}`}><ChatFile file={f} key={`file${f.source.name}`} /></motion.div>)}
+                    key={`fileDiv${f.source.name}`}><ChatFile file={f} handleDelete={handleDelete} key={`file${f.source.name}`} /></motion.div>)}
             </div>
             <form onSubmit={handleSubmit}
                 className="relative rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring p-1"
