@@ -4,15 +4,15 @@ import Layout from "./page";
 import Loading from "@/components/Loading";
 
 const PageLogin: React.FC = () => {
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 3000); // 3000 milliseconds = 3 seconds
+    //useEffect(() => {
+    //    const timer = setTimeout(() => {
+    //        setIsLoading(false);
+    //    }, 3000); // 3000 milliseconds = 3 seconds
 
-        return () => clearTimeout(timer); // Clear timer when component unmounts
-    }, []);
+    //    return () => clearTimeout(timer); // Clear timer when component unmounts
+    //}, []);
 
     return (
         <>

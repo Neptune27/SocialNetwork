@@ -101,7 +101,7 @@ const EmojiPickerBackground = ({
             </div>
 
             {/* Emoji Picker and Background Selection */}
-            <div className={style.post_emojis_wrap}>
+            <div className={`${style.post_emojis_wrap} ${showPrev ? "flex-row-reverse !hidden" : ""}`}>
                 {picker && (
                     <div
                         className={`${style.comment_emoji_picker} ${showPrev ? style.movepicker2 : style.rlmove
@@ -140,8 +140,7 @@ const EmojiPickerBackground = ({
                 )}
 
                 <i
-                    className={`${icons.emoji_icon_large} ${showPrev ? style.moveleft : ""
-                        }`}
+                    className={`${icons.emoji_icon_large} `}
                     onClick={() => setPicker((prev) => !prev)}
                 ></i>
             </div>

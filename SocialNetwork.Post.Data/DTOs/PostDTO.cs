@@ -10,5 +10,8 @@ namespace SocialNetwork.Post.Data.DTOs
     public class PostDTO
     {
         public string Message { get; set; }
+
+        public List<string> Medias { get; set; }
+
     }
 }
