@@ -7,6 +7,10 @@ import AddToYourPost from "./AddToYourPost";
 import EmojiPickerBackground from "./EmojiPickerBackground";
 import ImagePreview from "./ImagePreview";
 import useClickOutside from "@/helper/useClickOutside";
+import { FileType } from "../../interfaces/IFileType";
+import { authorizedFetch } from "../../Ultility/authorizedFetcher";
+import { api, ApiEndpoint } from "../../api/const";
+import axios from "axios";
 
 interface User {
     name: string;
@@ -23,11 +27,28 @@ interface CreatePostPopUpProps {
 const CreatePostPopUp = ({ user, setVisible }: CreatePostPopUpProps) => {
     const [text, setText] = useState<string>(""); // Specify type explicitly
     const [showPrev, setShowPrev] = useState<boolean>(false); // Explicitly type boolean state
-    const [images, setImages] = useState<string[]>([]);
+    const [files, setFiles] = useState<FileType[]>([]);
     const [error, setError] = useState<string>("");
     const [background, setBackground] = useState<string>("");
 
     const popupRef = useRef<HTMLDivElement>(null);
+
+    const handlePostSubmit = async () => {
+        const formData = new FormData();
+        formData.append("message", text)
+        formData.append("background", `${background}`)
+        files.forEach(f => formData.append("files", f.source))
+
+        const resp = await axios.post(`${api(ApiEndpoint.POST)}/Post`, formData, {
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        })
+
+        if (resp.status == 200) {
+            window.location.reload()
+        }
+    }
 
     // Close the popup when clicking outside
     useClickOutside(popupRef, () => {
@@ -49,7 +70,7 @@ const CreatePostPopUp = ({ user, setVisible }: CreatePostPopUpProps) => {
                     <span>Create Post</span>
                 </div>
                 <div className={style.box_profile}>
-                    <Image
+                    <img
                         src={user.profilePicture}
                         alt="User profile picture"
                         className={style.box_profile_img}
@@ -88,14 +109,14 @@ const CreatePostPopUp = ({ user, setVisible }: CreatePostPopUpProps) => {
                         user={user}
                         setText={setText}
                         showPrev={showPrev}
-                        images={images}
-                        setImages={setImages}
+                        files={files}
+                        setFiles={setFiles}
                         setShowPrev={setShowPrev}
                         setError={setError}
                     />
                 )}
                 <AddToYourPost setShowPrev={setShowPrev} />
-                <button className={style.post_submit}>Post</button>
+                <button className={style.post_submit} onClick={handlePostSubmit}>Post</button>
             </div>
         </div>
     );
