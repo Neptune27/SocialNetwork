@@ -21,7 +21,7 @@ public class Comment : BaseModel
 
     public List<CommentReaction> Reactions { get; set; } = [];
 
-    public Comment ReplyTo { get; set; }
+    public Comment? ReplyTo { get; set; }
 
     public List<Comment> Replys { get; set; } = [];
 

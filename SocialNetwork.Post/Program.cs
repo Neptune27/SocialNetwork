@@ -56,6 +56,16 @@ if (app.Environment.IsDevelopment())
 }
 
 
+var fileServerOption = new FileServerOptions
+{
+};
+
+fileServerOption.StaticFileOptions.ServeUnknownFileTypes = true;
+fileServerOption.StaticFileOptions.DefaultContentType = "application/binary";
+
+app.UseFileServer(fileServerOption);
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 

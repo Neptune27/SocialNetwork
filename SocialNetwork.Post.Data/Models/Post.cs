@@ -23,6 +23,8 @@ public class Post : BaseModel
 
     public List<string> Medias { get; set; }
 
+    public string Background { get; set; }
+
     public List<Reaction> Reactions { get; set; }
 
     public List<Comment> Comments { get; set; }

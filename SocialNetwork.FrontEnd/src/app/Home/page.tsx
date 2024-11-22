@@ -14,6 +14,8 @@ import Loading from "../../components/Loading";
 import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
 import useUserId from "../../hooks/useUserId";
+import { User } from "lucide-react";
+import usePosts from "../../hooks/Posts/usePosts";
 
 interface UserProps {
     name: string;
@@ -22,29 +24,27 @@ interface UserProps {
     profilePicture: string;
 }
 
-interface Comment {
-    comment: string;
-    commentBy: string;
-    commentAt: Date;
-}
+//interface Comment {
+//    comment: string;
+//    commentBy: string;
+//    commentAt: Date;
+//}
 
-interface PostUser {
-    username: string;
-    picture: string;
-    first_name: string;
-    last_name: string;
-    gender: "male" | "female";
-}
+//interface PostUser {
+//    username: string;
+//    picture: string;
+//}
 
-interface PostData {
-    user: PostUser;
-    type: "profilePicture" | "cover" | null;
-    text: string;
-    images: string[];
-    background?: string; // Optional
-    comments: Comment[];
-    createdAt: string;
-}
+//interface PostData {
+//    id: string,
+//    user: PostUser;
+//    type: "profilePicture" | "cover" | null;
+//    message: string;
+//    medias: string[];
+//    background?: string; // Optional
+//    comments: Comment[];
+//    createdAt: string;
+//}
 
 const Home = () => {
     // Mock user data
@@ -123,6 +123,8 @@ const Home = () => {
 
     const middle = useRef<HTMLDivElement | null>(null);
     const [visible, setVisible] = useState(false);
+    const postStore = usePosts()
+    //const [posts, setPosts] = useState<PostData[]>([]) //Make this into global
     const [height, setHeight] = useState<number | undefined>();
     const userId = useUserId()
 
@@ -147,7 +149,16 @@ const Home = () => {
 
         }
 
+        const getPost = async () => {
+            const resp = await authorizedFetch(`${api(ApiEndpoint.POST)}/Post`)
+            const data = await resp.json()
+
+            console.log(data)
+            postStore.set(data)
+        }
+
         getUser()
+        getPost()
     }, [])
 
     if (userStore.user == null) {
@@ -169,12 +180,12 @@ const Home = () => {
                     <Stories />
                     <CreatePost user={userStore.user} setVisible={setVisible} />
                     <div className={styles.posts}>
-
+                        {postStore.posts.map((p) => <Post key={p.id} post={p} user={userStore.user} />)}
                         {/*<Post post={postVar} user={userStore.user} />*/}
                         {/*<Post post={userStore.user} user={user} />*/}
                         {/*<Post post={post3} user={user} />*/}
 
-                        <LoadMore />
+                        {/*<LoadMore />*/}
                     </div>
                 </div>
                 <RightHome user={userStore.user} />

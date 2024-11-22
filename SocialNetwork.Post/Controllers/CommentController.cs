@@ -6,6 +6,7 @@ using SocialNetwork.Post.APIs.Comments;
 using SocialNetwork.Post.APIs.Posts;
 using SocialNetwork.Post.Data.DTOs;
 using SocialNetwork.Post.Data.Models;
+using SocialNetwork.Profile.Data.Models;
 using System.Security.Claims;
 
 namespace SocialNetwork.Post.Controllers;
@@ -36,24 +37,46 @@ public class CommentController(IMediator mediator)
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(CommentDTO dto)
+    public async Task<IActionResult> Post([FromForm] CommentDTO dto, IFormFile? file)
     {
 
         var user = HttpContext.User;
         var id = user.Claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier).Value;
-        if (id == null) 
-            return Unauthorized("Id not found");
+        List<string> medias = [];
+
+        if (file is not null)
+        {
+            //Save file
+            var fileName = file.FileName;
+            var extension = Path.GetExtension(fileName);
+            var newName = Guid.NewGuid().ToString();
+            var filePath = Path.Combine("Media", dto.PostId.ToString(), newName + extension);
+            var saveLocation = Path.Combine("./wwwroot", filePath);
+            var dir = Path.GetDirectoryName(saveLocation);
+            Directory.CreateDirectory(dir);
+            using (var stream = System.IO.File.Create(saveLocation))
+            {
+                await file.CopyToAsync(stream);
+            };
+
+            medias.Add(filePath);
+        }
+       
+
 
         var loginUser = await mediator.Send(new GetUserRequest(id));
 
         var postHost = await mediator.Send(new GetPostRequest(dto.PostId));
         if (postHost == null)
             return NotFound("Post with id " + dto.PostId + " not found");       
-        Comment comment = new Comment()
+        Comment comment = new()
         {
             Post = postHost,
             User = loginUser,
             Message = dto.Message,
+            CreatedAt = DateTime.Now,
+            LastUpdated = DateTime.Now,
+            Medias = medias,
         };
 
         var result = await mediator.Send(new AddCommentRequest(comment));

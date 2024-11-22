@@ -31,7 +31,7 @@ public class PostController(
     public async Task<IActionResult> Get()
     {
         var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
-        var postList = await mediator.Send(new GetListPostRequest());
+        var postList = await mediator.Send(new GetListPostRequest(userId));
         return Ok(postList);
     }
 

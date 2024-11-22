@@ -1,3 +1,5 @@
+import useToken from "../hooks/useToken"
+
 const authorizedFetch = async (input: string | URL | globalThis.Request,
     init?: RequestInit, redirectOnUnathorized = () => { window.location.href = "/Login" }): Promise<Response> => {
 
@@ -13,12 +15,7 @@ const authorizedFetch = async (input: string | URL | globalThis.Request,
         init["headers"] = {}
     }
 
-    let bearer = localStorage.getItem("token")
-
-    let sessionBearer = sessionStorage.getItem("token")
-    if (sessionBearer !== null) {
-        bearer = sessionBearer
-    }
+    const bearer = useToken()
 
     // @ts-ignore
     init["headers"]["Authorization"] = "Bearer " + bearer

@@ -11,6 +11,7 @@ import { FileType } from "../../interfaces/IFileType";
 import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
 import axios from "axios";
+import useToken from "../../hooks/useToken";
 
 interface User {
     name: string;
@@ -38,10 +39,11 @@ const CreatePostPopUp = ({ user, setVisible }: CreatePostPopUpProps) => {
         formData.append("message", text)
         formData.append("background", `${background}`)
         files.forEach(f => formData.append("files", f.source))
+        const token = useToken()
 
         const resp = await axios.post(`${api(ApiEndpoint.POST)}/Post`, formData, {
             headers: {
-                Authorization: "Bearer " + localStorage.getItem("token")
+                Authorization: "Bearer " + token
             }
         })
 
