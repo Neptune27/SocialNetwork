@@ -48,8 +48,8 @@ export default function Comment({ comment }: CommentProps) {
                     )}
                 </div>
                 <div className={styles.comment_actions}>
-                    <span>Like</span>
-                    <span>Reply</span>
+                    {/*<span>Like</span>*/}
+                    {/*<span>Reply</span>*/}
                     <span className={styles.comment_date}>
 
                         23/11/2024
