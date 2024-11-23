@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Dots, Public } from "@/public/svg"; // Adjust icon imports if needed
@@ -12,6 +12,7 @@ import PostMenu from "./PostMenu";
 import { api, ApiEndpoint } from "../../api/const";
 import { PostProps } from "../../hooks/Posts/usePosts";
 import usePopupPost from "../../hooks/Posts/usePopupPost";
+import Comment from "./Comment";
 
 //// Define the User and PostProps interfaces
 //interface User {
@@ -46,6 +47,11 @@ import usePopupPost from "../../hooks/Posts/usePopupPost";
 export default function Post({ post, user }: PostProps) {
     const [visible, setVisible] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
+    const [commentCount, setCommentCount] = useState(5);
+
+    const showMoreComments = () => {
+        setCommentCount((prev) => prev + 5);
+    };
 
 
     const popupStore = usePopupPost()
@@ -190,6 +196,15 @@ export default function Post({ post, user }: PostProps) {
                 <div className="flex justify-end">
                     <span onClick={handleSeeMore}>See more</span>
                 </div>
+                {/*<CreateComment user={user} />*/}
+                {post.comments.slice(0, commentCount).map((comment) => (
+                    <Comment comment={comment} key={comment.id} />
+                ))}
+                {commentCount < post.comments.length && (
+                    <div className="view_comments" onClick={showMoreComments}>
+                        View more comments
+                    </div>
+                )}
             </div>
             {showMenu && (
                 <PostMenu

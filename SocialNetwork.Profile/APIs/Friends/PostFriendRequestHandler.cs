@@ -69,7 +69,6 @@ public class PostFriendRequestHandler(AppDBContext dBContext, IMediator mediator
 
             return true;
         }
-
         return true;
     }
 }

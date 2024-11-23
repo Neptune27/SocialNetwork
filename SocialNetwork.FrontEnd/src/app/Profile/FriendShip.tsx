@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import useClickOutside from "../../helper/useClickOutside";
 import Image from "next/image";
 import style from "@/styles/Profile.module.scss";
+import { authorizedFetch } from "../../helper/authorizedFetcher";
+import { api, ApiEndpoint } from "../../api/const";
 interface Friendship {
     friends?: boolean;
     following?: boolean;
@@ -9,23 +11,91 @@ interface Friendship {
     requestReceived?: boolean;
 }
 interface FriendShipProps {
-    friendship: Friendship
+    friendship: Friendship;
+    setFriendship: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const FriendShip = ({ friendship }: FriendShipProps) => {
+const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
     const [friendsMenu, setFriendsMenu] = useState(false);
     const [respondMenu, setRespondMenu] = useState(false);
     const menu = useRef(null);
     const menu1 = useRef(null);
     useClickOutside(menu, () => setFriendsMenu(false));
     useClickOutside(menu1, () => setRespondMenu(false));
+
+    async function sendFriendRequest() {
+
+        const searchParams = new URLSearchParams(window.location.search);
+        let profileId = searchParams.get("profileId")
+        if (profileId == null) {
+            profileId = ""
+        }
+        const url = `${api(ApiEndpoint.PROFILE)}/Friend/Request/`;
+        try {
+            const response = await authorizedFetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(profileId)
+            });
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+            setFriendship((prev) => ({
+                ...prev,
+                requestSent: true
+            }));
+
+        } catch (error) {
+            console.error(error.message);
+        }
+
+    }
+
+    async function deleteFriendRequest() {
+
+        const searchParams = new URLSearchParams(window.location.search);
+        let profileId = searchParams.get("profileId")
+        if (profileId == null) {
+            profileId = ""
+        }
+        const url = `${api(ApiEndpoint.PROFILE)}/Friend/Request/`;
+        try {
+            const response = await authorizedFetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(profileId)
+            });
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+            
+
+
+        } catch (error) {
+            console.error(error.message);
+        }
+
+    }
+
+
+
     return (
-        <div className={style.friendship }>
+        <div className={style.friendship}>
             {friendship?.friends ? (
-                <div className={style.friends_menu_wrap }>
+                <div className={style.friends_menu_wrap}>
                     <button className="gray_btn" onClick={() => setFriendsMenu(true)}>
                         <Image src="/icons/friends.png" alt="" width={24} height={24} />
-                            
+
                         <span>Friends</span>
                     </button>
                     {friendsMenu && (
@@ -59,14 +129,14 @@ const FriendShip = ({ friendship }: FriendShipProps) => {
             ) : (
                 !friendship?.requestSent &&
                 !friendship?.requestReceived && (
-                    <button className="blue_btn">
+                    <button onClick={sendFriendRequest} className="blue_btn">
                         <Image src="/icons/addFriend.png" alt="" width={24} height={24} className="invert" />
                         <span>Add Friend</span>
                     </button>
                 )
             )}
             {friendship?.requestSent ? (
-                <button className="blue_btn">
+                <button className="blue_btn" onClick={deleteFriendRequest} >
                     <Image
                         src="/icons/cancelRequest.png"
                         className="invert"
@@ -83,7 +153,7 @@ const FriendShip = ({ friendship }: FriendShipProps) => {
                         </button>
                         {respondMenu && (
                             <div className="open_cover_menu" ref={menu1}>
-                                <div className={`${style.open_cover_menu_item} hover1`}>Confirm</div>
+                                    <div onClick={sendFriendRequest} className={`${style.open_cover_menu_item}  hover1`}>Confirm</div>
                                 <div className={`${style.open_cover_menu_item} hover1`}>Delete</div>
                             </div>
                         )}
