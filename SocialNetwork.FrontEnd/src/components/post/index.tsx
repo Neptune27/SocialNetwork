@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Dots, Public } from "@/public/svg"; // Adjust icon imports if needed
@@ -9,6 +9,8 @@ import ReactsPopup from "./ReactsPopup";
 import { useState } from "react";
 import CreateComment from "./CreateComment";
 import PostMenu from "./PostMenu";
+import Comment from "./Comment";
+
 
 // Define the User and PostProps interfaces
 interface User {
@@ -20,10 +22,13 @@ interface User {
 }
 
 interface Comment {
+    id: string;
     comment: string;
     image?: string;
-    commentBy: string;
+    commentBy: User;
     commentAt: Date;
+    likes?: number;
+    replies?: Comment[];
 }
 
 interface PostProps {
@@ -36,17 +41,17 @@ interface PostProps {
         comments: Comment[];
         createdAt: string;
     };
-    user: {
-        name: string;
-        firstName: string;
-        lastName: string;
-        profilePicture: string;
-    };
+    user: User; // Người dùng hiện tại
 }
 
 export default function Post({ post, user }: PostProps) {
     const [visible, setVisible] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
+    const [commentCount, setCommentCount] = useState(5); // Hiển thị số lượng bình luận ban đầu
+
+    const showMoreComments = () => {
+        setCommentCount((prev) => prev + 5);
+    };
 
     return (
         <div className={styles.post}>
@@ -182,6 +187,14 @@ export default function Post({ post, user }: PostProps) {
             <div className={styles.comments_wrap}>
                 <div className={styles.comments_order}></div>
                 <CreateComment user={user} />
+                {post.comments.slice(0, commentCount).map((comment) => (
+                    <Comment comment={comment} key={comment.id} />
+                ))}
+                {commentCount < post.comments.length && (
+                    <div className="view_comments" onClick={showMoreComments}>
+                        View more comments
+                    </div>
+                )}
             </div>
             {showMenu && (
                 <PostMenu

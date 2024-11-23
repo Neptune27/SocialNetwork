@@ -17,6 +17,8 @@ import Friends from "./Friends";
 import Intro from "../../components/intro";
 import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
+import useUserId from "../../hooks/useUserId";
+import { profile } from "console";
 
 
 interface Friendship {
@@ -25,12 +27,7 @@ interface Friendship {
     requestSent?: boolean;
     requestReceived?: boolean;
 }
-const testFriendshipData: Friendship = {
-    friends: true,
-    following: false,
-    requestSent: false,
-    requestReceived: false,
-};
+
 interface UserProps {
     name: string;
     firstName: string;
@@ -139,6 +136,14 @@ interface Details {
 const ProfilePage = () => {
     const [visitor, setVisitor] = useState(false);
     const [visible, setVisible] = useState(false);
+    const userId = useUserId();
+    const [friendshipData, setFriendshipData] = useState<Friendship>({
+        friends: false,
+        following: false,
+        requestSent: false,
+        requestReceived: false,
+    });
+
     const [details, setDetails] = useState<Details>({
         bio: "A passionate software developer",
         othername: "Nguyen Huy",
@@ -183,14 +188,18 @@ const ProfilePage = () => {
                     ...prevDetails,
                     firstName: user.firstName,
                     lastName: user.lastName,
-                    profilePicture: `${api(ApiEndpoint.PROFILE)}/${user.profilePicture.replaceAll("\\", "\/")}`,
-                    background: `${api(ApiEndpoint.PROFILE)}/${user.background.replaceAll("\\", "\/")}`,
+                    profilePicture: user.profilePicture.trim() == "" ? "/images/default_profile.png" : `${api(ApiEndpoint.PROFILE)}/${user.profilePicture.replaceAll("\\", "\/")}`,
+                    background: user.background.trim() == "" ? "/images/postBackgrounds/1.jpg" : `${api(ApiEndpoint.PROFILE)}/${user.background.replaceAll("\\", "\/")}`,
                     username: user.userName,
                     location: user.location,
                     instagram: user.instagram,
                     twitter: user.twitter,
                     github: user.github
                 }));
+                if (json["isVisitor"]) {
+                    console.log("Kiem tra ban be")
+                    await getFriendStatus(profileId)
+                }
 
             } catch (error) {
                 console.error(error.message);
@@ -200,6 +209,73 @@ const ProfilePage = () => {
 
         getData()
     }, [])
+
+
+    const getIsFriend = async (profileId: string) => {
+        console.log("Khong co request, Fetch den Friend")
+        const urlFriend = `${api(ApiEndpoint.PROFILE)}/Friend/${profileId}`;
+        try {
+            const response = await authorizedFetch(urlFriend, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+            const result = await response.json();
+            console.log(result);
+            if (result != null) {
+                console.log("Da la Friend")
+                setFriendshipData((prev) => ({
+                    ...prev,
+                    friends: true
+                }));
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
+    async function getFriendStatus(profileId: string) {
+        console.log("Get Friend Status")
+        if (profileId == null) {
+            profileId = ""
+        }
+        const url = `${api(ApiEndpoint.PROFILE)}/Friend/Request/${profileId}`;
+        try {
+            const response = await authorizedFetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+
+            console.log(response);
+            if (!response.ok) {
+                await getIsFriend(profileId);
+                return
+            }
+
+            console.log("Co Request")
+            const result = await response.json();
+            const recieverId = result["recieverId"]
+            const senderId = result["senderId"]
+            setFriendshipData((prev) => ({
+                ...prev,
+                requestSent: profileId === recieverId,
+                requestReceived: profileId !== recieverId,
+            }));
+
+
+        } catch (error) {
+            console.error(error.message);
+        }
+
+
+
+    }
 
     return (
         <>
@@ -214,7 +290,8 @@ const ProfilePage = () => {
                             profile={{
                                 picture: details.profilePicture,
                                 username: details.username,
-                                friendship: testFriendshipData
+                                friendship: friendshipData,
+                                setFriendShip: setFriendshipData
                             }}
                             visitor={visitor}
                         />

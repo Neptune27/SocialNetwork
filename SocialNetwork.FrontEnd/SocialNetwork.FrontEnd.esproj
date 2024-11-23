@@ -4,7 +4,6 @@
     <Folder Include="src\app\Profile\" />
     <Folder Include="src\components\errorPopup\" />
     <Folder Include="src\components\createPostPopUp\" />
-    <Folder Include="src\components\post\" />
     <Folder Include="src\components\profilePicture\" />
   </ItemGroup>
 </Project>

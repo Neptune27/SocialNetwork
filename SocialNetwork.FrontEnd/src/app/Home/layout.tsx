@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useRef, useState, useEffect } from "react";
 import UserHeader from "@/components/header/header";
 import LeftHome from "@/components/home/left";
@@ -65,53 +65,85 @@ const Home = () => {
         comments: [
             {
                 comment: "Great post!",
-                commentBy: "user1",
-                commentAt: new Date(),
+                commentBy: "Jane Smith",
+                commentAt: new Date("2024-11-22T10:00:00"),
+            },
+            {
+                comment: "Amazing photo!",
+                commentBy: "David Lee",
+                commentAt: new Date("2024-11-22T12:30:00"),
+            },
+            {
+                comment: "Looking good, John!",
+                commentBy: "Sarah Connor",
+                commentAt: new Date("2024-11-22T15:00:00"),
             },
         ],
         createdAt: new Date().toISOString(),
     };
+
     const post2: PostData = {
         user: {
-            username: "johndoe",
-            picture: "/images/default_profile.png",
-            first_name: "John",
+            username: "janedoe",
+            picture: "/images/default_pic.png",
+            first_name: "Jane",
             last_name: "Doe",
-            gender: "male",
+            gender: "female",
         },
-        type: "profilePicture",
-        text: "This is a mock post description with multiple images.",
-        images: ["/stories/1.jpg"],
-        
+        type: "cover",
+        text: "Here's my new cover photo. What do you think?",
+        images: ["/stories/2.jpg"],
         comments: [
             {
-                comment: "Great post!",
-                commentBy: "user1",
-                commentAt: new Date(),
+                comment: "Love the new cover!",
+                commentBy: "Michael Johnson",
+                commentAt: new Date("2024-11-21T18:45:00"),
+            },
+            {
+                comment: "So stylish!",
+                commentBy: "Anna Brown",
+                commentAt: new Date("2024-11-21T20:00:00"),
             },
         ],
         createdAt: new Date().toISOString(),
     };
+
     const post3: PostData = {
         user: {
-            username: "johndoe",
+            username: "alicewong",
             picture: "/images/default_profile.png",
-            first_name: "John",
-            last_name: "Doe",
-            gender: "male",
+            first_name: "Alice",
+            last_name: "Wong",
+            gender: "female",
         },
-        text: "This is a mock post description with multiple images.",
-        images: ["/stories/1.jpg", "/stories/3.jpg"],
-
+        type: null, // Regular post
+        text: "Had a fantastic weekend exploring the mountains!",
+        images: ["/stories/4.jpg", "/stories/5.jfif", "/stories/3.jpg"],
         comments: [
             {
-                comment: "Great post!",
-                commentBy: "user1",
-                commentAt: new Date(),
+                comment: "The view looks incredible!",
+                commentBy: "Chris Evans",
+                commentAt: new Date("2024-11-20T14:30:00"),
+            },
+            {
+                comment: "I wish I was there too 😍",
+                commentBy: "Natasha Romanoff",
+                commentAt: new Date("2024-11-20T15:00:00"),
+            },
+            {
+                comment: "Nature at its best!",
+                commentBy: "Bruce Banner",
+                commentAt: new Date("2024-11-20T16:15:00"),
+            },
+            {
+                comment: "Wow, this is so peaceful!",
+                commentBy: "Steve Rogers",
+                commentAt: new Date("2024-11-20T17:45:00"),
             },
         ],
         createdAt: new Date().toISOString(),
     };
+
 
     const middle = useRef<HTMLDivElement | null>(null);
     const [visible, setVisible] = useState(false);

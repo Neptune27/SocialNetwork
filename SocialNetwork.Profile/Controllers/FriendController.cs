@@ -12,7 +12,7 @@ namespace SocialNetwork.Profile.Controllers;
 
 
 [Authorize]
-[Route("api/[controller]")]
+[Route("[controller]")]
 [ApiController]
 public class FriendController(IMediator mediator) : ControllerBase
 {
@@ -27,13 +27,28 @@ public class FriendController(IMediator mediator) : ControllerBase
         return friends;
     }
 
-    [HttpGet("Request")]
-    public async Task<IEnumerable<FriendRequest>> GetFriendRequest()
+
+
+	[HttpGet("Request/{id}")]
+	public async Task<IActionResult> GetFriendRequest(string id)
+	{
+		var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+		var friendRequests = await mediator.Send(new GetFriendRequestRequest(userId, id));
+        if (friendRequests is null)
+        {
+            return BadRequest();
+        }
+		return Ok(friendRequests);
+	}
+
+	[HttpGet("Request")]
+    public async Task<IEnumerable<FriendRequest>> GetFriendsRequest()
     {
         var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
-        var friendRequests = await mediator.Send(new GetFriendRequestsRequest(userId));
+        var friendRequests = await mediator.Send(new GetFriendsRequestRequest(userId));
         return friendRequests;
     }
+
 
     [HttpPost("Request")]
     public async Task<IActionResult> PostFriendRequest([FromBody] string id)
@@ -49,11 +64,32 @@ public class FriendController(IMediator mediator) : ControllerBase
         return Ok();
     }
 
-    // GET api/<FriendController>/5
-    [HttpGet("{id}")]
-    public string Get(int id)
+	[HttpDelete("Request")]
+	public async Task<IActionResult> DeleteFriendRequest([FromBody] string id)
+	{
+		var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+		var result = await mediator.Send(new DeleteFriendRequestRequest(userId, id));
+
+		if (!result)
+		{
+			return BadRequest();
+		}
+
+		return Ok();
+	}
+
+
+	// GET api/<FriendController>/5
+	[HttpGet("{id}")]
+    public async Task<IActionResult> GetFriend(string  id)
     {
-        return "value";
+		var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+        var result = await mediator.Send(new GetFriendRequest(userId, id));
+        if(result is null)
+        {
+            return BadRequest();
+        }
+		return Ok(result);
     }
 
     // POST api/<FriendController>

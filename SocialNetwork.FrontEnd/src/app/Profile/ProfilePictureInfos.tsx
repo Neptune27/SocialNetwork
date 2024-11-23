@@ -16,7 +16,8 @@ interface ProfilePictureInfosProps {
     profile: {
         picture: string;
         username: string;
-        friendship: Friendship
+        friendship: Friendship;
+        setFriendship: React.Dispatch<React.SetStateAction<boolean>>
     };
     visitor: boolean;
 }
@@ -24,7 +25,7 @@ interface ProfilePictureInfosProps {
 const ProfilePictureInfos = ({ profile, visitor }: ProfilePictureInfosProps) => {
     const [show, setShow] = useState(false); 
     const pRef = useRef(null);
-    console.log("From ProfilePictureInfos " + visitor)
+    console.log("From ProfilePictureInfos " + profile.friendship.requestSent)
 
     return (
         <div className={style.profile_img_wrap}>
@@ -57,7 +58,7 @@ const ProfilePictureInfos = ({ profile, visitor }: ProfilePictureInfosProps) => 
                 </div>
             </div>
             {visitor ? (
-                <FriendShip friendship={profile?.friendship} />
+                <FriendShip friendship={profile?.friendship} setFriendship={profile.setFriendship} />
             ) : (
                 <div className={style.profile_w_right}>
                     <div className="blue_btn">
