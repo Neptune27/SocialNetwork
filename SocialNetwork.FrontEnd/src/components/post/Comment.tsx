@@ -32,10 +32,7 @@ export default function Comment({ comment }: CommentProps) {
                 <div className={styles.comment_wrap}>
                     <div className={styles.comment_name}>
                         {commentBy.first_name} {commentBy.last_name}
-                        <span className={styles.comment_date}>
-                            {/*{formatDistanceToNow(new Date(commentAt), { addSuffix: true })}*/}
-                            23/11/2024
-                        </span>
+                        
                     </div>
                     <div className={styles.comment_text}>{content}</div>
                     {image && (
@@ -51,6 +48,10 @@ export default function Comment({ comment }: CommentProps) {
                 <div className={styles.comment_actions}>
                     <span>Like</span>
                     <span>Reply</span>
+                    <span className={styles.comment_date}>
+
+                        23/11/2024
+                    </span>
                 </div>
                 {replies && replies.length > 0 && (
                     <div className={styles.comment_replies}>

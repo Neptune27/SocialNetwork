@@ -16,10 +16,18 @@ interface UserProps {
     profilePicture: string;
 }
 
+interface CommentBy {
+    picture: string;
+    first_name: string;
+    last_name: string;
+}
+
 interface Comment {
     comment: string;
-    commentBy: string;
+    commentBy: CommentBy;
     commentAt: Date;
+    image?: string; // Optional image
+    replies?: Comment[]; // Nested replies
 }
 
 interface PostUser {
@@ -49,7 +57,6 @@ const Home = () => {
         profilePicture: "/images/default_profile.png",
     };
 
-    // Mock post data matching the Mongoose schema
     const postVar: PostData = {
         user: {
             username: "johndoe",
@@ -65,84 +72,95 @@ const Home = () => {
         comments: [
             {
                 comment: "Great post!",
-                commentBy: "Jane Smith",
+                commentBy: {
+                    picture: "/images/default_profile.png",
+                    first_name: "Jane",
+                    last_name: "Smith",
+                },
                 commentAt: new Date("2024-11-22T10:00:00"),
             },
             {
                 comment: "Amazing photo!",
-                commentBy: "David Lee",
+                commentBy: {
+                    picture: "/images/default_profile.png",
+                    first_name: "David",
+                    last_name: "Lee",
+                },
                 commentAt: new Date("2024-11-22T12:30:00"),
             },
-            {
-                comment: "Looking good, John!",
-                commentBy: "Sarah Connor",
-                commentAt: new Date("2024-11-22T15:00:00"),
-            },
         ],
         createdAt: new Date().toISOString(),
     };
 
-    const post2: PostData = {
+    const postWithReplies = {
         user: {
-            username: "janedoe",
-            picture: "/images/default_pic.png",
-            first_name: "Jane",
-            last_name: "Doe",
-            gender: "female",
-        },
-        type: "cover",
-        text: "Here's my new cover photo. What do you think?",
-        images: ["/stories/2.jpg"],
-        comments: [
-            {
-                comment: "Love the new cover!",
-                commentBy: "Michael Johnson",
-                commentAt: new Date("2024-11-21T18:45:00"),
-            },
-            {
-                comment: "So stylish!",
-                commentBy: "Anna Brown",
-                commentAt: new Date("2024-11-21T20:00:00"),
-            },
-        ],
-        createdAt: new Date().toISOString(),
-    };
-
-    const post3: PostData = {
-        user: {
-            username: "alicewong",
+            username: "johndoe",
             picture: "/images/default_profile.png",
-            first_name: "Alice",
-            last_name: "Wong",
-            gender: "female",
+            first_name: "John",
+            last_name: "Doe",
+            gender: "male",
         },
         type: null, // Regular post
-        text: "Had a fantastic weekend exploring the mountains!",
-        images: ["/stories/4.jpg", "/stories/5.jfif", "/stories/3.jpg"],
+        text: "Enjoying the sunset at the beach!",
+        images: ["/stories/1.jpg"],
         comments: [
             {
-                comment: "The view looks incredible!",
-                commentBy: "Chris Evans",
-                commentAt: new Date("2024-11-20T14:30:00"),
+                id: "comment1",
+                comment: "Wow, that's beautiful!",
+                image: "/images/comment1.jpg",
+                commentBy: {
+                    username: "alicewong",
+                    picture: "/stories/1.jpg",
+                    first_name: "Alice",
+                    last_name: "Wong",
+                    gender: "female",
+                },
+                commentAt: new Date(),
+                likes: 10,
+                replies: [
+                    {
+                        id: "reply1",
+                        comment: "Absolutely! Where is this?",
+                        commentBy: {
+                            username: "chris_evans",
+                            picture: "/images/user2.png",
+                            first_name: "Chris",
+                            last_name: "Evans",
+                            gender: "male",
+                        },
+                        commentAt: new Date(),
+                    },
+                    {
+                        id: "reply2",
+                        comment: "Looks like paradise!",
+                        image: "/stories/1.jpg",
+                        commentBy: {
+                            username: "natasha_romanoff",
+                            picture: "/stories/2.png",
+                            first_name: "Natasha",
+                            last_name: "Romanoff",
+                            gender: "female",
+                        },
+                        commentAt: new Date(),
+                    },
+                ],
             },
             {
-                comment: "I wish I was there too 😍",
-                commentBy: "Natasha Romanoff",
-                commentAt: new Date("2024-11-20T15:00:00"),
-            },
-            {
-                comment: "Nature at its best!",
-                commentBy: "Bruce Banner",
-                commentAt: new Date("2024-11-20T16:15:00"),
-            },
-            {
-                comment: "Wow, this is so peaceful!",
-                commentBy: "Steve Rogers",
-                commentAt: new Date("2024-11-20T17:45:00"),
+                id: "comment2",
+                comment: "Amazing view! Thanks for sharing.",
+                commentBy: {
+                    username: "bruce_banner",
+                    picture: "/images/user4.png",
+                    first_name: "Bruce",
+                    last_name: "Banner",
+                    gender: "male",
+                },
+                commentAt: new Date(),
             },
         ],
         createdAt: new Date().toISOString(),
     };
+
 
 
     const middle = useRef<HTMLDivElement | null>(null);
@@ -169,8 +187,8 @@ const Home = () => {
                     <CreatePost user={user} setVisible={setVisible} />
                     <div className={styles.posts}>
                         <Post post={postVar} user={user} />
-                        <Post post={post2} user={user} />
-                        <Post post={post3} user={user} />
+                        <Post post={postWithReplies} user={user} />
+
                     </div>
                 </div>
                 <RightHome user={user} />
