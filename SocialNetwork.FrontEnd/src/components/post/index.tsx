@@ -41,13 +41,13 @@ interface PostProps {
         comments: Comment[];
         createdAt: string;
     };
-    user: User; // Người dùng hiện tại
+    user: User; 
 }
 
 export default function Post({ post, user }: PostProps) {
     const [visible, setVisible] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
-    const [commentCount, setCommentCount] = useState(5); // Hiển thị số lượng bình luận ban đầu
+    const [commentCount, setCommentCount] = useState(5);
 
     const showMoreComments = () => {
         setCommentCount((prev) => prev + 5);
