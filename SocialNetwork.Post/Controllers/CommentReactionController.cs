@@ -73,7 +73,7 @@ public class CommentReactionController(IMediator mediator) : ControllerBase
     }
 
     [HttpDelete("{commentId}")]
-    public async Task<IActionResult> Put(int commentId)
+    public async Task<IActionResult> Delete(int commentId)
     {
         BasicUser loginUser = await GetAuthorizeAsync();
         if (loginUser == null) return Unauthorized("No authorized.");

@@ -101,7 +101,7 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReplyToId")
+                    b.Property<int?>("ReplyToId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -117,7 +117,8 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.HasIndex("PostId");
 
                     b.HasIndex("ReplyToId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ReplyToId] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
@@ -155,6 +156,10 @@ namespace SocialNetwork.Post.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Background")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -244,8 +249,7 @@ namespace SocialNetwork.Post.Data.Migrations
                     b.HasOne("SocialNetwork.Post.Data.Models.Comment", "ReplyTo")
                         .WithOne()
                         .HasForeignKey("SocialNetwork.Post.Data.Models.Comment", "ReplyToId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("SocialNetwork.Core.Models.BasicUser", "User")
                         .WithMany()

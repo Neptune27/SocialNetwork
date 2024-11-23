@@ -19,7 +19,7 @@ interface UserMenuProps {
         {visible === 0 && (
           <div>
             <Link href={"/profile"} className={`${styles.mmenu_header} hover3`}>
-              <Image
+              <img
                 src={user?.profilePicture}
                 alt="Avatar"
                 width="60"

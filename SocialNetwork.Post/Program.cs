@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Core.Extensions;
 using SocialNetwork.Post.Data;
 using SocialNetwork.Post.Integrations;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,11 @@ builder.Services.AddCors(options =>
 }
 );
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerWithJwtAuth();
@@ -54,6 +59,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+var fileServerOption = new FileServerOptions
+{
+};
+
+fileServerOption.StaticFileOptions.ServeUnknownFileTypes = true;
+fileServerOption.StaticFileOptions.DefaultContentType = "application/binary";
+
+app.UseFileServer(fileServerOption);
 
 
 app.UseAuthentication();

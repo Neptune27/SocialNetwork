@@ -18,6 +18,10 @@ import Intro from "../../components/intro";
 import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
 import LoadMore from "../../components/profilePicture/LoadMore";
+import useCurrentUser from "../../hooks/useCurrentUser";
+import usePosts from "../../hooks/Posts/usePosts";
+import Loading from "../../components/Loading";
+import useUserId from "../../hooks/useUserId";
 
 
 
@@ -27,12 +31,7 @@ interface Friendship {
     requestSent?: boolean;
     requestReceived?: boolean;
 }
-const testFriendshipData: Friendship = {
-    friends: true,
-    following: false,
-    requestSent: false,
-    requestReceived: false,
-};
+
 interface UserProps {
     name: string;
     firstName: string;
@@ -141,6 +140,17 @@ interface Details {
 const ProfilePage = () => {
     const [visitor, setVisitor] = useState(false);
     const [visible, setVisible] = useState(false);
+    const userId = useUserId();
+    const userStore = useCurrentUser();
+    const postStore = usePosts()
+
+    const [friendshipData, setFriendshipData] = useState<Friendship>({
+        friends: false,
+        following: false,
+        requestSent: false,
+        requestReceived: false,
+    });
+
     const [details, setDetails] = useState<Details>({
         bio: "A passionate software developer",
         othername: "Nguyen Huy",
@@ -162,12 +172,13 @@ const ProfilePage = () => {
         github: "",
     });
 
+
     useEffect(() => {
         const getData = async () => {
             const searchParams = new URLSearchParams(window.location.search);
             let profileId = searchParams.get("profileId")
             if (profileId == null) {
-                profileId = ""
+                profileId = userId
             }
             const url = `${api(ApiEndpoint.PROFILE)}/Profile/${profileId}`;
             try {
@@ -185,14 +196,18 @@ const ProfilePage = () => {
                     ...prevDetails,
                     firstName: user.firstName,
                     lastName: user.lastName,
-                    profilePicture: `${api(ApiEndpoint.PROFILE)}/${user.profilePicture.replaceAll("\\", "\/")}`,
-                    background: `${api(ApiEndpoint.PROFILE)}/${user.background.replaceAll("\\", "\/")}`,
+                    profilePicture: user.profilePicture.trim() == "" ? "/images/default_profile.png" : `${api(ApiEndpoint.PROFILE)}/${user.profilePicture.replaceAll("\\", "\/")}`,
+                    background: user.background.trim() == "" ? "/images/postBackgrounds/1.jpg" : `${api(ApiEndpoint.PROFILE)}/${user.background.replaceAll("\\", "\/")}`,
                     username: user.userName,
                     location: user.location,
                     instagram: user.instagram,
                     twitter: user.twitter,
                     github: user.github
                 }));
+                if (json["isVisitor"]) {
+                    console.log("Kiem tra ban be")
+                    await getFriendStatus(profileId)
+                }
 
             } catch (error) {
                 console.error(error.message);
@@ -203,12 +218,113 @@ const ProfilePage = () => {
         getData()
     }, [])
 
+
+
+    useEffect(() => {
+        const getUser = async () => {
+            const resp = await authorizedFetch(`${api(ApiEndpoint.PROFILE)}/Profile/${userId}`)
+            const data = await resp.json()
+            const user = data["user"]
+            userStore.set({
+                firstName: user["firstName"],
+                lastName: user["lastName"],
+                name: user["userName"],
+                profilePicture: `${api(ApiEndpoint.PROFILE)}/${user["profilePicture"]}`
+            })
+
+        }
+
+        const getPost = async () => {
+            const resp = await authorizedFetch(`${api(ApiEndpoint.POST)}/Post`)
+            const data = await resp.json()
+
+            console.log(data)
+            postStore.set(data)
+        }
+
+        getUser()
+        getPost()
+    }, [])
+
+    if (userStore.user == null) {
+        return (
+            <Loading />
+        )
+    }
+
+
+    const getIsFriend = async (profileId: string) => {
+        console.log("Khong co request, Fetch den Friend")
+        const urlFriend = `${api(ApiEndpoint.PROFILE)}/Friend/${profileId}`;
+        try {
+            const response = await authorizedFetch(urlFriend, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+            const result = await response.json();
+            console.log(result);
+            if (result != null) {
+                console.log("Da la Friend")
+                setFriendshipData((prev) => ({
+                    ...prev,
+                    friends: true
+                }));
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
+    async function getFriendStatus(profileId: string) {
+        console.log("Get Friend Status")
+        if (profileId == null) {
+            profileId = ""
+        }
+        const url = `${api(ApiEndpoint.PROFILE)}/Friend/Request/${profileId}`;
+        try {
+            const response = await authorizedFetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+
+            console.log(response);
+            if (!response.ok) {
+                await getIsFriend(profileId);
+                return
+            }
+
+            console.log("Co Request")
+            const result = await response.json();
+            const recieverId = result["recieverId"]
+            const senderId = result["senderId"]
+            setFriendshipData((prev) => ({
+                ...prev,
+                requestSent: profileId === recieverId,
+                requestReceived: profileId !== recieverId,
+            }));
+
+
+        } catch (error) {
+            console.error(error.message);
+        }
+
+
+
+    }
+
     return (
         <>
-            {visible && <CreatePostPopUp user={user} setVisible={setVisible} />}
+            {visible && <CreatePostPopUp user={userStore.user} setVisible={setVisible} />}
             <div className={style.profile}>
 
-                <UserHeader user={user} page="profile" />
+                <UserHeader user={userStore.user} page="profile" />
                 <div className={style.profile_top}>
                     <div className={style.profile_container}>
                         <Cover cover={details.background} visitor={visitor} />
@@ -216,7 +332,8 @@ const ProfilePage = () => {
                             profile={{
                                 picture: details.profilePicture,
                                 username: details.username,
-                                friendship: testFriendshipData
+                                friendship: friendshipData,
+                                setFriendShip: setFriendshipData
                             }}
                             visitor={visitor}
                         />
@@ -226,7 +343,7 @@ const ProfilePage = () => {
                 <div className={style.profile_bottom}>
                     <div className={style.profile_container}>
                         <div className={style.bottom_container}>
-                            <PplYouMayKnow />
+                            {/*<PplYouMayKnow />*/}
                             <div className={style.profile_grid}>
                                 <div className={style.profile_left}>
                                     <Intro details={details} visitor={visitor} />
@@ -254,11 +371,13 @@ const ProfilePage = () => {
                                     {!visitor && (
                                         <CreatePost user={user} profile setVisible={setVisible} />
                                     )}
-                                    <GridPosts />
+                                    {/*<GridPosts />*/}
                                     <div className={style.posts}>
+                                        {postStore.posts.map((p) => <Post key={p.id} post={p} user={userStore.user} />)}
+
                                         {/* <div className={style.no_posts}>No posts available</div> */}
-                                        <Post post={postVar} user={user} key={1} />
-                                        <Post post={postVar1} user={user} key={2} />
+                                        {/*<Post post={postVar} user={user} key={1} />*/}
+                                        {/*<Post post={postVar1} user={user} key={2} />*/}
                                     </div>
                                 </div>
                             </div>

@@ -14,12 +14,8 @@ import { GoFileBinary } from "react-icons/go";
 import { CgFilm } from "react-icons/cg";
 import { motion } from "framer-motion"
 import { IoMdCloseCircleOutline } from "react-icons/io";
-type FileType = {
-    source: File,
-    progress: number,
-    changedName: string,
-    blobUrl?: string
-}
+import { FileType } from "../../../interfaces/IFileType"
+
 
 
 type ChatProps = {

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Dots, Public } from "@/public/svg"; // Adjust icon imports if needed
@@ -9,68 +9,76 @@ import ReactsPopup from "./ReactsPopup";
 import { useState } from "react";
 import CreateComment from "./CreateComment";
 import PostMenu from "./PostMenu";
+import { api, ApiEndpoint } from "../../api/const";
+import { PostProps } from "../../hooks/Posts/usePosts";
+import usePopupPost from "../../hooks/Posts/usePopupPost";
+import Comment from "./Comment";
 
-// Define the User and PostProps interfaces
-interface User {
-    username: string;
-    picture: string;
-    first_name: string;
-    last_name: string;
-    gender: "male" | "female";
-}
+//// Define the User and PostProps interfaces
+//interface User {
+//    name: string;
+//    picture: string;
+//}
 
-interface Comment {
-    comment: string;
-    image?: string;
-    commentBy: string;
-    commentAt: Date;
-}
+//interface Comment {
+//    comment: string;
+//    image?: string;
+//    commentBy: string;
+//    commentAt: Date;
+//}
 
-interface PostProps {
-    post: {
-        user: User;
-        type: "profilePicture" | "cover" | null;
-        text?: string;
-        images?: string[];
-        background?: string;
-        comments: Comment[];
-        createdAt: string;
-    };
-    user: {
-        name: string;
-        firstName: string;
-        lastName: string;
-        profilePicture: string;
-    };
-}
+//interface PostProps {
+//    post: {
+//        id: number;
+//        user: User;
+//        type: "profilePicture" | "cover" | null;
+//        message?: string;
+//        medias?: string[];
+//        background?: string;
+//        comments: Comment[];
+//        createdAt: string;
+//    };
+//    user: {
+//        name: string;
+//        profilePicture: string;
+//    };
+//}
 
-export default function Post({ post, user }: PostProps) {
+export default function Post({ post, user, isPopup }: PostProps) {
     const [visible, setVisible] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
+    const [commentCount, setCommentCount] = useState(5);
+
+    const showMoreComments = () => {
+ 
+        setCommentCount((prev) => prev + 5);
+    };
+
+
+    const popupStore = usePopupPost()
+
+    const handleSeeMore = () => {
+        popupStore.data.open = true
+        popupStore.data.post = post
+        popupStore.set(popupStore.data)
+    }
 
     return (
         <div className={styles.post}>
             <div className={styles.post_header}>
                 <Link
-                    href={`/profile/${post.user.username}`}
+                    href={`/Profile?profileId=${post.user.id}`}
                     className={styles.post_header_left}
                 >
-                    <Image
+                    <img
                         src={post.user.picture}
-                        alt={`${post.user.first_name} ${post.user.last_name}`}
                         width={40}
                         height={40}
                     />
                     <div className={styles.header_col}>
                         <div className={styles.post_profile_name}>
-                            {post.user.first_name} {post.user.last_name}
+                            {post.user.name}
                             <div className={styles.updated_p}>
-                                {post.type === "profilePicture" &&
-                                    `updated ${post.user.gender === "male" ? "his" : "her"
-                                    } profile picture`}
-                                {post.type === "cover" &&
-                                    `updated ${post.user.gender === "male" ? "his" : "her"
-                                    } cover picture`}
                             </div>
                         </div>
                         <div className={styles.post_profile_privacy_date}>
@@ -93,38 +101,41 @@ export default function Post({ post, user }: PostProps) {
                     className={styles.post_bg}
                     style={{ backgroundImage: `url(${post.background})` }}
                 >
-                    <div className={styles.post_bg_text}>{post.text}</div>
+                    <div className={styles.post_bg_text}>{post.message}</div>
                 </div>
-            ) : post.type === null ? (
+            ) : (post.type === null || post.type === undefined) ? (
                 <>
-                    {post.text && <div className={styles.post_text}>{post.text}</div>}
-                    {post.images && post.images.length > 0 && (
+                    {post.message && <div className={styles.post_text}>{post.message}</div>}
+                    {post.medias && post.medias.length > 0 && (
                         <div
                             className={
-                                post.images.length === 1
+                                post.medias.length === 1
                                     ? styles.grid_1
-                                    : post.images.length === 2
+                                    : post.medias.length === 2
                                         ? styles.grid_2
-                                        : post.images.length === 3
+                                        : post.medias.length === 3
                                             ? styles.grid_3
-                                            : post.images.length === 4
+                                            : post.medias.length === 4
                                                 ? styles.grid_4
                                                 : styles.grid_5 
                             }
                         >
-                            {post.images.slice(0, 5).map((image, i) => (
-                                <Image
-                                    src={image}
-                                    key={i}
-                                    alt=""
-                                    className={styles[`img_${i}`]}
-                                    width={100}
-                                    height={100}
-                                />
+                                {post.medias.slice(0, 5).map((image, i) => (
+                                    <a key={image} target="_blank" href={`${api(ApiEndpoint.POST)}/${image}`}>
+                                        <img
+                                            src={`${api(ApiEndpoint.POST)}/${image}`}
+                                            key={i}
+                                            alt=""
+                                            className={styles[`img_${i}`]}
+                                            width={100}
+                                            height={100}
+                                        />
+                                </a>
+                                
                             ))}
-                            {post.images.length > 5 && (
+                            {post.medias.length > 5 && (
                                 <div className={styles.more_pics_shadow}>
-                                    +{post.images.length - 5}
+                                    +{post.medias.length - 5}
                                 </div>
                             )}
                         </div>
@@ -149,8 +160,8 @@ export default function Post({ post, user }: PostProps) {
                     <div className={styles.reacts_count_num}></div>
                 </div>
                 <div className={styles.to_right}>
-                    <div className={styles.comments_count}>13 comments</div>
-                    <div className={styles.share_count}>1 share</div>
+                    <div className={styles.comments_count}>{post.comments.length} comment(s)</div>
+                    {/*<div className={styles.share_count}>0</div>*/}
                 </div>
             </div>
             <div className={styles.post_actions}>
@@ -182,7 +193,21 @@ export default function Post({ post, user }: PostProps) {
             </div>
             <div className={styles.comments_wrap}>
                 <div className={styles.comments_order}></div>
-                <CreateComment user={user} />
+                <CreateComment user={user} postId={post.id} />
+                {!isPopup &&
+                    <div className="flex justify-end">
+                        <span onClick={handleSeeMore}>See more</span>
+                    </div>
+                }
+                {/*<CreateComment user={user} />*/}
+                {post.comments.slice(0, commentCount).map((comment) => (
+                    <Comment comment={comment} key={comment.id} />
+                ))}
+                {isPopup && commentCount < post.comments.length && (
+                    <div className="view_comments" onClick={showMoreComments}>
+                        View more comments
+                    </div>
+                )}
             </div>
             {showMenu && (
                 <PostMenu

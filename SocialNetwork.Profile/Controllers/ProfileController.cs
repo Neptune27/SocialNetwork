@@ -57,9 +57,32 @@ public class ProfileController(
 		return Ok(profile);
 	}
 
+	[HttpGet("Name/{name}")]
+    public async Task<IActionResult> GetByName(string name)
+    {
+        string userId = HttpContext.User.Claims.GetClaimByUserId().Value;
 
-	// POST api/<ProfileController>
-	[HttpPost]
+        var user = await mediator.Send(new GetProfileByNameRequest(name));
+
+        if (user == null)
+        {
+            return BadRequest("UserId not found");
+        }
+
+        //var userDto = (User)user.Clone();
+
+        //var profile = new ProfileDTO()
+        //{
+        //    IsVisitor = profileId == userId ? false : true,
+        //    User = userDto
+        //};
+
+        return Ok(user);
+    }
+
+
+    // POST api/<ProfileController>
+    [HttpPost]
 	public void Post([FromBody] string value)
 	{
 	}

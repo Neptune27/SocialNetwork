@@ -21,10 +21,10 @@ const LeftHome = ({ user }: UserHeaderProps) => {
   const [visible, setVisible] = useState(false);
   return (
     <div className={`${styles.left_home} scrollbar`}>
-      <Link href={"profile"} className={`${styles.left_link} hover1`}>
-        <Image
-          src={avatar}
-          alt="Avartar"
+      <Link href={"Profile"} className={`${styles.left_link} hover1`}>
+              <img
+                  src={user.profilePicture}
+          alt="Avatar"
           width="40"
           height="40"
         />

@@ -9,6 +9,9 @@ using PostModel = SocialNetwork.Post.Data.Models.Post;
 using Microsoft.AspNetCore.Authorization;
 using SocialNetwork.Post.APIs.Accounts;
 using SocialNetwork.Core.Enums;
+using System.Threading;
+using SocialNetwork.Profile.Data.Models;
+using Microsoft.AspNetCore.Http;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,10 +30,18 @@ public class PostController(
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var postList = await mediator.Send(new GetListPostRequest());
+        var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+        var postList = await mediator.Send(new GetListPostRequest(userId));
         return Ok(postList);
     }
 
+    [HttpGet("Search")]
+    public async Task<IActionResult> Search([FromQuery] string q)
+    {
+        var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+        var postList = await mediator.Send(new GetListPostQueryRequest(userId, q));
+        return Ok(postList);
+    }
     // GET api/<PostController>/5
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
@@ -44,34 +55,52 @@ public class PostController(
 
     // POST api/<PostController>
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] PostDTO postDTO)
+    public async Task<IActionResult> Post([FromForm] PostDTO postDTO, List<IFormFile> files)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
         var user = HttpContext.User;
-        var id = user.Claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier).Value;
-        if (id == null) return Unauthorized("Id not found");
+        var userId = user.Claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier).Value;
 
-        var loginUser = await mediator.Send(new GetUserRequest(id));
+        var loginUser = await mediator.Send(new GetUserRequest(userId));
+        List<string> medias = [];
+
+        foreach (var file in files)
+        {
+            var fileName = file.FileName;
+            var extension = Path.GetExtension(fileName);
+            var newName = Guid.NewGuid().ToString();
+            var filePath = Path.Combine("Media", userId, newName+extension);
+            var saveLocation = Path.Combine("./wwwroot", filePath);
+            var dir = Path.GetDirectoryName(saveLocation);
+            Directory.CreateDirectory(dir);
+            medias.Add(filePath);
+            using (var stream = System.IO.File.Create(saveLocation))
+            {
+                await file.CopyToAsync(stream);
+            };
+
+        }
 
         // Chuyển từ DTO sang Model
-        PostModel newPost = new PostModel()
+        PostModel newPost = new()
         {
             User = loginUser,
-            Message = postDTO.Message,
+            Message = postDTO.Message ?? "",
             CreatedAt = DateTime.Now,
             LastUpdated = DateTime.Now,
-            Medias = new List<string>(),
-            Reactions = new List<Reaction>(),
-            Comments = new List<Comment>(),
-            Visibility = EVisibility.PUBLIC
+            Medias = medias,
+            Reactions = [],
+            Comments = [],
+            Visibility = EVisibility.PUBLIC,
+            Background = postDTO.Background ?? ""
         };
 
         var result = await mediator.Send(new AddPostRequest(newPost));
 
-        return Ok(result);
+        return Ok();
     }
 
     [HttpPut("{postId}")]

@@ -32,7 +32,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-}); ;
+});
 
 
 List<string> hubUrls = ["/videohub", "/messagehub"];

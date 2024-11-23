@@ -54,11 +54,14 @@ const LoginForm = ({ setVisible }: LoginFormProps) => {
 
         const resultJson = await result.json();
         console.log(resultJson);
-        localStorage.setItem("token", resultJson["token"]);
+
         localStorage.setItem("userId", resultJson["userId"]);
 
         if (login.rememberMe) {
-            //localStorage.setItem("username", login.username);
+            localStorage.setItem("token", resultJson["token"]);
+        }
+        else {
+            sessionStorage.setItem("token", resultJson["token"])
         }
 
         window.location.href = "/Home"

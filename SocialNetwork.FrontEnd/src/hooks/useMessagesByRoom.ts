@@ -1,5 +1,5 @@
 import { api, ApiEndpoint } from "../api/const"
-import { authorizedFetch } from "../helper/authorizedFetcher"
+import { authorizedFetch } from "../Ultility/authorizedFetcher"
 import { IMessage } from "../interfaces/IMessage"
 
 const useMessagesByRoom = async (id: string, fromDate?: number): Promise<IMessage[]> => {

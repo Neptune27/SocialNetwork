@@ -19,9 +19,8 @@ import { useRef, useState } from "react";
 import SearchMenu from "./searchMenu";
 import AllMenu from "./AllMenu";
 import useClickOutside from "@/helper/useClickOutside";
-import Image from "next/image";
 import UserMenu from "./userMenu";
-import avatar from "@/public/images/default_profile.png";
+//import avatar from "@/public/images/default_profile.png";
 
 interface UserHeaderProps {
     user: {
@@ -47,7 +46,7 @@ const UserHeader = ({ user, page }: UserHeaderProps) => {
     return (
         <header className={styles.header}>
             <div className={styles.header_left}>
-                <Link href={"/"} className={styles.header_logo}>
+                <Link href={"/Home"} className={styles.header_logo}>
                     <div className={styles.circle}>
                         <Logo />
                     </div>
@@ -70,22 +69,22 @@ const UserHeader = ({ user, page }: UserHeaderProps) => {
 
             <div className={styles.header_middle}>
                 <Link
-                    href="/"
+                    href="/Home"
                     className={`${styles.middle_icon} ${page === "home" ? "active" : ""}`}
                 >
                     {page === "home" ? <HomeActive /> : <Home color={color} />}
                 </Link>
-                <Link href="/" className={`${styles.middle_icon} hover1 `}>
+                <Link href="/Home" className={`${styles.middle_icon} hover1 `}>
                     <Friends color={color} />
                 </Link>
-                <Link href="/" className={`${styles.middle_icon} hover1`}>
+                <Link href="/Home" className={`${styles.middle_icon} hover1`}>
                     <Watch color={color} />
                     <div className={styles.middle_notification}>9+</div>
                 </Link>
-                <Link href="/" className={`${styles.middle_icon} hover1`}>
+                <Link href="/Home" className={`${styles.middle_icon} hover1`}>
                     <Market color={color} />
                 </Link>
-                <Link href="/" className={`${styles.middle_icon} hover1`}>
+                <Link href="/Home" className={`${styles.middle_icon} hover1`}>
                     <Gaming color={color} />
                 </Link>
             </div>
@@ -95,8 +94,8 @@ const UserHeader = ({ user, page }: UserHeaderProps) => {
                     className={`${styles.profile_link} hover1 ${page === "profile" ? `${styles.active_link}` : ""
                         }`}
                 >
-                    <Image src={avatar} alt="Avartar" width="40" height="40" />
-                    <span>Nguyen Huy</span>
+                    <img src={`${user.profilePicture}`} alt="Avatar" width="40" height="40" />
+                    <span>{user.name}</span>
                 </Link>
                 <div
                     className={`${styles.circle_icon} hover1`}
@@ -108,9 +107,9 @@ const UserHeader = ({ user, page }: UserHeaderProps) => {
                     <Menu />
                     {showAllMenu && <AllMenu />}
                 </div>
-                <div className={`${styles.circle_icon} hover1`}>
+                <Link href="/Chat" className={`${styles.circle_icon} hover1`}>
                     <Messenger />
-                </div>
+                </Link>
                 <div className={`${styles.circle_icon} hover1`}>
                     <Notifications />
                     <div className={`${styles.right_notification} `}>5</div>

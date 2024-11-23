@@ -17,16 +17,16 @@ public class Comment : BaseModel
 
     public BasicUser User { get; set; }
 
-    public Post Post { get; set; } = new Post();
+    public Post Post { get; set; }
 
-    public List<CommentReaction> Reactions { get; set; } = new List<CommentReaction>();
+    public List<CommentReaction> Reactions { get; set; } = [];
 
-    public Comment ReplyTo { get; set; } = new Comment();
+    public Comment? ReplyTo { get; set; }
 
-    public List<Comment> Replys { get; set; } = new List<Comment>();
+    public List<Comment> Replys { get; set; } = [];
 
     public string Message { get; set; }
 
-    public List<string> Medias { get; set; } = new List<string>();
+    public List<string> Medias { get; set; } = [];
 
 }

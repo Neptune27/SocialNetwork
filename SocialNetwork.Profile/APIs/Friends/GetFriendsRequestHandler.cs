@@ -6,13 +6,13 @@ using SocialNetwork.Profile.Data.Models;
 
 namespace SocialNetwork.Profile.APIs.Friends;
 
-public class GetFriendRequestsHandler(AppDBContext dBContext) 
-    : IRequestHandler<GetFriendRequestsRequest, List<FriendRequest>>
+public class GetFriendsRequestHandler(AppDBContext dBContext) 
+    : IRequestHandler<GetFriendsRequestRequest, List<FriendRequest>>
 {
     private readonly AppDBContext dBContext = dBContext;
 
 
-    public async ValueTask<List<FriendRequest>> Handle(GetFriendRequestsRequest request, CancellationToken cancellationToken)
+    public async ValueTask<List<FriendRequest>> Handle(GetFriendsRequestRequest request, CancellationToken cancellationToken)
     {
         var result = await dBContext.FriendRequests
             .Include(f => f.Sender)

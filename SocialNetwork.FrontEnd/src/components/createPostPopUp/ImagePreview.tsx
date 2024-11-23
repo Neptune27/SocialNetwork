@@ -3,6 +3,8 @@ import EmojiPickerBackground from "./EmojiPickerBackground";
 import style from "@/components/createPostPopUp/style.module.scss";
 import icons from "@/public/icons.module.scss"; // Icons styles need to be defined correctly in this file
 import Image from "next/image";
+import { FileType } from "../../interfaces/IFileType";
+import { CgFilm } from "react-icons/cg";
 
 interface ImagePreviewProps {
     text: string;
@@ -14,8 +16,8 @@ interface ImagePreviewProps {
     };
     setText: (value: string) => void;
     showPrev: boolean;
-    images: string[];
-    setImages: React.Dispatch<React.SetStateAction<string[]>>;
+    files: FileType[];
+    setFiles: React.Dispatch<React.SetStateAction<FileType[]>>;
     setShowPrev: (value: boolean) => void; // Fix: should be a boolean setter
     setError: (value: string) => void;
 }
@@ -25,8 +27,8 @@ const ImagePreview = ({
     user,
     setText,
     showPrev,
-    images,
-    setImages,
+    files,
+    setFiles,
     setShowPrev,
     setError,
 }: ImagePreviewProps) => {
@@ -34,18 +36,35 @@ const ImagePreview = ({
 
     const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
-        console.log("Files uploaded:", files); // Debugging line
-        files.forEach((img) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(img);
-            reader.onload = (readerEvent) => {
-                const result = readerEvent.target?.result as string;
-                if (result) {
-                    setImages((prevImages) => [...prevImages, result]);
-                    console.log("Image added:", result); // Debugging line
-                }
-            };
+        const newFiles : FileType[]= files.map((file) => {
+            let url = ""
+            if (file.type.startsWith("image")) {
+                url = URL.createObjectURL(file)
+            }
+
+            return ({
+                changedName: file.name,
+                progress: 0,
+                source: file,
+                blobUrl: url
+            })
+
+
+            //const reader = new FileReader();
+            //reader.readAsDataURL(img);
+            //reader.onload = (readerEvent) => {
+            //    const result = readerEvent.target?.result as string;
+            //    if (result) {
+            //        setFiles((prevImages) => [...prevImages, result]);
+            //        console.log("Image added:", result); // Debugging line
+            //    }
+            //};
         });
+
+        console.log(newFiles); // Debugging line
+
+        setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+
     };
 
     return (
@@ -64,7 +83,7 @@ const ImagePreview = ({
                     ref={imageInputRef}
                     onChange={handleImages}
                 />
-                {images && images.length > 0 ? (
+                {files && files.length > 0 ? (
                     <div className={`${style.add_pics_inside1} ${style.p0}`}>
                         <div className={style.preview_actions}>
                             <button className="hover1">
@@ -82,36 +101,31 @@ const ImagePreview = ({
                         <div
                             className={style.small_white_circle}
                             onClick={() => {
-                                setImages([]);
+                                setFiles([]);
                             }}
                         >
                             <i className={icons.exit_icon}></i>
                         </div>
                         <div
                             className={
-                                images.length === 1
-                                    ? style.preview1
-                                    : images.length === 2
-                                        ? style.preview2
-                                        : images.length === 3
-                                            ? style.preview3
-                                            : images.length === 4
-                                                ? style.preview4
-                                                : images.length === 5
-                                                    ? style.preview5
-                                                    : images.length % 2 === 0
-                                                        ? style.preview6
-                                                        : `${style.preview6} ${style.singular_grid}`
+                                files.length < 6
+                                    ? style[`preview${files.length}`]
+                                    : files.length % 2 === 0
+                                        ? style.preview6
+                                        : `${style.preview6} ${style.singular_grid}`
                             }
                         >
-                            {images.map((img, i) => (
-                                <Image
-                                    src={img}
-                                    key={i}
-                                    alt={`preview-${i}`}
-                                    width={300}
-                                    height={300}
-                                />
+                            {files.map((file, i) => (
+                                file.blobUrl == ""
+                                    ? <div key={file.source.name} className="w-full flex justify-center p-6">
+                                        <CgFilm size={125} />
+                                    </div>
+                                    : <img key={file.source.name}   
+                                        src={file.blobUrl}
+                                        alt={`preview-${i}`}
+                                        width={300}
+                                        height={300}
+                                        />
                             ))}
                         </div>
                     </div>
@@ -135,19 +149,18 @@ const ImagePreview = ({
                                 <i className={icons.addPhoto_icon}></i>
                             </div>
                             <span>Add Photos/Videos</span>
-                            <span>or drag and drop</span>
                         </div>
                     </div>
                 )}
-                <div className={style.add_pics_inside2}>
-                    <div className={style.add_circle}>
-                        <i className={icons.phone_icon}></i>
-                    </div>
-                    <div className={style.mobile_text}>
-                        Add photos from your mobile device.
-                    </div>
-                    <span className={style.addphone_btn}>Add</span>
-                </div>
+                {/*<div className={style.add_pics_inside2}>*/}
+                {/*    <div className={style.add_circle}>*/}
+                {/*        <i className={icons.phone_icon}></i>*/}
+                {/*    </div>*/}
+                {/*    <div className={style.mobile_text}>*/}
+                {/*        Add photos from your mobile device.*/}
+                {/*    </div>*/}
+                {/*    <span className={style.addphone_btn}>Add</span>*/}
+                {/*</div>*/}
             </div>
         </div>
     );

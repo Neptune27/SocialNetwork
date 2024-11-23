@@ -4,7 +4,8 @@ using SocialNetwork.Profile.Data.Models;
 
 namespace SocialNetwork.Profile.APIs.Friends;
 
-public class GetFriendRequestsRequest(string userId) : IRequest<List<FriendRequest>>
+public class GetFriendRequest(string userId, string id) : IRequest<FriendDTO>
 {
-    public string UserId { get; } = userId;
+	public string UserId { get; } = userId;
+	public string Id { get; } = id;
 }

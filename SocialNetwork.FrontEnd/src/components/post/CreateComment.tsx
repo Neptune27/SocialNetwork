@@ -4,20 +4,25 @@ import Picker, { EmojiClickData } from "emoji-picker-react";
 import Image from "next/image";
 import style from "@/components/post/style.module.scss";
 import icons from "@/public/icons.module.scss";
+import { api, ApiEndpoint } from "../../api/const";
+import { FileType } from "../../interfaces/IFileType";
+import { IoMdArrowRoundForward } from "react-icons/io";
+import useToken from "../../hooks/useToken";
+import usePosts from "../../hooks/Posts/usePosts";
+import axios from "axios";
 
 interface CreateCommentProps {
     user: {
         profilePicture: string;
     };
+    postId: number
 }
 
-const CreateComment = ({ user }: CreateCommentProps) => {
+const CreateComment = ({ user, postId }: CreateCommentProps) => {
     const [picker, setPicker] = useState(false);
     const [text, setText] = useState("");
     const [error, setError] = useState("");
-    const [commentImage, setCommentImage] = useState<string | ArrayBuffer | null>(
-        ""
-    );
+    const [commentImage, setCommentImage] = useState<FileType | null>();
     const [cursorPosition, setCursorPosition] = useState<number | null>(null);
     const textRef = useRef<HTMLInputElement>(null);
     const imgInput = useRef<HTMLInputElement>(null);
@@ -53,23 +58,45 @@ const CreateComment = ({ user }: CreateCommentProps) => {
         ) {
             setError(`${file.name} format is not supported.`);
             return;
-        } else if (file.size > 1024 * 1024 * 5) {
-            setError(`${file.name} is too large, max 5MB allowed.`);
-            return;
+        } 
+
+        const fileType: FileType = {
+            changedName: file.name,
+            progress: 0,
+            source: file,
+            blobUrl: URL.createObjectURL(file)
+        } 
+
+        setCommentImage(fileType);
+    };
+
+    const postsStore = usePosts()
+
+    const handleSentComment = async () => {
+        const formData = new FormData();
+        formData.append("message", text)
+        formData.append("files", commentImage?.source)
+        formData.append("postId", `${postId}`)
+        const token = useToken()
+
+        const resp = await axios.post(`${api(ApiEndpoint.POST)}/Comment`, formData, {
+            headers: {
+                Authorization: "Bearer " + token
+            }
+        })
+
+        if (resp.status == 200) {
+            window.location.reload()
         }
 
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-            setCommentImage(event.target?.result || "");
-        };
-    };
+
+    }
 
     return (
         <div className={style.create_comment_wrap}>
             <div className={style.create_comment}>
-                <Image
-                    src={user?.profilePicture}
+                <img
+                    src={`${user?.profilePicture}`}
                     alt="User profile picture"
                     width={35}
                     height={35}
@@ -117,22 +144,22 @@ const CreateComment = ({ user }: CreateCommentProps) => {
                     <div className={`${style.comment_circle_icon} hover2`}>
                         <i className={icons.gif_icon}></i>
                     </div>
-                    <div className={`${style.comment_circle_icon} hover2`}>
-                        <i className={icons.sticker_icon}></i>
+                    <div className={`${style.comment_circle_icon} hover2`} onClick={handleSentComment}>
+                        <IoMdArrowRoundForward />
                     </div>
                 </div>
             </div>
             {commentImage && (
                 <div className={style.comment_img_preview}>
-                    <Image
-                        src={commentImage.toString()}
+                    <img
+                        src={commentImage.blobUrl}
                         alt="Comment image"
                         width={150}
                         height={150}
                     />
                     <div
-                        className={style.small_white_circle}
-                        onClick={() => setCommentImage("")}
+                        className={`${style.small_white_circle} absolute top-0 right-0`}
+                        onClick={() => setCommentImage(null)}
                     >
                         <i className={icons.exit_icon}></i>
                     </div>
