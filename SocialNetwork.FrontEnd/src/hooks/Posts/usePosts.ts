@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 export interface User {
+    id: string;
     name: string;
     picture: string;
 }
@@ -14,20 +15,12 @@ export interface Comment {
 }
 
 export interface PostProps {
-    post: {
-        id: number;
-        user: User;
-        type: "profilePicture" | "cover" | null;
-        message?: string;
-        medias?: string[];
-        background?: string;
-        comments: Comment[];
-        createdAt: string;
-    };
+    post: PostData;
     user: PostUser
 }
 
 export interface PostUser {
+    id: string;
     username: string;
     picture: string;
 }

@@ -16,6 +16,9 @@ import { api, ApiEndpoint } from "../../api/const";
 import useUserId from "../../hooks/useUserId";
 import { User } from "lucide-react";
 import usePosts from "../../hooks/Posts/usePosts";
+import usePopupPost from "../../hooks/Posts/usePopupPost";
+import { Dialog, DialogContent, DialogHeader } from "../../components/ui/dialog";
+import PopupPostDialog from "../../components/post/PopupPostDialog";
 
 interface UserProps {
     name: string;
@@ -56,6 +59,7 @@ const Home = () => {
     //};
 
     const userStore = useCurrentUser();
+    const postStore = usePosts()
 
     // Mock post data matching the Mongoose schema
     //const postVar: PostData = {
@@ -123,7 +127,6 @@ const Home = () => {
 
     const middle = useRef<HTMLDivElement | null>(null);
     const [visible, setVisible] = useState(false);
-    const postStore = usePosts()
     //const [posts, setPosts] = useState<PostData[]>([]) //Make this into global
     const [height, setHeight] = useState<number | undefined>();
     const userId = useUserId()
@@ -177,19 +180,15 @@ const Home = () => {
                 <UserHeader user={userStore.user} page={"home"} />
                 <LeftHome user={userStore.user} />
                 <div className={styles.home_middle} ref={middle}>
-                    <Stories />
+                    {/*<Stories />*/}
                     <CreatePost user={userStore.user} setVisible={setVisible} />
                     <div className={styles.posts}>
                         {postStore.posts.map((p) => <Post key={p.id} post={p} user={userStore.user} />)}
-                        {/*<Post post={postVar} user={userStore.user} />*/}
-                        {/*<Post post={userStore.user} user={user} />*/}
-                        {/*<Post post={post3} user={user} />*/}
-
-                        {/*<LoadMore />*/}
                     </div>
                 </div>
                 <RightHome user={userStore.user} />
             </div>
+            <PopupPostDialog />
         </>
 
     );

@@ -37,31 +37,30 @@ public class CommentController(IMediator mediator)
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromForm] CommentDTO dto, IFormFile? file)
+    public async Task<IActionResult> Post([FromForm] CommentDTO dto, List<IFormFile> files)
     {
 
         var user = HttpContext.User;
         var id = user.Claims.FirstOrDefault(it => it.Type == ClaimTypes.NameIdentifier).Value;
         List<string> medias = [];
 
-        if (file is not null)
+        foreach (var file in files)
         {
-            //Save file
             var fileName = file.FileName;
             var extension = Path.GetExtension(fileName);
             var newName = Guid.NewGuid().ToString();
-            var filePath = Path.Combine("Media", dto.PostId.ToString(), newName + extension);
+            var filePath = Path.Combine("Media", id, newName + extension);
             var saveLocation = Path.Combine("./wwwroot", filePath);
             var dir = Path.GetDirectoryName(saveLocation);
             Directory.CreateDirectory(dir);
+            medias.Add(filePath);
             using (var stream = System.IO.File.Create(saveLocation))
             {
                 await file.CopyToAsync(stream);
             };
 
-            medias.Add(filePath);
         }
-       
+
 
 
         var loginUser = await mediator.Send(new GetUserRequest(id));

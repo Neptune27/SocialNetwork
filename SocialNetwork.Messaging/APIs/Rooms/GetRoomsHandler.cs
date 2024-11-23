@@ -31,3 +31,4 @@ public class GetRoomsHandler(
             .ToListAsync(cancellationToken: cancellationToken);
     }
 }
+ 

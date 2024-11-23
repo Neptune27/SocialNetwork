@@ -11,6 +11,7 @@ import CreateComment from "./CreateComment";
 import PostMenu from "./PostMenu";
 import { api, ApiEndpoint } from "../../api/const";
 import { PostProps } from "../../hooks/Posts/usePosts";
+import usePopupPost from "../../hooks/Posts/usePopupPost";
 
 //// Define the User and PostProps interfaces
 //interface User {
@@ -47,11 +48,19 @@ export default function Post({ post, user }: PostProps) {
     const [showMenu, setShowMenu] = useState(false);
 
 
+    const popupStore = usePopupPost()
+
+    const handleSeeMore = () => {
+        popupStore.data.open = true
+        popupStore.data.post = post
+        popupStore.set(popupStore.data)
+    }
+
     return (
         <div className={styles.post}>
             <div className={styles.post_header}>
                 <Link
-                    href={`/profile/${post.user.name}`}
+                    href={`/Profile?profileId=${post.user.id}`}
                     className={styles.post_header_left}
                 >
                     <img
@@ -178,6 +187,9 @@ export default function Post({ post, user }: PostProps) {
             <div className={styles.comments_wrap}>
                 <div className={styles.comments_order}></div>
                 <CreateComment user={user} postId={post.id} />
+                <div className="flex justify-end">
+                    <span onClick={handleSeeMore}>See more</span>
+                </div>
             </div>
             {showMenu && (
                 <PostMenu

@@ -48,7 +48,7 @@ public class FileController(IMediator mediator) : ControllerBase
 		}
 
 		var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
-
+		
 
 		var boundary = MultipartRequestHelper.GetBoundary(
 			MediaTypeHeaderValue.Parse(Request.ContentType),

@@ -35,6 +35,13 @@ public class PostController(
         return Ok(postList);
     }
 
+    [HttpGet("Search")]
+    public async Task<IActionResult> Search([FromQuery] string q)
+    {
+        var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+        var postList = await mediator.Send(new GetListPostQueryRequest(userId, q));
+        return Ok(postList);
+    }
     // GET api/<PostController>/5
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
@@ -87,7 +94,8 @@ public class PostController(
             Medias = medias,
             Reactions = [],
             Comments = [],
-            Visibility = EVisibility.PUBLIC
+            Visibility = EVisibility.PUBLIC,
+            Background = postDTO.Background ?? ""
         };
 
         var result = await mediator.Send(new AddPostRequest(newPost));

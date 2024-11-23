@@ -18,6 +18,10 @@ import Intro from "../../components/intro";
 import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
 import LoadMore from "../../components/profilePicture/LoadMore";
+import useCurrentUser from "../../hooks/useCurrentUser";
+import usePosts from "../../hooks/Posts/usePosts";
+import Loading from "../../components/Loading";
+import useUserId from "../../hooks/useUserId";
 
 
 
@@ -161,13 +165,16 @@ const ProfilePage = () => {
         instagram: "",
         github: "",
     });
+    const userStore = useCurrentUser();
+    const postStore = usePosts()
+    const userId = useUserId()
 
     useEffect(() => {
         const getData = async () => {
             const searchParams = new URLSearchParams(window.location.search);
             let profileId = searchParams.get("profileId")
             if (profileId == null) {
-                profileId = ""
+                profileId = userId
             }
             const url = `${api(ApiEndpoint.PROFILE)}/Profile/${profileId}`;
             try {
@@ -203,12 +210,46 @@ const ProfilePage = () => {
         getData()
     }, [])
 
+
+
+    useEffect(() => {
+        const getUser = async () => {
+            const resp = await authorizedFetch(`${api(ApiEndpoint.PROFILE)}/Profile/${userId}`)
+            const data = await resp.json()
+            const user = data["user"]
+            userStore.set({
+                firstName: user["firstName"],
+                lastName: user["lastName"],
+                name: user["userName"],
+                profilePicture: `${api(ApiEndpoint.PROFILE)}/${user["profilePicture"]}`
+            })
+
+        }
+
+        const getPost = async () => {
+            const resp = await authorizedFetch(`${api(ApiEndpoint.POST)}/Post`)
+            const data = await resp.json()
+
+            console.log(data)
+            postStore.set(data)
+        }
+
+        getUser()
+        getPost()
+    }, [])
+
+    if (userStore.user == null) {
+        return (
+            <Loading />
+        )
+    }
+
     return (
         <>
-            {visible && <CreatePostPopUp user={user} setVisible={setVisible} />}
+            {visible && <CreatePostPopUp user={userStore.user} setVisible={setVisible} />}
             <div className={style.profile}>
 
-                <UserHeader user={user} page="profile" />
+                <UserHeader user={userStore.user} page="profile" />
                 <div className={style.profile_top}>
                     <div className={style.profile_container}>
                         <Cover cover={details.background} visitor={visitor} />
@@ -226,7 +267,7 @@ const ProfilePage = () => {
                 <div className={style.profile_bottom}>
                     <div className={style.profile_container}>
                         <div className={style.bottom_container}>
-                            <PplYouMayKnow />
+                            {/*<PplYouMayKnow />*/}
                             <div className={style.profile_grid}>
                                 <div className={style.profile_left}>
                                     <Intro details={details} visitor={visitor} />
@@ -254,11 +295,13 @@ const ProfilePage = () => {
                                     {!visitor && (
                                         <CreatePost user={user} profile setVisible={setVisible} />
                                     )}
-                                    <GridPosts />
+                                    {/*<GridPosts />*/}
                                     <div className={style.posts}>
+                                        {postStore.posts.map((p) => <Post key={p.id} post={p} user={userStore.user} />)}
+
                                         {/* <div className={style.no_posts}>No posts available</div> */}
-                                        <Post post={postVar} user={user} key={1} />
-                                        <Post post={postVar1} user={user} key={2} />
+                                        {/*<Post post={postVar} user={user} key={1} />*/}
+                                        {/*<Post post={postVar1} user={user} key={2} />*/}
                                     </div>
                                 </div>
                             </div>

@@ -18,10 +18,13 @@ public class FriendController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator mediator = mediator;
 
+    public string Hello { get; set; }
+
     // GET: api/<FriendController>
     [HttpGet]
     public async Task<IEnumerable<FriendDTO>> Get()
     {
+        
         var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
         var friends = await mediator.Send(new GetFriendsRequest(userId));
         return friends;

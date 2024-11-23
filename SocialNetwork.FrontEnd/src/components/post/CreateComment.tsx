@@ -75,7 +75,7 @@ const CreateComment = ({ user, postId }: CreateCommentProps) => {
     const handleSentComment = async () => {
         const formData = new FormData();
         formData.append("message", text)
-        formData.append("file", `${commentImage}`)
+        formData.append("files", commentImage?.source)
         formData.append("postId", `${postId}`)
         const token = useToken()
 
@@ -96,7 +96,7 @@ const CreateComment = ({ user, postId }: CreateCommentProps) => {
         <div className={style.create_comment_wrap}>
             <div className={style.create_comment}>
                 <img
-                    src={`${api(ApiEndpoint.PROFILE)}/${user?.profilePicture}`}
+                    src={`${user?.profilePicture}`}
                     alt="User profile picture"
                     width={35}
                     height={35}
@@ -151,8 +151,8 @@ const CreateComment = ({ user, postId }: CreateCommentProps) => {
             </div>
             {commentImage && (
                 <div className={style.comment_img_preview}>
-                    <Image
-                        src={commentImage.toString()}
+                    <img
+                        src={commentImage.blobUrl}
                         alt="Comment image"
                         width={150}
                         height={150}

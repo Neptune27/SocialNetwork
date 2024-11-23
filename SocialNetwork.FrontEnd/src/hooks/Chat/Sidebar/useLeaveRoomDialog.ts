@@ -11,8 +11,6 @@ type LeaveDataType = {
 interface IRoomDialogStore {
     data: LeaveDataType
     set: (room: LeaveDataType) => void,
-    
-
 }
 
 const useLeaveRoomDialog = create<IRoomDialogStore>((set) => ({

@@ -3,6 +3,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { Return, Search } from "@/app/public/svg";
 import styles from "@/styles/header.module.scss";
 import useClickOutside from "@/helper/useClickOutside";
+import { useRouter } from "next/navigation";
+import { authorizedFetch } from "../../Ultility/authorizedFetcher";
+import { api, ApiEndpoint } from "../../api/const";
+import { User } from "../../hooks/Posts/usePosts";
 
 interface SearchMenuProps {
     color: string;
@@ -15,6 +19,7 @@ const SearchMenu = ({ color, setShowSearchMenu }: SearchMenuProps) => {
     const [results, setResults] = useState([]);
     const menu = useRef<HTMLDivElement>(null);
     const input = useRef<HTMLInputElement>(null);
+    const router = useRouter()
 
     useClickOutside(menu, () => {
         setShowSearchMenu(false);
@@ -22,6 +27,26 @@ const SearchMenu = ({ color, setShowSearchMenu }: SearchMenuProps) => {
     useEffect(() => {
         input.current?.focus();
     }, []);
+
+    const [searchText, setSearchText] = useState("")
+    const [searchUsers, setSearchUsers] = useState<User[]>([])
+
+    const handleSearchUser = async (value: string) => {
+        const resp = await authorizedFetch(`${api(ApiEndpoint.PROFILE)}/Profile/Name/${value}`)
+        const data = await resp.json()
+        console.log(data)
+    }
+
+    const handleSearchTextChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const text = e.target.value
+        setSearchText(text)
+        if (text.length < 3) {
+            return
+        }
+        await handleSearchUser(text)
+        
+        
+    }
     return (
         <div
             className={`${styles.scrollbar} ${styles.header_left} ${styles.search_area}`}
@@ -49,25 +74,35 @@ const SearchMenu = ({ color, setShowSearchMenu }: SearchMenuProps) => {
                             <Search color={color} />
                         </div>
                     )}
-
-                    <input
-                        type="text"
-                        placeholder="Search Facebook"
-                        ref={input}
-
-                        onFocus={() => {
-                            setIconVisible(false);
-                        }}
-                        onBlur={() => {
-                            setIconVisible(true);
-                        }}
-                    />
+                    <form onSubmit={() => {
+                        router.push(`/Search?q=${searchText}`)
+                        
+                    }}>
+                        <input
+                            type="text"
+                            placeholder="Search"
+                            ref={input}
+                            onChange={handleSearchTextChange}
+                            onFocus={() => {
+                                setIconVisible(false);
+                            }}
+                            onBlur={() => {
+                                setIconVisible(true);
+                            }}
+                        />
+                    </form>
+                    
                 </div>
             </div>
             <div className={styles.search_history_header}>
-                <span>Recent searches</span>
+                <span>Users</span>
+                <div className="flex ">
+                    {searchUsers.map(u => <div></div>) }
+                </div>
             </div>
-            <div className={styles.search_history}></div>
+            <div className={styles.search_history}>
+
+            </div>
             <div className={`${styles.search_results} scrollbar`}></div>
         </div>
     );
