@@ -2,16 +2,17 @@
 using Mediator;
 using SocialNetwork.Notifications.Data.Models;
 using SocialNetwork.Post.Data;
+using SocialNetwork.Post.Data.Models;
 
 namespace SocialNetwork.Post.APIs.Comments;
 
 public class AddCommentHandler(AppDBContext DBContext, IBus bus) 
-    : IRequestHandler<AddCommentRequest, bool>
+    : IRequestHandler<AddCommentRequest, Comment>
 {
     private readonly AppDBContext context = DBContext;
     private readonly IBus bus = bus;
 
-    public async ValueTask<bool> Handle(AddCommentRequest request, CancellationToken cancellationToken)
+    public async ValueTask<Comment> Handle(AddCommentRequest request, CancellationToken cancellationToken)
     { 
         // Truy cập database
         try
@@ -31,11 +32,11 @@ public class AddCommentHandler(AppDBContext DBContext, IBus bus)
 
             await bus.Publish(notify, cancellationToken);
 
-            return true;
+            return comment.Entity;
         }catch (Exception ex)
         {
             Console.WriteLine("ERROR: " + ex);
-            return false;
+            return null;
         }
     }
 }

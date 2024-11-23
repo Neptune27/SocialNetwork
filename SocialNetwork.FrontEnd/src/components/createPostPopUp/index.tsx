@@ -12,6 +12,7 @@ import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
 import axios from "axios";
 import useToken from "../../hooks/useToken";
+import usePosts from "../../hooks/Posts/usePosts";
 
 interface User {
     name: string;
@@ -31,6 +32,7 @@ const CreatePostPopUp = ({ user, setVisible }: CreatePostPopUpProps) => {
     const [files, setFiles] = useState<FileType[]>([]);
     const [error, setError] = useState<string>("");
     const [background, setBackground] = useState<string>("");
+    const postsStore = usePosts()
 
     const popupRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +50,11 @@ const CreatePostPopUp = ({ user, setVisible }: CreatePostPopUpProps) => {
         })
 
         if (resp.status == 200) {
-            window.location.reload()
+            const data = await resp.data
+            postsStore.posts.unshift(data)
+            postsStore.set(postsStore.posts)
+            setVisible(false)
+            //window.location.reload()
         }
     }
 

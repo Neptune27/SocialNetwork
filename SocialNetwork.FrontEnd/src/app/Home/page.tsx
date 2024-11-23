@@ -19,6 +19,7 @@ import usePosts from "../../hooks/Posts/usePosts";
 import usePopupPost from "../../hooks/Posts/usePopupPost";
 import { Dialog, DialogContent, DialogHeader } from "../../components/ui/dialog";
 import PopupPostDialog from "../../components/post/PopupPostDialog";
+import useNotificationHub from "../../hooks/useNotificationHub";
 
 interface UserProps {
     name: string;
@@ -131,6 +132,10 @@ const Home = () => {
     const [height, setHeight] = useState<number | undefined>();
     const userId = useUserId()
 
+    const notificationHub = useNotificationHub()
+    useEffect(() => {
+
+    }, [notificationHub])
 
     //useEffect(() => {
     //    if (middle.current) {

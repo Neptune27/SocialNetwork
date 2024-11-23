@@ -20,13 +20,13 @@ interface CreatePostProps {
 const CreatePost = ({ user, setVisible, profile }: CreatePostProps) => {
     return (
         <div className={styles.createPost}>
-            <div className={styles.createPost_header}>
+            <div className={styles.createPost_header} onClick={() => {
+                setVisible(true);
+            }}>
                 <img src={user?.profilePicture} alt="" width={40} height={40} />
                 <div
                     className={`${styles.open_host} hover2`}
-                    onClick={() => {
-                        setVisible(true);
-                    }}
+
                 >
                     What&apos;s on your mind, {user?.name}
                 </div>

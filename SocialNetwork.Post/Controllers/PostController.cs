@@ -100,7 +100,7 @@ public class PostController(
 
         var result = await mediator.Send(new AddPostRequest(newPost));
 
-        return Ok();
+        return Ok(result);
     }
 
     [HttpPut("{postId}")]

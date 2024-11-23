@@ -26,6 +26,8 @@ const CreateComment = ({ user, postId }: CreateCommentProps) => {
     const [cursorPosition, setCursorPosition] = useState<number | null>(null);
     const textRef = useRef<HTMLInputElement>(null);
     const imgInput = useRef<HTMLInputElement>(null);
+    const postStore = usePosts()
+
 
     useEffect(() => {
         if (textRef.current && cursorPosition !== null) {
@@ -70,7 +72,6 @@ const CreateComment = ({ user, postId }: CreateCommentProps) => {
         setCommentImage(fileType);
     };
 
-    const postsStore = usePosts()
 
     const handleSentComment = async () => {
         const formData = new FormData();
@@ -79,6 +80,7 @@ const CreateComment = ({ user, postId }: CreateCommentProps) => {
         formData.append("postId", `${postId}`)
         const token = useToken()
 
+
         const resp = await axios.post(`${api(ApiEndpoint.POST)}/Comment`, formData, {
             headers: {
                 Authorization: "Bearer " + token
@@ -86,7 +88,18 @@ const CreateComment = ({ user, postId }: CreateCommentProps) => {
         })
 
         if (resp.status == 200) {
-            window.location.reload()
+            const data = await resp.data
+            const post = postStore.posts.find(p => p.id == postId)
+            if (post == null) {
+                console.error("Huh?")
+                return
+            }
+
+            post.comments.unshift(data)
+
+            postStore.set(postStore.posts)
+
+
         }
 
 

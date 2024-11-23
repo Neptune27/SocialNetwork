@@ -79,8 +79,7 @@ public class CommentController(IMediator mediator)
         };
 
         var result = await mediator.Send(new AddCommentRequest(comment));
-        if (result) return Ok(result);
-        else return BadRequest(result);
+        return result is null ? BadRequest() : Ok(result);
     }
 
     [HttpPut("{commentId}")]

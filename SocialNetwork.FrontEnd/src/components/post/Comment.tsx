@@ -1,5 +1,6 @@
 ﻿import styles from "@/components/post/style.module.scss";
 import { api, ApiEndpoint } from "../../api/const";
+import usePosts from "../../hooks/Posts/usePosts";
 interface CommentBy {
     picture: string;
     name: string;
@@ -18,7 +19,7 @@ interface CommentProps {
 }
 
 export default function Comment({ comment }: CommentProps) {
-    const { user, commentAt, message, medias, replys } = comment;
+    const { user, message, medias, replys } = comment;
     console.log(user)
     return (
         <div className={styles.comment}>

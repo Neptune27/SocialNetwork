@@ -2,9 +2,16 @@
 import React, { useState, useEffect } from "react";
 import Layout from "./page";
 import Loading from "@/components/Loading";
+import useNotificationHub from "../../hooks/useNotificationHub";
+import useAuthorizeHub from "../../hooks/useAuthorizeHub";
+import { api, ApiEndpoint } from "../../api/const";
 
 const Page = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const notificationHub = useNotificationHub()
+
+    const hub = useAuthorizeHub(`${api(ApiEndpoint.NOTIFICATION)}/hub`)
+    notificationHub.set(hub)
 
     //useEffect(() => {
     //    const timer = setTimeout(() => {
