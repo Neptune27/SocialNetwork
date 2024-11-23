@@ -1,15 +1,16 @@
 ﻿import styles from "@/components/post/style.module.scss";
-import Image from "next/image";
+import { api, ApiEndpoint } from "../../api/const";
 interface CommentBy {
     picture: string;
-    first_name: string;
-    last_name: string;
+    name: string;
 }
 
 interface Comment {
-    commentBy: CommentBy;
-    comment: string;
-    image?: string; // Có thể không có hình ảnh
+    id: number;
+    user: CommentBy;
+    message: string;
+    medias: string[]; // Có thể không có hình ảnh
+    replys?: Comment[]
 }
 
 interface CommentProps {
@@ -17,13 +18,13 @@ interface CommentProps {
 }
 
 export default function Comment({ comment }: CommentProps) {
-    const { commentBy, commentAt, comment: content, image, replies } = comment;
-    console.log(commentBy)
+    const { user, commentAt, message, medias, replys } = comment;
+    console.log(user)
     return (
         <div className={styles.comment}>
-            <Image
-                src={commentBy.picture}
-                alt={`${commentBy.first_name} ${commentBy.last_name}`}
+            <img
+                src={user.picture}
+                alt={`${user.name}`}
                 width={40}
                 height={40}
                 className={styles.comment_img}
@@ -31,13 +32,13 @@ export default function Comment({ comment }: CommentProps) {
             <div className={styles.comment_col}>
                 <div className={styles.comment_wrap}>
                     <div className={styles.comment_name}>
-                        {commentBy.first_name} {commentBy.last_name}
+                        {user.name}
                         
                     </div>
-                    <div className={styles.comment_text}>{content}</div>
-                    {image && (
-                        <Image
-                            src={image}
+                    <div className={styles.comment_text}>{message}</div>
+                    {medias?.length > 0 && (
+                        <img
+                            src={`${api(ApiEndpoint.POST)}/${medias[0]}`}
                             alt="Attached comment image"
                             width={100}
                             height={100}
@@ -53,9 +54,9 @@ export default function Comment({ comment }: CommentProps) {
                         23/11/2024
                     </span>
                 </div>
-                {replies && replies.length > 0 && (
+                {replys && replys.length > 0 && (
                     <div className={styles.comment_replies}>
-                        {replies.map((reply) => (
+                        {replys.map((reply) => (
                             <Comment comment={reply} key={reply.id} />
                         ))}
                     </div>

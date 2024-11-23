@@ -16,7 +16,7 @@ import { api, ApiEndpoint } from "../../api/const";
 import useUserId from "../../hooks/useUserId";
 import { User } from "lucide-react";
 import usePosts from "../../hooks/Posts/usePosts";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 interface UserProps {
     name: string;
@@ -34,7 +34,7 @@ const Home = () => {
     //const [posts, setPosts] = useState<PostData[]>([]) //Make this into global
     const [height, setHeight] = useState<number | undefined>();
     const userId = useUserId()
-    const params = useParams()
+    const params = useSearchParams()
 
     useEffect(() => {
         const getUser = async () => {
@@ -49,19 +49,24 @@ const Home = () => {
             })
 
         }
+        getUser()
+    }, [])
+
+    useEffect(() => {
+       
+
 
         const getPost = async () => {
-            const query = params.q
-            const resp = await authorizedFetch(`${api(ApiEndpoint.POST)}/Search?q=${query}`)
+            const query = params.get("q")
+            const resp = await authorizedFetch(`${api(ApiEndpoint.POST)}/Post/Search?q=${query}`)
             const data = await resp.json()
 
             console.log(data)
             postStore.set(data)
         }
 
-        getUser()
         getPost()
-    }, [])
+    }, [params])
 
     if (userStore.user == null) {
         return (

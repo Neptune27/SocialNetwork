@@ -16,7 +16,8 @@ export interface Comment {
 
 export interface PostProps {
     post: PostData;
-    user: PostUser
+    user: PostUser;
+    isPopup: boolean
 }
 
 export interface PostUser {

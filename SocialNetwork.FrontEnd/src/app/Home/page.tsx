@@ -183,7 +183,7 @@ const Home = () => {
                     {/*<Stories />*/}
                     <CreatePost user={userStore.user} setVisible={setVisible} />
                     <div className={styles.posts}>
-                        {postStore.posts.map((p) => <Post key={p.id} post={p} user={userStore.user} />)}
+                        {postStore.posts.map((p) => <Post key={`post-${p.id}`} post={p} user={userStore.user} isPopup={false} />)}
                     </div>
                 </div>
                 <RightHome user={userStore.user} />

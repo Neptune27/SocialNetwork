@@ -74,8 +74,10 @@ const SearchMenu = ({ color, setShowSearchMenu }: SearchMenuProps) => {
                             <Search color={color} />
                         </div>
                     )}
-                    <form onSubmit={() => {
-                        router.push(`/Search?q=${searchText}`)
+                    <form onSubmit={(e) => {
+                        e.preventDefault()
+                        const value = input.current?.value
+                        router.push(`/Search?q=${value}`)
                         
                     }}>
                         <input

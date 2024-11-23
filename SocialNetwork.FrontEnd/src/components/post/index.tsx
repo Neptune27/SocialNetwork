@@ -44,12 +44,13 @@ import Comment from "./Comment";
 //    };
 //}
 
-export default function Post({ post, user }: PostProps) {
+export default function Post({ post, user, isPopup }: PostProps) {
     const [visible, setVisible] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [commentCount, setCommentCount] = useState(5);
 
     const showMoreComments = () => {
+ 
         setCommentCount((prev) => prev + 5);
     };
 
@@ -120,7 +121,7 @@ export default function Post({ post, user }: PostProps) {
                             }
                         >
                                 {post.medias.slice(0, 5).map((image, i) => (
-                                <a target="_blank" href={`${api(ApiEndpoint.POST)}/${image}`}>
+                                    <a key={image} target="_blank" href={`${api(ApiEndpoint.POST)}/${image}`}>
                                         <img
                                             src={`${api(ApiEndpoint.POST)}/${image}`}
                                             key={i}
@@ -160,7 +161,7 @@ export default function Post({ post, user }: PostProps) {
                 </div>
                 <div className={styles.to_right}>
                     <div className={styles.comments_count}>{post.comments.length} comment(s)</div>
-                    <div className={styles.share_count}>0</div>
+                    {/*<div className={styles.share_count}>0</div>*/}
                 </div>
             </div>
             <div className={styles.post_actions}>
@@ -193,14 +194,16 @@ export default function Post({ post, user }: PostProps) {
             <div className={styles.comments_wrap}>
                 <div className={styles.comments_order}></div>
                 <CreateComment user={user} postId={post.id} />
-                <div className="flex justify-end">
-                    <span onClick={handleSeeMore}>See more</span>
-                </div>
+                {!isPopup &&
+                    <div className="flex justify-end">
+                        <span onClick={handleSeeMore}>See more</span>
+                    </div>
+                }
                 {/*<CreateComment user={user} />*/}
                 {post.comments.slice(0, commentCount).map((comment) => (
                     <Comment comment={comment} key={comment.id} />
                 ))}
-                {commentCount < post.comments.length && (
+                {isPopup && commentCount < post.comments.length && (
                     <div className="view_comments" onClick={showMoreComments}>
                         View more comments
                     </div>
