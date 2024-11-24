@@ -6,7 +6,9 @@ import useClickOutside from "@/helper/useClickOutside";
 import { useRouter } from "next/navigation";
 import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
-import { User } from "../../hooks/Posts/usePosts";
+import { PostUser, User } from "../../hooks/Posts/usePosts";
+import { Avatar } from "../ui/avatar";
+import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 
 interface SearchMenuProps {
     color: string;
@@ -29,11 +31,12 @@ const SearchMenu = ({ color, setShowSearchMenu }: SearchMenuProps) => {
     }, []);
 
     const [searchText, setSearchText] = useState("")
-    const [searchUsers, setSearchUsers] = useState<User[]>([])
+    const [searchUsers, setSearchUsers] = useState<PostUser[]>([])
 
     const handleSearchUser = async (value: string) => {
         const resp = await authorizedFetch(`${api(ApiEndpoint.PROFILE)}/Profile/Name/${value}`)
         const data = await resp.json()
+        setSearchUsers(data)
         console.log(data)
     }
 
@@ -96,15 +99,21 @@ const SearchMenu = ({ color, setShowSearchMenu }: SearchMenuProps) => {
                     
                 </div>
             </div>
-            <div className={styles.search_history_header}>
+            <div className={`${styles.search_history_header} flex-col `}>
                 <span>Users</span>
-                <div className="flex ">
-                    {searchUsers.map(u => <div></div>) }
+                <div className="flex flex-col gap-2 w-full">
+                    {searchUsers.map(u => <a key={ u.id} href={`/Profile?profileId=${u.id}`} className="unset flex gap-2 ">
+                        <Avatar>
+                            <AvatarImage src={u.picture} />
+                            <AvatarFallback className="bg-gray-500 h-10 w-10 p-2 pl-3">{u.userName[0]}</AvatarFallback>
+                        </Avatar>
+                        <span>{u.userName}</span>
+                    </a>)}
                 </div>
             </div>
-            <div className={styles.search_history}>
+            {/*<div className={styles.search_history}>*/}
 
-            </div>
+            {/*</div>*/}
             <div className={`${styles.search_results} scrollbar`}></div>
         </div>
     );

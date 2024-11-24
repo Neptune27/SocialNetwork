@@ -8,10 +8,9 @@ import { api, ApiEndpoint } from "../../api/const";
 
 const Page = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const notificationHub = useNotificationHub()
+    //const notificationHub = useNotificationHub()
 
-    const hub = useAuthorizeHub(`${api(ApiEndpoint.NOTIFICATION)}/hub`)
-    notificationHub.set(hub)
+
 
     //useEffect(() => {
     //    const timer = setTimeout(() => {

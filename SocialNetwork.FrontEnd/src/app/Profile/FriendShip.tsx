@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import useClickOutside from "../../helper/useClickOutside";
 import Image from "next/image";
 import style from "@/styles/Profile.module.scss";
-import { authorizedFetch } from "../../helper/authorizedFetcher";
+import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
 interface Friendship {
     friends?: boolean;

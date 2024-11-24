@@ -20,6 +20,7 @@ import usePopupPost from "../../hooks/Posts/usePopupPost";
 import { Dialog, DialogContent, DialogHeader } from "../../components/ui/dialog";
 import PopupPostDialog from "../../components/post/PopupPostDialog";
 import useNotificationHub from "../../hooks/useNotificationHub";
+import useAuthorizeHub from "../../hooks/useAuthorizeHub";
 
 interface UserProps {
     name: string;
@@ -133,6 +134,12 @@ const Home = () => {
     const userId = useUserId()
 
     const notificationHub = useNotificationHub()
+
+    useEffect(() => {
+        const hub = useAuthorizeHub(`${api(ApiEndpoint.NOTIFICATION)}/hub`)
+        notificationHub.set(hub)
+    }, [])
+
     useEffect(() => {
 
     }, [notificationHub])
