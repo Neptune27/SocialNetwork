@@ -24,10 +24,10 @@ public class AddCommentHandler(AppDBContext DBContext, IBus bus)
             {
                 CreatedAt = DateTime.UtcNow,
                 IsRead = false,
-                FromId = comment.Entity.Id.ToString(),
+                FromId = comment.Entity.Post.Id.ToString(),
                 Type = ENotificationType.POST,
                 Message = $"{comment.Entity.User.Name} make a comment on your post",
-                UserId = comment.Entity.User.Id,
+                UserId = comment.Entity.Post.User.Id,
             };
 
             await bus.Publish(notify, cancellationToken);

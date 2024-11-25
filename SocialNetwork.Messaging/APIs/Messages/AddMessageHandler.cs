@@ -1,6 +1,7 @@
 ﻿using Mediator;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Core.Helpers;
+using SocialNetwork.Messaging.APIs.RoomLastSeens;
 using SocialNetwork.Messaging.Data;
 using SocialNetwork.Messaging.Data.Models;
 
@@ -78,9 +79,13 @@ public class AddMessageHandler(
         await dBContext.SaveChangesAsync(cancellationToken);
 
         var message = await dBContext.Messages.OrderByDescending(m => m.CreatedAt).FirstOrDefaultAsync(m => m.User.Id == request.Message.User.Id && m.Room.Id == request.Message.Room.Id);
+        var room = await dBContext.Rooms.FirstOrDefaultAsync(r => r.Id == request.Message.Room.Id);
+        room.LastUpdated = DateTime.UtcNow;
+        await dBContext.SaveChangesAsync();
+
         request.Message.Id = message.Id;
         await mediator.Send(new NotifyMessageRequest(request.Message), cancellationToken);
-
+        await mediator.Send(new UpdateRoomLastSeenRequest(request.Message.User.Id, request.Message.Room.Id), cancellationToken);
         return true;
     }
 }

@@ -95,9 +95,9 @@ const CreateComment = ({ user, postId }: CreateCommentProps) => {
                 return
             }
 
-            post.comments.unshift(data)
+            //post.comments.unshift(data)
 
-            postStore.set(postStore.posts)
+            //postStore.set(postStore.posts)
 
 
         }

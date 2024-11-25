@@ -14,11 +14,11 @@ const RightHome = ({ user }: UserProps) => {
   const color = "#65676b";
   return (
     <div className={styles.right_home}>
-      <div className={styles.heading}> Sponsored</div>
-      <div className={styles.splitter1}></div>
+      {/*<div className={styles.heading}> Sponsored</div>*/}
+      {/*<div className={styles.splitter1}></div>*/}
       <div className={styles.contacts_wrap}>
         <div className={styles.contacts_header}>
-          <div className={styles.contacts_header_left}>Contacts</div>
+          <div className={styles.contacts_header_left}>Friends</div>
           <div className={styles.contacts_header_right}>
             <div className={`${styles.contact_circle} hover1`}>
               <NewRoom color={color} />

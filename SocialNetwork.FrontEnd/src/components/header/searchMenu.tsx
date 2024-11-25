@@ -104,7 +104,7 @@ const SearchMenu = ({ color, setShowSearchMenu }: SearchMenuProps) => {
                 <div className="flex flex-col gap-2 w-full">
                     {searchUsers.map(u => <a key={ u.id} href={`/Profile?profileId=${u.id}`} className="unset flex gap-2 ">
                         <Avatar>
-                            <AvatarImage src={u.picture} />
+                            <AvatarImage src={`${api(ApiEndpoint.PROFILE)}/${u.profilePicture}`} />
                             <AvatarFallback className="bg-gray-500 h-10 w-10 p-2 pl-3">{u.userName[0]}</AvatarFallback>
                         </Avatar>
                         <span>{u.userName}</span>

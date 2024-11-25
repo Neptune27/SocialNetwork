@@ -71,7 +71,7 @@ export default function Post({ post, user, isPopup }: PostProps) {
                     className={styles.post_header_left}
                 >
                     <img
-                        src={post.user.picture}
+                        src={`${api(ApiEndpoint.PROFILE)}/${post.user.picture}`}
                         width={40}
                         height={40}
                     />

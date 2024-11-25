@@ -35,6 +35,14 @@ public class PostController(
         return Ok(postList);
     }
 
+    // GET: api/<PostController>
+    [HttpGet("Profile/{id}")]
+    public async Task<IActionResult> GetByProfile(string id)
+    {
+        var postList = await mediator.Send(new GetProfileListPostRequest(id));
+        return Ok(postList);
+    }
+
     [HttpGet("Search")]
     public async Task<IActionResult> Search([FromQuery] string q)
     {

@@ -1,5 +1,6 @@
 ﻿using Mediator;
 using Microsoft.EntityFrameworkCore;
+using SocialNetwork.Messaging.APIs.RoomLastSeens;
 using SocialNetwork.Messaging.Data;
 using SocialNetwork.Messaging.Data.Models;
 
@@ -13,6 +14,7 @@ public class GetMessagesByRoomHandler(
 
     public async ValueTask<List<Message>> Handle(GetMessagesByRoomRequest request, CancellationToken cancellationToken)
     {
+
         return await dBContext.Messages
                         .Where(m => m.CreatedAt <= request.FromTime
                                  && m.Room.Id == request.RoomId)
@@ -20,5 +22,6 @@ public class GetMessagesByRoomHandler(
                         .OrderByDescending(m => m.CreatedAt)
                         .Take(request.Total)
                         .ToListAsync(cancellationToken: cancellationToken);
+
     }
 }

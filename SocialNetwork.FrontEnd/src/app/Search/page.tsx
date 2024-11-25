@@ -17,6 +17,9 @@ import useUserId from "../../hooks/useUserId";
 import { User } from "lucide-react";
 import usePosts from "../../hooks/Posts/usePosts";
 import { useParams, useSearchParams } from "next/navigation";
+import useNotificationHub from "../../hooks/useNotificationHub";
+import useAuthorizeHub from "../../hooks/useAuthorizeHub";
+import PopupPostDialog from "../../components/post/PopupPostDialog";
 
 interface UserProps {
     name: string;
@@ -36,6 +39,48 @@ const Home = () => {
     const userId = useUserId()
     const params = useSearchParams()
 
+
+    const notificationHub = useNotificationHub()
+
+    useEffect(() => {
+        if (notificationHub.hub) {
+            return
+        }
+        const hub = useAuthorizeHub(`${api(ApiEndpoint.NOTIFICATION)}/hub`)
+        notificationHub.set(hub)
+    }, [])
+
+    const handlePost = async (data: any) => {
+        console.log(data)
+        const post = postStore.posts.find(p => p.id == data.fromId)
+        if (post == undefined) {
+            return
+        }
+        const resp = await authorizedFetch(`${api(ApiEndpoint.POST)}/Comment/ByPost/${post.id}`)
+        const newComments = await resp.json()
+        console.log(newComments)
+        const size = post.comments.length;
+        post.comments.splice(0, size, ...newComments)
+        postStore.set(postStore.posts)
+        console.log(post)
+    }
+
+    useEffect(() => {
+        if (notificationHub.hub == null) {
+            return
+        }
+
+        const hub = notificationHub.hub
+        hub.on("POST", handlePost)
+
+        return () => {
+            hub.off("POST", handlePost)
+        }
+
+    }, [notificationHub, handlePost])
+
+
+
     useEffect(() => {
         const getUser = async () => {
             const resp = await authorizedFetch(`${api(ApiEndpoint.PROFILE)}/Profile/${userId}`)
@@ -53,8 +98,6 @@ const Home = () => {
     }, [])
 
     useEffect(() => {
-       
-
 
         const getPost = async () => {
             const query = params.get("q")
@@ -92,6 +135,8 @@ const Home = () => {
                 </div>
                 <RightHome user={userStore.user} />
             </div>
+            <PopupPostDialog />
+
         </>
 
     );

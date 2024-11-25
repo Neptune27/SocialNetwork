@@ -24,7 +24,7 @@ public class GetListPostHandler
         var postList = await context.Posts
             .Include(p => p.User)
             .Include(p => p.Reactions)
-            .Include(P => P.Comments)
+            .Include(P => P.Comments.OrderByDescending(c => c.CreatedAt))
             .Where(p => p.Visibility == EVisibility.PUBLIC)
             .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();

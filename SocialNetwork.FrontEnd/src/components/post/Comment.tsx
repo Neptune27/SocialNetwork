@@ -20,11 +20,10 @@ interface CommentProps {
 
 export default function Comment({ comment }: CommentProps) {
     const { user, message, medias, replys } = comment;
-    console.log(user)
     return (
         <div className={styles.comment}>
             <img
-                src={user.picture}
+                src={`${api(ApiEndpoint.PROFILE)}/${user.picture}`}
                 alt={`${user.name}`}
                 width={40}
                 height={40}

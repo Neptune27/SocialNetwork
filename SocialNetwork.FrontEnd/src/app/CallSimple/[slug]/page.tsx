@@ -6,6 +6,7 @@ import { error } from "console"
 import { useEffect, useState } from "react"
 import SimplePeer from "simple-peer"
 import { api, ApiEndpoint } from "../../../api/const"
+import { Button } from "../../../components/ui/button"
 
 const peerConfig = {
     iceServers: [
@@ -40,8 +41,8 @@ const Page = (props: {
     const [remoteStreams, setRemoteStreams] = useState<StreamUser>({});
 
     const [isVideo, setIsVideo] = useState<boolean>(true);
-    const [isScreen, setIsScreen] = useState<boolean>(true);
     const [isMute, setIsMute] = useState<boolean>(false);
+    const [isStart, setIsStart] = useState(false)
 
 
     useEffect(()=>{
@@ -175,28 +176,39 @@ const Page = (props: {
         // })
     }
 
+    const handleStart = () => {
+        console.log("a")
+        if (isStart) {
+            connection?.stop()
+            //window.close()
+            return
+        }
+
+        init()
+        setIsStart(true)
+    }
+
 
     return(
-        <div>
-            <button onClick={init}>Start</button>
-            <button onClick={()=>{setIsVideo(!isVideo)}}>Toggle Video</button>
-            <button onClick={()=>{setIsMute(!isMute)}}>Toggle Mute</button>
-
-            <div style={{
-                display: "flex"
-            }}>
-                <VideoPlayer key={"local"} localStream={localStream} isLocal />
-                <div className="grid grid-flow-row-dense auto-cols-fr auto-rows-fr max-h-screen">
-                    {Object.keys(remoteStreams).map(it => {
-                        const stream = remoteStreams[it];
-                        return (
-                            <VideoPlayer key={it} localStream={stream} isLocal={false} />
-                        )
-                    })}
-                </div>
-            
+        <div className="bg-gray-900">
+            <div className="fixed inset-x-0 bottom-4 flex justify-center gap-2 bottom-[4rem] z-10">
+                <Button variant="destructive" onClick={handleStart}>{!isStart ? "Start" : "End"}</Button>
+                <Button variant="outline" onClick={() => { setIsVideo(!isVideo) }}>{isVideo ? "Video on" : "Video off"}</Button>
+                <Button variant="outline" onClick={() => { setIsMute(!isMute) }}>{isMute ? "Mic on" : "Muted"}</Button>
             </div>
 
+            <div className="fixed bottom-2 right-2 w-48 h-48">
+                <VideoPlayer key={"local"} localStream={localStream}  />
+
+            </div>
+            <div className="flex h-screen w-screen max-h-screen max-w-screen flex-wrap gap-1 justify-center">
+                {Object.keys(remoteStreams).map((it,i, a) => {
+                    const stream = remoteStreams[it];
+                    return (
+                        <VideoPlayer key={it} localStream={stream} className={`grow max-w-[${a.length > 2 ? "25" : "50"}%]`} />
+                    )
+                })}
+            </div>
         </div>
     )
 }

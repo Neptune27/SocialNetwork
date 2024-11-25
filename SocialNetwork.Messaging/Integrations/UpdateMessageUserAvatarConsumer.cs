@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace SocialNetwork.Messaging.Integrations;
 
-public class UpdateMessageUserConsumer(AppDBContext dBContext) : IConsumer<UpdateUserAvatarDTO>
+public class UpdateMessageUserAvatarConsumer(AppDBContext dBContext) : IConsumer<UpdateUserAvatarDTO>
 {
     private readonly AppDBContext dBContext = dBContext;
 

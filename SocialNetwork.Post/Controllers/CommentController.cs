@@ -22,9 +22,17 @@ public class CommentController(IMediator mediator)
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var commentList = await mediator.Send(new GetListCommentRequest());
+        //var commentList = await mediator.Send(new GetListCommentRequest());
+        return Ok();
+    }
+
+    [HttpGet("ByPost/{id}")]
+    public async Task<IActionResult> GetByPost(int id)
+    {
+        var commentList = await mediator.Send(new GetListCommentRequest(id));
         return Ok(commentList);
     }
+
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
