@@ -294,13 +294,13 @@ const ProfilePage = () => {
                 }
             });
 
-            console.log(response);
+            console.log("Get Friend Status: " + response);
+            console.log(response)
             if (!response.ok) {
                 await getIsFriend(profileId);
                 return
             }
 
-            console.log("Co Request")
             const result = await response.json();
             const recieverId = result["recieverId"]
             const senderId = result["senderId"]
@@ -315,8 +315,26 @@ const ProfilePage = () => {
             console.error(error.message);
         }
 
+    }
 
+    async function getFriend() {
+        console.log("Get List Friend")
+        const url = `${api(ApiEndpoint.PROFILE)}/Friend`;
+        try {
+            const response = await authorizedFetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
 
+            console.log("Get Friend: " + response);
+            console.log(response)
+            
+
+        } catch (error) {
+            console.error(error.message);
+        }
     }
 
     return (
@@ -348,7 +366,7 @@ const ProfilePage = () => {
                                 <div className={style.profile_left}>
                                     <Intro details={details} visitor={visitor} />
                                     <Photos />
-                                    <Friends />
+                                    {/*<Friends />*/}
                                     <div className={style.relative_fb_copyright}>
                                         <Link href="/">Privacy </Link>
                                         <span>. </span>
