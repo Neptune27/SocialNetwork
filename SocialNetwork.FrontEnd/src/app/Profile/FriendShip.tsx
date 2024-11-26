@@ -44,17 +44,13 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
                 throw new Error(`Response status: ${response.status}`);
             }
 
-            const json = await response.json();
-            console.log(json);
-            setFriendship((prev) => ({
-                ...prev,
-                requestSent: true
-            }));
+            //window.location.reload();
             router.refresh()
+
         } catch (error) {
             console.error(error.message);
         }
-
+        
     }
 
     async function deleteFriendRequest() {
@@ -76,10 +72,36 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
             if (!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             }
-
-            const json = await response.json();
             console.log(json);
-            
+
+
+        } catch (error) {
+            console.error(error.message);
+        }
+
+    }
+
+    async function unfriend() {
+
+        const searchParams = new URLSearchParams(window.location.search);
+        let profileId = searchParams.get("profileId")
+        if (profileId == null) {
+            profileId = ""
+        }
+        const url = `${api(ApiEndpoint.PROFILE)}/Friend`;
+        try {
+            const response = await authorizedFetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(profileId)
+            });
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+
+            window.location.reload();
 
 
         } catch (error) {
@@ -88,6 +110,7 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
         router.refresh()
 
     }
+    
 
 
 
@@ -121,7 +144,7 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
                                     Follow
                                 </div>
                             )}
-                            <div className={`${style.open_cover_menu_item} hover1`}>
+                            <div className={`${style.open_cover_menu_item} hover1`} onClick={unfriend}>
                                 <i className="unfriend_outlined_icon"></i>
                                 Unfriend
                             </div>
@@ -155,7 +178,7 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
                         </button>
                         {respondMenu && (
                             <div className="open_cover_menu" ref={menu1}>
-                                    <div onClick={sendFriendRequest} className={`${style.open_cover_menu_item}  hover1`} >Confirm</div>
+                                    <div onClick={sendFriendRequest} className={`${style.open_cover_menu_item}  hover1`}>Confirm</div>
                                     <div onClick={deleteFriendRequest} className={`${style.open_cover_menu_item} hover1`}>Delete</div>
                             </div>
                         )}

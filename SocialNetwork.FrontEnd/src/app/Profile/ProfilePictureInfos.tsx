@@ -26,6 +26,8 @@ const ProfilePictureInfos = ({ profile, visitor }: ProfilePictureInfosProps) => 
     const [show, setShow] = useState(false); 
     const pRef = useRef(null);
     console.log("From ProfilePictureInfos " + profile.friendship.requestSent)
+    console.log("From ProfilePictureInfos request receice " + profile.friendship.requestReceived)
+
 
     return (
         <div className={style.profile_img_wrap}>

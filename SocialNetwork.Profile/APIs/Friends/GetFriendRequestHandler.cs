@@ -15,6 +15,10 @@ namespace SocialNetwork.Profile.APIs.Friends
 			.Include(f => f.Sender)
 			.Include(f => f.Reciever)
 			.FirstOrDefaultAsync(f => (f.Sender.Id == request.UserId || f.Reciever.Id == request.UserId) && (f.Sender.Id == request.Id || f.Reciever.Id == request.Id), cancellationToken: cancellationToken);
+			if (result is null)
+			{
+				return null;
+			}
 
 			return result;
 		}
