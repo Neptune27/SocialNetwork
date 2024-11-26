@@ -443,7 +443,7 @@ const ProfilePage = () => {
 
                                 <div className={style.profile_right}>
                                     {!visitor && (
-                                        <CreatePost user={user} profile setVisible={setVisible} />
+                                        <CreatePost user={userStore.user} profile setVisible={setVisible} />
                                     )}
                                     {/*<GridPosts />*/}
                                     <div className={style.posts}>

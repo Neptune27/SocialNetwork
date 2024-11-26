@@ -85,21 +85,21 @@ const CreatePostPopUp = ({ user, setVisible }: CreatePostPopUpProps) => {
                         width={30}
                         height={30}
                     />
-                    <div className={style.box_col}>
-                        <div className={style.box_profile_name}>
-                            {user.firstName} {user.lastName}
-                        </div>
-                        <div className={style.box_privacy}>
-                            <Image
-                                src="/icons/public.png"
-                                alt="Public icon"
-                                width={30}
-                                height={30}
-                            />
-                            <span>Public</span>
-                            <i className={icons.arrowDown_icon}></i>
-                        </div>
-                    </div>
+                    {/*<div className={style.box_col}>*/}
+                    {/*    <div className={style.box_profile_name}>*/}
+                    {/*        {user.firstName} {user.lastName}*/}
+                    {/*    </div>*/}
+                    {/*    <div className={style.box_privacy}>*/}
+                    {/*        <Image*/}
+                    {/*            src="/icons/public.png"*/}
+                    {/*            alt="Public icon"*/}
+                    {/*            width={30}*/}
+                    {/*            height={30}*/}
+                    {/*        />*/}
+                    {/*        */}{/*<span>Public</span>*/}
+                    {/*        */}{/*<i className={icons.arrowDown_icon}></i>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                 </div>
 
                 {!showPrev ? (

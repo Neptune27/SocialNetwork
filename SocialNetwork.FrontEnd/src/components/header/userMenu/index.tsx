@@ -87,8 +87,8 @@ interface UserMenuProps {
             <div className={`${styles.mmenu_main} hover3`}>
               <div className={styles.small_circle}>
               <i className="logout_filled_icon"></i>
-              </div>
-              <span>Logout</span>
+                        </div>
+                        <a href="/Logout">Logout</a>
             </div>
           </div>
         )}

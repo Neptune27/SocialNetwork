@@ -119,9 +119,9 @@ const LoginForm = ({ setVisible }: LoginFormProps) => {
                             </Form>
                         )}
                     </Formik>
-                    <Link href={"/forgot"} className={style.forgot_password}>
-                        Forgotten password?
-                    </Link>
+                    {/*<Link href={"/forgot"} className={style.forgot_password}>*/}
+                    {/*    Forgotten password?*/}
+                    {/*</Link>*/}
                     <div className={style.sign_splitter}></div>
                     <button
                         className={`blue_btn ${style.open_signup}`}
