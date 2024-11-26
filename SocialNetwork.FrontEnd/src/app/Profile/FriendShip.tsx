@@ -44,8 +44,8 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
                 throw new Error(`Response status: ${response.status}`);
             }
 
-            //window.location.reload();
-            router.refresh()
+            window.location.reload();
+            //router.refresh()
 
         } catch (error) {
             console.error(error.message);
@@ -72,8 +72,7 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
             if (!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             }
-            console.log(json);
-
+            window.location.reload();
 
         } catch (error) {
             console.error(error.message);
@@ -105,9 +104,11 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
 
 
         } catch (error) {
+            window.location.reload();
+
             console.error(error.message);
         }
-        router.refresh()
+
 
     }
     

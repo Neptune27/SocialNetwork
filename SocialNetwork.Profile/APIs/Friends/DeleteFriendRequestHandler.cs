@@ -38,8 +38,6 @@ public class DeleteFriendRequestHandler(AppDBContext dBContext, IMediator mediat
 			dBContext.FriendRequests.Remove(fromRequest);
 		}
 
-        await mediator.Send(new PublishFriendRemoveRequest(user.Id, otherUser.Id), cancellationToken);
-
         await dBContext.SaveChangesAsync(cancellationToken);
 		return true;
 	}

@@ -20,6 +20,10 @@ interface CommentProps {
 
 export default function Comment({ comment }: CommentProps) {
     const { user, message, medias, replys } = comment;
+
+    if (user == null) {
+        return(<></>)
+    }
     return (
         <div className={styles.comment}>
             <img
