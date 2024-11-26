@@ -405,22 +405,22 @@ const ProfilePage = () => {
                                     <Intro details={details} visitor={visitor} />
                                     <Photos />
                                     <Friends />
-                                    <div className={style.relative_fb_copyright}>
-                                        <Link href="/">Privacy </Link>
-                                        <span>. </span>
-                                        <Link href="/">Terms </Link>
-                                        <span>. </span>
-                                        <Link href="/">Advertising </Link>
-                                        <span>. </span>
-                                        <Link href="/">
-                                            Ad Choices <i className={icons.ad_choices_icon}></i>{" "}
-                                        </Link>
-                                        <span>. </span>
-                                        <Link href="/"></Link>Cookies <span>. </span>
-                                        <Link href="/">More </Link>
-                                        <span>. </span> <br />
-                                        Meta © 2022
-                                    </div>
+                                    {/*<div className={style.relative_fb_copyright}>*/}
+                                    {/*    <Link href="/">Privacy </Link>*/}
+                                    {/*    <span>. </span>*/}
+                                    {/*    <Link href="/">Terms </Link>*/}
+                                    {/*    <span>. </span>*/}
+                                    {/*    <Link href="/">Advertising </Link>*/}
+                                    {/*    <span>. </span>*/}
+                                    {/*    <Link href="/">*/}
+                                    {/*        Ad Choices <i className={icons.ad_choices_icon}></i>{" "}*/}
+                                    {/*    </Link>*/}
+                                    {/*    <span>. </span>*/}
+                                    {/*    <Link href="/"></Link>Cookies <span>. </span>*/}
+                                    {/*    <Link href="/">More </Link>*/}
+                                    {/*    <span>. </span> <br />*/}
+                                    {/*    Meta © 2022*/}
+                                    {/*</div>*/}
                                 </div>
 
                                 <div className={style.profile_right}>

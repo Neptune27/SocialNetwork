@@ -4,6 +4,7 @@ import Image from "next/image";
 import style from "@/styles/Profile.module.scss";
 import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
+import { useRouter } from "next/navigation";
 interface Friendship {
     friends?: boolean;
     following?: boolean;
@@ -22,7 +23,7 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
     const menu1 = useRef(null);
     useClickOutside(menu, () => setFriendsMenu(false));
     useClickOutside(menu1, () => setRespondMenu(false));
-
+    const router = useRouter()
     async function sendFriendRequest() {
 
         const searchParams = new URLSearchParams(window.location.search);
@@ -49,7 +50,7 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
                 ...prev,
                 requestSent: true
             }));
-
+            router.refresh()
         } catch (error) {
             console.error(error.message);
         }
@@ -84,6 +85,7 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
         } catch (error) {
             console.error(error.message);
         }
+        router.refresh()
 
     }
 
@@ -153,8 +155,8 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
                         </button>
                         {respondMenu && (
                             <div className="open_cover_menu" ref={menu1}>
-                                    <div onClick={sendFriendRequest} className={`${style.open_cover_menu_item}  hover1`}>Confirm</div>
-                                <div className={`${style.open_cover_menu_item} hover1`}>Delete</div>
+                                    <div onClick={sendFriendRequest} className={`${style.open_cover_menu_item}  hover1`} >Confirm</div>
+                                    <div onClick={deleteFriendRequest} className={`${style.open_cover_menu_item} hover1`}>Delete</div>
                             </div>
                         )}
                     </div>

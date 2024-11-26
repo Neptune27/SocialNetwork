@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import SimplePeer from "simple-peer"
 import { api, ApiEndpoint } from "../../../api/const"
 import { Button } from "../../../components/ui/button"
+import { useRouter } from "next/navigation"
 
 const peerConfig = {
     iceServers: [
@@ -44,6 +45,8 @@ const Page = (props: {
     const [isMute, setIsMute] = useState<boolean>(false);
     const [isStart, setIsStart] = useState(false)
 
+
+    const router = useRouter()
 
     useEffect(()=>{
         if (localStream == null) {
@@ -177,9 +180,8 @@ const Page = (props: {
     }
 
     const handleStart = () => {
-        console.log("a")
         if (isStart) {
-            connection?.stop()
+            router.push("/Chat")
             //window.close()
             return
         }
@@ -205,7 +207,7 @@ const Page = (props: {
                 {Object.keys(remoteStreams).map((it,i, a) => {
                     const stream = remoteStreams[it];
                     return (
-                        <VideoPlayer key={it} localStream={stream} className={`grow max-w-[${a.length > 2 ? "25" : "50"}%]`} />
+                        <VideoPlayer key={it} localStream={stream} className={`${a.length > 2 ? "max-w-md" : "max-w-xl"}`} />
                     )
                 })}
             </div>
