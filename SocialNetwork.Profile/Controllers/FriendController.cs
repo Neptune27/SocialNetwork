@@ -36,7 +36,7 @@ public class FriendController(IMediator mediator) : ControllerBase
 		var friendRequests = await mediator.Send(new GetFriendRequestRequest(userId, id));
         if (friendRequests is null)
         {
-            return BadRequest();
+            return BadRequest("SAI");
         }
 		return Ok(friendRequests);
 	}
@@ -78,6 +78,20 @@ public class FriendController(IMediator mediator) : ControllerBase
 		return Ok();
 	}
 
+	[HttpDelete]
+	public async Task<IActionResult> DeleteFriend([FromBody] string id)
+	{
+		var userId = HttpContext.User.Claims.GetClaimByUserId().Value;
+		var result = await mediator.Send(new DeleteFriendRequest(userId, id));
+
+		if (!result)
+		{
+			return BadRequest();
+		}
+
+		return Ok();
+	}
+
 
 	// GET api/<FriendController>/5
 	[HttpGet("{id}")]
@@ -91,6 +105,8 @@ public class FriendController(IMediator mediator) : ControllerBase
         }
 		return Ok(result);
     }
+
+
 
     // POST api/<FriendController>
     [HttpPost]
