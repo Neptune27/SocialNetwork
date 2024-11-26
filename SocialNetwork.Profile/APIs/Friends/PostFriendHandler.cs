@@ -21,27 +21,21 @@ namespace SocialNetwork.Profile.APIs.Friends
 
 			if (otherUser.Id == request.UserId) { return false; }
 
-			if (user == null) { return false; }
-			var isFriend = await dBContext.Friends.FirstOrDefaultAsync(f => f.UserToId == user.Id && f.UserFromId == otherUser.Id || f.UserFromId == user.Id && f.UserToId == otherUser.Id);
-			if (isFriend != null)
-			{
-				dBContext.Friends.Remove(isFriend);
-
+			if (user == null) { 
+				return false; 
 			}
-			else
-			{
-				Friend friend = new()
-				{
-					CreatedAt = DateTime.UtcNow,
-					LastUpdated = DateTime.UtcNow,
-					UserFrom = user,
-					UserTo = otherUser,
-					Visibility = Core.Enums.EVisibility.PUBLIC
-				};
-				await dBContext.SaveChangesAsync(cancellationToken);
 
-				await mediator.Send(new PublishFriendAddRequest(user.Id, otherUser.Id));
-			}
+			Friend friend = new()
+			{
+				CreatedAt = DateTime.UtcNow,
+				LastUpdated = DateTime.UtcNow,
+				UserFrom = user,
+				UserTo = otherUser,
+				Visibility = Core.Enums.EVisibility.PUBLIC
+			};
+			await dBContext.SaveChangesAsync(cancellationToken);
+
+			await mediator.Send(new PublishFriendAddRequest(user.Id, otherUser.Id), cancellationToken);
 			return true;
 		}
 	}

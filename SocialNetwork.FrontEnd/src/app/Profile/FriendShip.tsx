@@ -2,8 +2,9 @@ import { useRef, useState } from "react";
 import useClickOutside from "../../helper/useClickOutside";
 import Image from "next/image";
 import style from "@/styles/Profile.module.scss";
-import { authorizedFetch } from "../../helper/authorizedFetcher";
+import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
+import { useRouter } from "next/navigation";
 interface Friendship {
     friends?: boolean;
     following?: boolean;
@@ -22,7 +23,7 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
     const menu1 = useRef(null);
     useClickOutside(menu, () => setFriendsMenu(false));
     useClickOutside(menu1, () => setRespondMenu(false));
-
+    const router = useRouter()
     async function sendFriendRequest() {
 
         const searchParams = new URLSearchParams(window.location.search);
@@ -44,7 +45,7 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
             }
 
             window.location.reload();
-            
+            //router.refresh()
 
         } catch (error) {
             console.error(error.message);
@@ -71,8 +72,7 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
             if (!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             }
-            console.log(json);
-
+            window.location.reload();
 
         } catch (error) {
             console.error(error.message);
@@ -104,8 +104,11 @@ const FriendShip = ({ friendship, setFriendship }: FriendShipProps) => {
 
 
         } catch (error) {
+            window.location.reload();
+
             console.error(error.message);
         }
+
 
     }
     

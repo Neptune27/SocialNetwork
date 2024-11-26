@@ -19,6 +19,8 @@ import usePosts from "../../hooks/Posts/usePosts";
 import usePopupPost from "../../hooks/Posts/usePopupPost";
 import { Dialog, DialogContent, DialogHeader } from "../../components/ui/dialog";
 import PopupPostDialog from "../../components/post/PopupPostDialog";
+import useNotificationHub from "../../hooks/useNotificationHub";
+import useAuthorizeHub from "../../hooks/useAuthorizeHub";
 
 interface UserProps {
     name: string;
@@ -27,110 +29,55 @@ interface UserProps {
     profilePicture: string;
 }
 
-//interface Comment {
-//    comment: string;
-//    commentBy: string;
-//    commentAt: Date;
-//}
-
-//interface PostUser {
-//    username: string;
-//    picture: string;
-//}
-
-//interface PostData {
-//    id: string,
-//    user: PostUser;
-//    type: "profilePicture" | "cover" | null;
-//    message: string;
-//    medias: string[];
-//    background?: string; // Optional
-//    comments: Comment[];
-//    createdAt: string;
-//}
 
 const Home = () => {
-    // Mock user data
-    //const user: UserProps = {
-    //    name: "Nguyen Huy",
-    //    firstName: "Nguyen",
-    //    lastName: "Huy",
-    //    profilePicture: "/images/default_profile.png",
-    //};
-
     const userStore = useCurrentUser();
     const postStore = usePosts()
-
-    // Mock post data matching the Mongoose schema
-    //const postVar: PostData = {
-    //    user: {
-    //        username: "johndoe",
-    //        picture: "/images/default_profile.png",
-    //        first_name: "John",
-    //        last_name: "Doe",
-    //        gender: "male",
-    //    },
-    //    type: "profilePicture",
-    //    text: "This is a mock post description with multiple images.",
-    //    images: ["/stories/1.jpg", "/stories/3.jpg"],
-    //    background: "/images/postBackgrounds/1.jpg",
-    //    comments: [
-    //        {
-    //            comment: "Great post!",
-    //            commentBy: "user1",
-    //            commentAt: new Date(),
-    //        },
-    //    ],
-    //    createdAt: new Date().toISOString(),
-    //};
-    //const post2: PostData = {
-    //    user: {
-    //        username: "johndoe",
-    //        picture: "/images/default_profile.png",
-    //        first_name: "John",
-    //        last_name: "Doe",
-    //        gender: "male",
-    //    },
-    //    type: "profilePicture",
-    //    text: "This is a mock post description with multiple images.",
-    //    images: ["/stories/1.jpg"],
-
-    //    comments: [
-    //        {
-    //            comment: "Great post!",
-    //            commentBy: "user1",
-    //            commentAt: new Date(),
-    //        },
-    //    ],
-    //    createdAt: new Date().toISOString(),
-    //};
-    //const post3: PostData = {
-    //    user: {
-    //        username: "johndoe",
-    //        picture: "/images/default_profile.png",
-    //        first_name: "John",
-    //        last_name: "Doe",
-    //        gender: "male",
-    //    },
-    //    text: "This is a mock post description with multiple images.",
-    //    images: ["/stories/1.jpg", "/stories/3.jpg"],
-
-    //    comments: [
-    //        {
-    //            comment: "Great post!",
-    //            commentBy: "user1",
-    //            commentAt: new Date(),
-    //        },
-    //    ],
-    //    createdAt: new Date().toISOString(),
-    //};
-
     const middle = useRef<HTMLDivElement | null>(null);
     const [visible, setVisible] = useState(false);
     //const [posts, setPosts] = useState<PostData[]>([]) //Make this into global
     const [height, setHeight] = useState<number | undefined>();
     const userId = useUserId()
 
+    const notificationHub = useNotificationHub()
+
+    useEffect(() => {
+        if (notificationHub.hub) {
+            return
+        }
+
+        const hub = useAuthorizeHub(`${api(ApiEndpoint.NOTIFICATION)}/hub`)
+        notificationHub.set(hub)
+    }, [])
+
+    const handlePost = async (data: any) => {
+        console.log(data)
+        const post = postStore.posts.find(p => p.id == data.fromId)
+        if (post == undefined) {
+            return
+        }
+        const resp = await authorizedFetch(`${api(ApiEndpoint.POST)}/Comment/ByPost/${post.id}`)
+        const newComments = await resp.json()
+        console.log(newComments)
+        const size = post.comments.length;
+        post.comments.splice(0, size, ...newComments)
+        postStore.set(postStore.posts)
+        console.log(post)
+    }
+
+    useEffect(() => {
+        if (notificationHub.hub == null) {
+            return
+        }
+
+        const hub = notificationHub.hub
+        hub.on("POST", handlePost)
+
+        return () => {
+            hub.off("POST", handlePost)
+        }
+
+    }, [notificationHub, handlePost])
 
     //useEffect(() => {
     //    if (middle.current) {

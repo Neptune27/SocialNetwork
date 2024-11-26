@@ -25,7 +25,7 @@ public class GetRoomsHandler(
             .Include(r => r.Users)
             .Include(r => r.CreatedBy)
             .Where(r => r.Users.Contains(user))
-            .OrderBy(r => r.LastUpdated)
+            .OrderByDescending(r => r.LastUpdated)
             .Skip(From)
             .Take(total)
             .ToListAsync(cancellationToken: cancellationToken);

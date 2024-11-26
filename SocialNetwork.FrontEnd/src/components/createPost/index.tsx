@@ -20,39 +20,39 @@ interface CreatePostProps {
 const CreatePost = ({ user, setVisible, profile }: CreatePostProps) => {
     return (
         <div className={styles.createPost}>
-            <div className={styles.createPost_header}>
+            <div className={styles.createPost_header} onClick={() => {
+                setVisible(true);
+            }}>
                 <img src={user?.profilePicture} alt="" width={40} height={40} />
                 <div
                     className={`${styles.open_host} hover2`}
-                    onClick={() => {
-                        setVisible(true);
-                    }}
+
                 >
-                    What&apos;s on your mind, {user?.name}
+                    What&apos;s on your mind
                 </div>
             </div>
             <div className={styles.create_splitter}></div>
-            <div className={styles.createPost_body}>
-                <div className={`${styles.createPost_icon} hover1`}>
-                    <LiveVideo color="#f3425f" />
-                    Live Video
-                </div>
-                <div className={`${styles.createPost_icon} hover1`}>
-                    <Photo color="#4bbf67" />
-                    Photo/Video
-                </div>
-                {profile ? (
-                    <div className={`${styles.createPost_icon} hover1`}>
-                        <i className={icons.lifeEvent_icon}></i>
-                        Life Event
-                    </div>
-                ) : (
-                    <div className={`${styles.createPost_icon} hover1`}>
-                        <Feeling color="#f7b928" />
-                        Feeling/Activity
-                    </div>
-                )}
-            </div>
+            {/*<div className={styles.createPost_body}>*/}
+            {/*    <div className={`${styles.createPost_icon} hover1`}>*/}
+            {/*        <LiveVideo color="#f3425f" />*/}
+            {/*        Live Video*/}
+            {/*    </div>*/}
+            {/*    <div className={`${styles.createPost_icon} hover1`}>*/}
+            {/*        <Photo color="#4bbf67" />*/}
+            {/*        Photo/Video*/}
+            {/*    </div>*/}
+            {/*    {profile ? (*/}
+            {/*        <div className={`${styles.createPost_icon} hover1`}>*/}
+            {/*            <i className={icons.lifeEvent_icon}></i>*/}
+            {/*            Life Event*/}
+            {/*        </div>*/}
+            {/*    ) : (*/}
+            {/*        <div className={`${styles.createPost_icon} hover1`}>*/}
+            {/*            <Feeling color="#f7b928" />*/}
+            {/*            Feeling/Activity*/}
+            {/*        </div>*/}
+            {/*    )}*/}
+            {/*</div>*/}
         </div>
     );
 };

@@ -38,7 +38,7 @@ public class DeleteFriendRequestHandler(AppDBContext dBContext, IMediator mediat
 			dBContext.FriendRequests.Remove(fromRequest);
 		}
 
-		await dBContext.SaveChangesAsync(cancellationToken);
+        await dBContext.SaveChangesAsync(cancellationToken);
 		return true;
 	}
 }

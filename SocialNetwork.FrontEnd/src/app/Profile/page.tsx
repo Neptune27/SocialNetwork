@@ -22,6 +22,10 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 import usePosts from "../../hooks/Posts/usePosts";
 import Loading from "../../components/Loading";
 import useUserId from "../../hooks/useUserId";
+import { useSearchParams } from "next/navigation";
+import PopupPostDialog from "../../components/post/PopupPostDialog";
+import useNotificationHub from "../../hooks/useNotificationHub";
+import useAuthorizeHub from "../../hooks/useAuthorizeHub";
 
 
 
@@ -142,7 +146,10 @@ const ProfilePage = () => {
     const [visible, setVisible] = useState(false);
     const userId = useUserId();
     const userStore = useCurrentUser();
-    const postStore = usePosts()
+    const params = useSearchParams()
+
+    const [posts, setPosts] = useState<PostData[]>([])
+    const [profileId, setProfileId] = useState(userId)
 
     const [friendshipData, setFriendshipData] = useState<Friendship>({
         friends: false,
@@ -150,6 +157,9 @@ const ProfilePage = () => {
         requestSent: false,
         requestReceived: false,
     });
+
+
+
 
     const [details, setDetails] = useState<Details>({
         bio: "A passionate software developer",
@@ -173,13 +183,84 @@ const ProfilePage = () => {
     });
 
 
+
+    const notificationHub = useNotificationHub()
+
     useEffect(() => {
-        const getData = async () => {
-            const searchParams = new URLSearchParams(window.location.search);
-            let profileId = searchParams.get("profileId")
-            if (profileId == null) {
-                profileId = userId
+
+        if (notificationHub.hub) {
+            return
+        }
+
+        const hub = useAuthorizeHub(`${api(ApiEndpoint.NOTIFICATION)}/hub`)
+        notificationHub.set(hub)
+    }, [])
+
+    const handlePost = async (data: any) => {
+        console.log(data)
+        const post = posts.find(p => p.id == data.fromId)
+        if (post == undefined) {
+            return
+        }
+        const resp = await authorizedFetch(`${api(ApiEndpoint.POST)}/Comment/ByPost/${post.id}`)
+        const newComments = await resp.json()
+        console.log(newComments)
+        const size = post.comments.length;
+        post.comments.splice(0, size, ...newComments)
+        setPosts([...posts])
+    }
+
+    useEffect(() => {
+        if (notificationHub.hub == null) {
+            return
+        }
+
+        const hub = notificationHub.hub
+        hub.on("POST", handlePost)
+
+        return () => {
+            hub.off("POST", handlePost)
+        }
+
+    }, [notificationHub, handlePost])
+
+
+    const getIsFriend = async (profileId: string) => {
+        console.log("Khong co request, Fetch den Friend")
+        const urlFriend = `${api(ApiEndpoint.PROFILE)}/Friend/${profileId}`;
+        try {
+            const response = await authorizedFetch(urlFriend, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
             }
+            const result = await response.json();
+            console.log(result);
+            if (result != null) {
+                console.log("Da la Friend")
+                setFriendshipData((prev) => ({
+                    ...prev,
+                    friends: true
+                }));
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    }
+
+
+    useEffect(() => {
+        let profileId = params.get("profileId") || ""
+        if (profileId == "") {
+            profileId = userId || ""
+        }
+        setProfileId(profileId)
+
+        const getData = async () => {
             const url = `${api(ApiEndpoint.PROFILE)}/Profile/${profileId}`;
             try {
                 const response = await authorizedFetch(url);
@@ -216,7 +297,18 @@ const ProfilePage = () => {
         }
 
         getData()
-    }, [])
+
+
+        const getPost = async () => {
+            const resp = await authorizedFetch(`${api(ApiEndpoint.POST)}/Post/Profile/${profileId}`)
+            const data = await resp.json()
+
+            console.log(data)
+            setPosts(data)
+        }
+        getPost()
+
+    }, [params])
 
 
 
@@ -233,17 +325,7 @@ const ProfilePage = () => {
             })
 
         }
-
-        const getPost = async () => {
-            const resp = await authorizedFetch(`${api(ApiEndpoint.POST)}/Post`)
-            const data = await resp.json()
-
-            console.log(data)
-            postStore.set(data)
-        }
-
         getUser()
-        getPost()
     }, [])
 
     if (userStore.user == null) {
@@ -253,32 +335,6 @@ const ProfilePage = () => {
     }
 
 
-    const getIsFriend = async (profileId: string) => {
-        console.log("Khong co request, Fetch den Friend")
-        const urlFriend = `${api(ApiEndpoint.PROFILE)}/Friend/${profileId}`;
-        try {
-            const response = await authorizedFetch(urlFriend, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            });
-            if (!response.ok) {
-                throw new Error(`Response status: ${response.status}`);
-            }
-            const result = await response.json();
-            console.log(result);
-            if (result != null) {
-                console.log("Da la Friend")
-                setFriendshipData((prev) => ({
-                    ...prev,
-                    friends: true
-                }));
-            }
-        } catch (error) {
-            console.error(error.message);
-        }
-    }
 
     async function getFriendStatus(profileId: string) {
         console.log("Get Friend Status")
@@ -367,31 +423,31 @@ const ProfilePage = () => {
                                     <Intro details={details} visitor={visitor} />
                                     <Photos />
                                     {/*<Friends />*/}
-                                    <div className={style.relative_fb_copyright}>
-                                        <Link href="/">Privacy </Link>
-                                        <span>. </span>
-                                        <Link href="/">Terms </Link>
-                                        <span>. </span>
-                                        <Link href="/">Advertising </Link>
-                                        <span>. </span>
-                                        <Link href="/">
-                                            Ad Choices <i className={icons.ad_choices_icon}></i>{" "}
-                                        </Link>
-                                        <span>. </span>
-                                        <Link href="/"></Link>Cookies <span>. </span>
-                                        <Link href="/">More </Link>
-                                        <span>. </span> <br />
-                                        Meta © 2022
-                                    </div>
+                                    {/*<div className={style.relative_fb_copyright}>*/}
+                                    {/*    <Link href="/">Privacy </Link>*/}
+                                    {/*    <span>. </span>*/}
+                                    {/*    <Link href="/">Terms </Link>*/}
+                                    {/*    <span>. </span>*/}
+                                    {/*    <Link href="/">Advertising </Link>*/}
+                                    {/*    <span>. </span>*/}
+                                    {/*    <Link href="/">*/}
+                                    {/*        Ad Choices <i className={icons.ad_choices_icon}></i>{" "}*/}
+                                    {/*    </Link>*/}
+                                    {/*    <span>. </span>*/}
+                                    {/*    <Link href="/"></Link>Cookies <span>. </span>*/}
+                                    {/*    <Link href="/">More </Link>*/}
+                                    {/*    <span>. </span> <br />*/}
+                                    {/*    Meta © 2022*/}
+                                    {/*</div>*/}
                                 </div>
 
                                 <div className={style.profile_right}>
                                     {!visitor && (
-                                        <CreatePost user={user} profile setVisible={setVisible} />
+                                        <CreatePost user={userStore.user} profile setVisible={setVisible} />
                                     )}
                                     {/*<GridPosts />*/}
                                     <div className={style.posts}>
-                                        {postStore.posts.map((p) => <Post key={p.id} post={p} user={userStore.user} />)}
+                                        {posts.map((p) => <Post key={p.id} post={p} user={userStore.user} />)}
 
                                         {/* <div className={style.no_posts}>No posts available</div> */}
                                         {/*<Post post={postVar} user={user} key={1} />*/}
@@ -403,6 +459,8 @@ const ProfilePage = () => {
                     </div>
                 </div>
             </div>
+            <PopupPostDialog />
+
         </>
     );
 };

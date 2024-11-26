@@ -19,7 +19,7 @@ builder.Services.AddMediator();
 
 builder.AddDefaultMassTransit(option =>
 {
-    option.AddConsumer<AddPostUserConsumer>();
+    option.AddConsumers(typeof(Program).Assembly);
 });
 
 

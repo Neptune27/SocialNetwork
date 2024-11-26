@@ -1,5 +1,6 @@
 ﻿import styles from "@/components/post/style.module.scss";
 import { api, ApiEndpoint } from "../../api/const";
+import usePosts from "../../hooks/Posts/usePosts";
 interface CommentBy {
     picture: string;
     name: string;
@@ -18,12 +19,15 @@ interface CommentProps {
 }
 
 export default function Comment({ comment }: CommentProps) {
-    const { user, commentAt, message, medias, replys } = comment;
-    console.log(user)
+    const { user, message, medias, replys } = comment;
+
+    if (user == null) {
+        return(<></>)
+    }
     return (
         <div className={styles.comment}>
             <img
-                src={user.picture}
+                src={`${api(ApiEndpoint.PROFILE)}/${user.picture}`}
                 alt={`${user.name}`}
                 width={40}
                 height={40}
@@ -47,8 +51,8 @@ export default function Comment({ comment }: CommentProps) {
                     )}
                 </div>
                 <div className={styles.comment_actions}>
-                    <span>Like</span>
-                    <span>Reply</span>
+                    {/*<span>Like</span>*/}
+                    {/*<span>Reply</span>*/}
                     <span className={styles.comment_date}>
 
                         23/11/2024

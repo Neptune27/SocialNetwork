@@ -112,7 +112,7 @@ const UserHeader = ({ user, page }: UserHeaderProps) => {
                 </Link>
                 <div className={`${styles.circle_icon} hover1`}>
                     <Notifications />
-                    <div className={`${styles.right_notification} `}>5</div>
+                    {/*<div className={`${styles.right_notification} `}>5</div>*/}
                 </div>
                 <div className={`${styles.circle_icon} hover1`} ref={usermenu}>
                     <div

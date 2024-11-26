@@ -13,7 +13,11 @@ public class GetListCommentHandler(AppDBContext DBContext)
 
     public async ValueTask<List<Comment>> Handle(GetListCommentRequest request, CancellationToken cancellationToken)
     {
-        var comment = await context.Comments.ToListAsync();
+        var comment = await context.Comments
+            .Include(c => c.User)
+            .Where(c => c.Post.Id == request.PostId)
+                                .OrderByDescending(c => c.CreatedAt)
+                                .ToListAsync(cancellationToken: cancellationToken);
         return comment;
     }
 }

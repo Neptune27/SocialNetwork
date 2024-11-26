@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Core.Extensions;
 using SocialNetwork.Messaging.APIs.Messages;
+using SocialNetwork.Messaging.APIs.RoomLastSeens;
 using SocialNetwork.Messaging.Data;
 using SocialNetwork.Messaging.Data.DTOs;
 using SocialNetwork.Messaging.Data.Models;
@@ -43,8 +44,15 @@ public class MessageController(
         DateTime getDate = start.AddMilliseconds(date).ToLocalTime();
 
         var result = await mediator.Send(new GetMessagesByRoomRequest(id, 10, getDate));
-
+        await mediator.Send(new UpdateRoomLastSeenRequest(user.Value, id));
         return result;
+    }
+    [HttpGet("TotalMissed")]
+    public async Task<IActionResult> GetMissed()
+    {
+        var user = HttpContext.User.Claims.GetClaimByUserId().Value;
+        var result = await mediator.Send(new GetTotalMissedMessageRequest(user));
+        return Ok(result);
     }
 
     // POST api/<MessageController>

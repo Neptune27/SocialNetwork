@@ -71,7 +71,7 @@ export default function Post({ post, user, isPopup }: PostProps) {
                     className={styles.post_header_left}
                 >
                     <img
-                        src={post.user.picture}
+                        src={`${api(ApiEndpoint.PROFILE)}/${post.user.picture}`}
                         width={40}
                         height={40}
                     />
@@ -165,31 +165,31 @@ export default function Post({ post, user, isPopup }: PostProps) {
                 </div>
             </div>
             <div className={styles.post_actions}>
-                <ReactsPopup visible={visible} setVisible={setVisible} />
-                <div
-                    className={`${styles.post_action} hover1`}
-                    onMouseOver={() => {
-                        setTimeout(() => {
-                            setVisible(true);
-                        }, 500);
-                    }}
-                    onMouseLeave={() => {
-                        setTimeout(() => {
-                            setVisible(false);
-                        }, 500);
-                    }}
-                >
-                    <i className={icons.like_icon}></i>
-                    <span>Like</span>
-                </div>
+                {/*<ReactsPopup visible={visible} setVisible={setVisible} />*/}
+                {/*<div*/}
+                {/*    className={`${styles.post_action} hover1`}*/}
+                {/*    onMouseOver={() => {*/}
+                {/*        setTimeout(() => {*/}
+                {/*            setVisible(true);*/}
+                {/*        }, 500);*/}
+                {/*    }}*/}
+                {/*    onMouseLeave={() => {*/}
+                {/*        setTimeout(() => {*/}
+                {/*            setVisible(false);*/}
+                {/*        }, 500);*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <i className={icons.like_icon}></i>*/}
+                {/*    <span>Like</span>*/}
+                {/*</div>*/}
                 <div className={`${styles.post_action} hover1`}>
                     <i className={icons.comment_icon}></i>
                     <span>Comment</span>
                 </div>
-                <div className={`${styles.post_action} hover1`}>
-                    <i className={icons.share_icon}></i>
-                    <span>Share</span>
-                </div>
+                {/*<div className={`${styles.post_action} hover1`}>*/}
+                {/*    <i className={icons.share_icon}></i>*/}
+                {/*    <span>Share</span>*/}
+                {/*</div>*/}
             </div>
             <div className={styles.comments_wrap}>
                 <div className={styles.comments_order}></div>

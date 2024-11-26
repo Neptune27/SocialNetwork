@@ -12,6 +12,7 @@ import { authorizedFetch } from "../../Ultility/authorizedFetcher";
 import { api, ApiEndpoint } from "../../api/const";
 import axios from "axios";
 import useToken from "../../hooks/useToken";
+import usePosts from "../../hooks/Posts/usePosts";
 
 interface User {
     name: string;
@@ -31,6 +32,7 @@ const CreatePostPopUp = ({ user, setVisible }: CreatePostPopUpProps) => {
     const [files, setFiles] = useState<FileType[]>([]);
     const [error, setError] = useState<string>("");
     const [background, setBackground] = useState<string>("");
+    const postsStore = usePosts()
 
     const popupRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +50,11 @@ const CreatePostPopUp = ({ user, setVisible }: CreatePostPopUpProps) => {
         })
 
         if (resp.status == 200) {
-            window.location.reload()
+            const data = await resp.data
+            postsStore.posts.unshift(data)
+            postsStore.set(postsStore.posts)
+            setVisible(false)
+            //window.location.reload()
         }
     }
 
@@ -79,21 +85,21 @@ const CreatePostPopUp = ({ user, setVisible }: CreatePostPopUpProps) => {
                         width={30}
                         height={30}
                     />
-                    <div className={style.box_col}>
-                        <div className={style.box_profile_name}>
-                            {user.firstName} {user.lastName}
-                        </div>
-                        <div className={style.box_privacy}>
-                            <Image
-                                src="/icons/public.png"
-                                alt="Public icon"
-                                width={30}
-                                height={30}
-                            />
-                            <span>Public</span>
-                            <i className={icons.arrowDown_icon}></i>
-                        </div>
-                    </div>
+                    {/*<div className={style.box_col}>*/}
+                    {/*    <div className={style.box_profile_name}>*/}
+                    {/*        {user.firstName} {user.lastName}*/}
+                    {/*    </div>*/}
+                    {/*    <div className={style.box_privacy}>*/}
+                    {/*        <Image*/}
+                    {/*            src="/icons/public.png"*/}
+                    {/*            alt="Public icon"*/}
+                    {/*            width={30}*/}
+                    {/*            height={30}*/}
+                    {/*        />*/}
+                    {/*        */}{/*<span>Public</span>*/}
+                    {/*        */}{/*<i className={icons.arrowDown_icon}></i>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                 </div>
 
                 {!showPrev ? (

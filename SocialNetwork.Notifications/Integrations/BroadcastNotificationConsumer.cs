@@ -24,7 +24,7 @@ public class BroadcastNotificationConsumer(
 
         var u = _hubContext.Clients.User(notification.UserId);
 
-        await _hubContext.Clients.User(notification.UserId).SendAsync(type, notification);
+        await _hubContext.Clients.All.SendAsync(type, notification);
 
     }
 }
